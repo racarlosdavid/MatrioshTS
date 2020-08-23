@@ -1,0 +1,28 @@
+ println(8>3 ? 4+2 : "Fuck You");
+public static private class hola { 
+   
+    
+ 
+    if( 5*3>3) {
+       
+        println(43+23);
+    }
+
+    if(1>511){
+        println(43);
+    }else if(4>23){
+        println(43+1);
+    }else if(4>23){
+        println(432);
+    }else{
+        println(90);
+    }
+
+    if(4>4){
+        43;
+    }else{
+        (54+1)*2;
+        return 3+3+3;
+    }
+}
+

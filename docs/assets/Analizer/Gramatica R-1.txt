@@ -1,0 +1,209 @@
+
+<class_body>::= <class_body> <class_body_dec> 
+|<class_body_dec> 
+
+<class_body_dec>::= <field_declaration> 
+| <method_declaration> 
+| <class_declaration> 
+| <constructor_declaration>
+
+
+
+<field_declaration> ::= <field_modifiers> <type> <variable_declarators> “;”
+
+<variable_declarators> ::= <variable_declarators> ',' <variable_declarator> 
+| <variable_declarator> 
+
+<variable_declarator> ::= <variable_declarator_id> '=' <variable_initializer> 
+| <variable_declarator_id> 
+
+<variable_declarator_id> ::= <variable_declarator_id> '[' ']'
+| id 
+
+<variable_initializer> ::= <expression> 
+| <array_initializer>
+
+<field_modifiers> ::= <field_modifiers> <field_modifier> 
+|<field_modifier> 
+| 𝜖 
+
+<field_modifier> ::= 'public' 
+| 'protected'
+| 'private'
+| 'static'
+| 'final'
+
+<method_modifiers>::= 'public'
+| 'protected'
+| 'private' 
+| 'abstract' 
+| 'static'
+| 'final'
+
+
+<method_declaration>::=<method_header> <statement_block> 
+|<method_header> “;” 
+
+<method_header>::= <method_modifiers> <result> <method_declarator> 
+
+<method_declarator>::= <method_declarator> “[” “]” 
+|id “(” <formal_parameters> “)”
+
+<formal_parameters>::= <formal_parameters> “,” <formal_parameter>
+| <formal_parameter> 
+
+<formal_parameter>::= “final” <type> <variable_declarator_id> 
+| <type> <variable_declarator_id> 
+
+<variable_declarator_id> ::= <variable_declarator_id> “[” “]” 
+| id
+
+<method_modifiers>::= <method_modifiers> <method_modifier> 
+|<method_modifier> 
+| 𝜖 
+
+if_statement : if_list 'else' '{' LISTA_INSTRUCCIONES '}'
+    | if_list 
+
+if_list : if_list 'else' 'if' '(' EXP ')' '{' LISTA_INSTRUCCIONES '}'
+    | 'if' '(' EXP ')' '{' LISTA_INSTRUCCIONES '}'
+
+
+<result>::= <type> | “void”
+
+<constructor_declaration>::= <constructor_modifiers> <constructor_declarator> <statement_block> 
+
+<constructor_declarator>::= id “(” <formal_parameters> “)”
+
+<constructor_modifiers>::= “public” | “protected” | “private” | 𝜖
+
+<explicit_constructor_invocation>::= “this” “(” <arguments> “)” “;” 
+| “super” “(” <arguments> “)” “;”
+
+<array_declaration> ::= <type> id (“[” “]”)+;
+
+<arrayinit>::= id “=”“new’<type>(“[”<expression>“]”)+;
+
+<linkedlist_declaration>::= “LinkedList” “<” <type> “>” id “;” 
+| “LinkedList” “<” <type> “>” id “=”“new” “LinkedList” “<”“>” “(”“)” “;”
+
+<statement_block> ::= “{”<statement_list>“}” 
+
+<statement_list> ::= <statement_list> <statement> 
+| <statement>
+
+<statement> ::= “import” string_terminal “;”
+
+<local_var_declaration> ::= <type> <variable_declarators> “;” 
+| “final” <type> <variable_declarators> “;”
+
+<variable_declarators> ::= <variable_declarators> “,” <variable_declarator> 
+| <variable_declarator> 
+
+<variable_declarator> ::= <variable_declarator_id> “=” <variable_initializer> 
+| <variable_declarator_id> 
+
+<variable_declarator_id> ::= <variable_declarator_id> “[” “]” 
+| id 
+
+<variable_initializer> ::= <expression> 
+| <array_initializer>
+
+< assignment> ::= id “=” <expression> “;”
+
+<break_statement> ::= “break” “;”
+
+<continue_statement> ::= “continue” “;”
+
+<return_statement> ::= “return” “;” 
+| “return” <expression> “;”
+
+if_statement : if_list 'else' '{' LISTA_INSTRUCCIONES '}'
+    | if_list 
+
+if_list : if_list 'else' 'if' '(' EXP ')' '{' LISTA_INSTRUCCIONES '}'
+    | 'if' '(' EXP ')' '{' LISTA_INSTRUCCIONES '}'
+
+<switch_statement>::= “switch” “(”<expression> “)” <switch_block> 
+
+<switch_block>::= “{” (<switch_block_statement_groups>)? (<switch_labels>)? “}”
+
+<switch_block_statement_groups>::= <switch_block_statement_groups> 
+| <switch_block_statement_groups> <switch_block_statement_group> 
+
+<switch_block_statement_group>::= <switch_labels> <statement_block>
+
+ <switch_labels>::= <switch_labels> <switch_label>
+ | <switch_label> 
+ 
+<switch_label>: “case” <literal> “:” “default” “:”
+
+<throw_statement> ::= “throw” <expression> “;”
+
+<try_statement> ::= “try” <statement_block> “catch” “(” <declaration> “)”<statement_block>
+
+<while_statement> ::= “while” “(” <expression> “)” <statement_block>
+
+<do_statement> ::= “do” <statement_block> “while” “(” <expression> “)” “;”
+
+<for_statement> ::= “for” “(” <for_init>“;”<expression>“;”<expression>“)” <statement_block> 
+
+<for_init>::= <declaration> 
+| <assigment>
+
+<foreach_statement> ::= “for” “(” <formal_parameter>“:”<expression>”)” <statement_block>
+
+<statement> ::= “print” “(” <expression> “)” “;”
+| “println” “(” <expression> “)” “;”
+
+<read_file_expression> ::= “read_file” “(” String_literal “)”
+
+<write_file_expression> ::= “write_file” “(” string_literal “,” string_literal “)”
+
+<read_console_statement> ::= “read” “(” id “)”
+
+<graph_expression> ::= “graph” “(” string_literal “,” string_literal “)”
+
+<expression> ::= “(”<expression>“)”
+
+<instance_creation_expression>::= “new” id “(” <argument_list> “)”
+
+ <argument_list> ::= <argument_list> “,” <expression>
+| <expression>
+
+<instance_creation_expression>::= “new” <type> <dims_expression>
+
+<dims_expression>::= <dims_expression> “[” <expression> “]” 
+| “[” <expression> “]”
+
+<field_access>::= “super” “.” <expression> 
+| id “.” “super” “.” <expression> 
+| id “.” <expression>
+
+<method_invocation>::= “super” “.” id “(” <argument_list> “)” 
+| id “.” “super” “.” id “(” <argument_list> “)” 
+| id “.” id “(” <argument_list> “)”
+
+<cast_expression> ::= “(”<type_name>“)”<expression>
+
+
+<cast_expression> ::= “str” “(” <expression> “)” 
+| “toDouble” “(”string_terminal “)” 
+| “toInt” “(”string_terminal “)” 
+| “toChar” “(”string_terminal “)”
+
+<pow_expression> ::= “pow”“(”<expression1>“,”<expression2>“)”
+
+<unary_minus> ::= “-” <expression>
+
+<increment> ::= “++” <expression>
+
+<increment> ::= “--” <expression>
+
+<increment> ::= <expression> “++”
+
+<increment> ::= <expression> “--”
+
+<instanceof_expression> ::= id1 “instanceof” id2;
+
+<ternary> ::= <expression1>“?”<expression2>“:”<expression3>

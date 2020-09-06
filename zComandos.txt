@@ -17,3 +17,36 @@ When the build is complete, make a copy of docs/index.html and name it docs/404.
 Commit your changes and push.
 
 On the GitHub project page, configure it to publish from the docs folder.
+
+
+-------------------------------------------------------------------------------
+
+npm run desplegar               //Este comando ejecuta el script desplegar que esta en el package.json para hacer un despliegue en githubpage 
+
+-------------------------------------------------------------------------------
+
+ng serve                        //Inicial el servidor local para realizar las pruebas
+
+
+-------------------------------------------------------------------------------
+comandos para el codigo del interprete y traductor usando nodejs
+
+
+npm init 			            //para iniciar el proyecto
+npm i typescript 	            //para instalar typescript
+npm i typescript-collections    //para instalar
+tsc --init                      //para crear tsconfig.json y auto generar los .js
+tsc                             //poner typescript en escucha y auto genera los .js
+npm install jison               //para instalar jison
+jison nombre_archivo            //para compilar lagramatica y generar el .js
+
+
+
+npm install typescript-collections --save   //para instalar estructuras de datos en typescript
+npm install express --save                  //para instalar express
+npm install nodemon
+npm express-handlebars
+npm install handlebars
+
+npm start //para correr el script que ejecuta index.js
+npm run dev // para corre el script que ejecuta nodemon índex.js 

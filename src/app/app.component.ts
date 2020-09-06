@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'MatrioshTS';
+
+  ejecutar(){
+    console.log("hola desde el componente");
+
+  }
 }

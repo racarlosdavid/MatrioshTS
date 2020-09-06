@@ -10,37 +10,59 @@
 <style>
 </style>
 
+<!-- Head -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+  <a class="navbar-brand" href="#">MatrioshTS IDE</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+              <a class="nav-link" href="">Home</a>
+          </li>
+       
+          <li class="nav-item">
+              <a class="nav-link" href="https://github.com/racarlosdavid">About</a>
+          </li>
+      </ul>
+  </div>
+</nav>
 <!-- Toolbar -->
 <div class="col-8 pt-2">
   <button type="button" class="m-2 btn btn-success btn-lg" id="run">Ejecutar</button>
   <button type="button" class="m-2 btn btn-success btn-lg" onclick="nuevaPestaña()">Nueva Pestaña </button>
-  <button type="button" class="m-2 btn btn-success btn-lg" onclick="correr()">Interpretar </button>
+  <button type="button" class="m-2 btn btn-success btn-lg" onclick="correr()">Interpretar </button> 
+  <!--<button type="button" class="m-2 btn btn-success btn-lg" (click)="ejecutar()">Interpretar </button> -->
 </div>
+
+
 <div class="row">
   <div class="col-7 mt-3">
     <div class="card">
-        <div class="card-header">
-            <h4>Editor </h4>
-        </div>
-        <div class="tab" id="tabslinks">
-            <!-- Aqui van los botones de las tabs pero se crean con la funcion nuevaPestaña en tabs.js -->
-        </div>
-
-        <div id="tabs">
-            <!-- Aqui van las tabs pero se crean con la funcion nuevaPestaña en tabs.js -->
-        </div>
-    </div>
-</div>
-<div class="col-4 mt-3">
-  <div class="card">
       <div class="card-header">
-          <h4>Codigo Traducido</h4>
+        <h4>Editor </h4>
+      </div>
+      <div class="tab" id="tabslinks">
+          <!-- Aqui van los botones de las tabs pero se crean con la funcion nuevaPestaña en tabs.js -->
+      </div>
+      <div id="tabs">
+        <!-- Aqui van las tabs pero se crean con la funcion nuevaPestaña en tabs.js -->
+      </div>
+    </div>
+  </div>
+  <div class="col-4 mt-3">
+    <div class="card">
+      <div class="card-header">
+        <h4>Codigo Traducido</h4>
       </div>
       <textarea class="codemirror-textarea" name="" id="code" cols="30" rows="10">
 
       </textarea>
+    </div>
   </div>
-</div>
 </div>
 
 <h1>REPORTES</h1>
@@ -133,21 +155,24 @@
 <div class="container">
   <div class="row row-30">
     <div class="col-md-4 col-xl-5">
-      <div class="pr-xl-4"><a class="brand" href="index.html"><img class="brand-logo-light" src="images/agency/logo-inverse-140x37.png" alt="" width="140" height="37" srcset="images/agency/logo-retina-inverse-280x74.png 2x"></a>
-    
+     
+      <div class="pr-xl-4">
+          <!--
+        <a class="brand" href="index.html"><img class="brand-logo-light" src="images/agency/logo-inverse-140x37.png" alt="" width="140" height="37" srcset="images/agency/logo-retina-inverse-280x74.png 2x"></a>
+          -->
         <!-- Rights-->
         <p class="rights"><span>©  </span><span class="copyright-year">2020</span><span> </span><span>FIUSAC</span><span>. </span><span>All Rights Reserved.</span></p>
       </div>
     </div>
     <div class="col-md-4">
-      <h5>Contacts</h5>
+      <h5>Contacto</h5>
       <dl class="contact-list">
         <dt>Github:</dt>
-        <dd>https://github.com/201213132</dd>
+        <dd><a href="https://github.com/racarlosdavid">https://github.com/racarlosdavid</a></dd>
       </dl>
       <dl class="contact-list">
         <dt>email:</dt>
-        <dd><a href="mailto:#">racarlosdavid@gmail.com</a></dd>
+        <dd><a href="mailto:#">201213132@ingenieria.usac.edu.gt</a></dd>
       </dl>
     </div>
   </div>

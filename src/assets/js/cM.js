@@ -1,6 +1,5 @@
 var ip = 'http://localhost:4200/';
 
-
 function setear() {
     nuevaPestaña();
     inicializarConsola();

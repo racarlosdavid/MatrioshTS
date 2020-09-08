@@ -7,8 +7,10 @@
 # Only exists if Bazel was run
 /bazel-out
 
-# Old Version
+# Mis archivos a ignorar
 /src/assets/MatrioshTSold/
+/src/assets/Analizer/
+/src/assets/MatrioshTS/node_modules/
 
 # dependencies
 /node_modules

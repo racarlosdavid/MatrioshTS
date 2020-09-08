@@ -114,10 +114,19 @@ export class Relacional extends Expresion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        let nodoOp:string = "nodo" + ++cont;
+        builder.append(nodoOp+" [label=\""+this.getOperacionSimbolo(this.tipoOperacion)+"\"];\n");
+        builder.append(parent+" -> "+nodoOp+"[color=\"red:black;0.50:red\"];\n");
+        
+        cont = this.operadorIzq.getDot(builder, nodoOp, cont);
+
+        cont = this.operadorDer.getDot(builder, nodoOp, cont);
+        
+        return cont;
     }
+
     traducir(builder: StringBuilder) {
-        throw new Error("Method not implemented.");
+        return this.operadorIzq?.traducir(builder)+" "+this.getOperacionSimbolo(this.tipoOperacion)+" "+this.operadorDer?.traducir(builder);
     }
 
     getOperacionSimbolo(t:TipoOperacionRelacional):string{

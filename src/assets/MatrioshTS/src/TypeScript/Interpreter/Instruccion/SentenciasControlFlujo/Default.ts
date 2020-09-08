@@ -30,11 +30,26 @@ export class Default extends Instruccion{
         
         return null;
     }
+
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        let nodo:string = "nodo" + ++cont;
+        builder.append(nodo+" [label=\"Default\"];\n");
+        builder.append(parent+" -> "+nodo+";\n");
+
+        for (let instr of this.instrucciones) {
+            cont = instr.getDot(builder, nodo, cont);
+        }
+        
+        return cont;
     }
+
     traducir(builder: StringBuilder) {
-        throw new Error("Method not implemented.");
+        let trad = new StringBuilder();
+        for (let instr of this.instrucciones) {
+            trad.append(instr.traducir(builder));
+        }
+        
+        return trad.toString();
     }
     
     

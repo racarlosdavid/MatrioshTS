@@ -14,11 +14,14 @@ export class Continue extends Instruccion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        let nodo:string = "nodo" + ++cont;
+        builder.append(nodo+" [label=\"Continue\"];\n");
+        builder.append(parent+" -> "+nodo+";\n");
+        return cont;
     }
 
     traducir(builder: StringBuilder) {
-        throw new Error("Method not implemented.");
+        return "continue;"
     }
  
 

@@ -145,7 +145,26 @@ export class Aritmetica extends Expresion{
 
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        if (this.unario) {
+            let nodoOp:string = "nodo" + ++cont;
+            builder.append(nodoOp+" [label=\""+this.getOperacionSimbolo(this.tipoOperacion)+"\"];\n");
+            builder.append(parent+" -> "+nodoOp+";\n");
+            
+            if (this.operadorU!=null) {
+                cont = this.operadorU?.getDot(builder, nodoOp, cont);
+            }
+            
+        } else {
+            let nodoOp:string = "nodo" + ++cont;
+            builder.append(nodoOp+" [label=\""+this.getOperacionSimbolo(this.tipoOperacion)+"\"];\n");
+            builder.append(parent+" -> "+nodoOp+";\n");
+
+            if (this.operadorIzq!=null && this.operadorDer!=null) {
+                cont = this.operadorIzq?.getDot(builder, nodoOp, cont);
+                cont = this.operadorDer?.getDot(builder, nodoOp, cont);
+            }
+        }
+        return cont;
     }
 
     traducir(builder: StringBuilder) {

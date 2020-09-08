@@ -6,8 +6,6 @@ import { Expresion } from "../../Abstract/Expresion";
 import { Case } from "./Case";
 import { Default } from "./Default";
 import { Break } from "../SentenciasTransferencia/Break";
-import { Continue } from "../SentenciasTransferencia/Continue";
-import { NodoError, TipoError } from "../../Reportes/NodoError";
 
 
 export class Switch extends Instruccion{
@@ -69,11 +67,49 @@ export class Switch extends Instruccion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        let nodo:string = "nodo" + ++cont;
+        builder.append(nodo+" [label=\"Switch\"];\n");
+        builder.append(parent+" -> "+nodo+";\n");
+        
+        let nodoCondicion:string = "nodo" + ++cont;
+        builder.append(nodoCondicion+" [label=\"Condicion\"];\n");
+        builder.append(nodo+" -> "+nodoCondicion+";\n");
+        
+        cont = this.condicion.getDot(builder, nodoCondicion, cont);
+        
+        let nodoInstrucciones = "nodo" + ++cont;
+        builder.append(nodoInstrucciones+" [label=\"Case\"];\n");
+        builder.append(nodo+" -> "+nodoInstrucciones+";\n");
+
+        for (let instr of this._case) {
+            cont = instr.getDot(builder, nodoInstrucciones, cont);
+        }
+        
+        if (this._default!=null) {
+            cont = this._default.getDot(builder, nodo, cont);
+        }
+        
+        return cont;
     }
 
-    traducir(builder: StringBuilder) {
-        throw new Error("Method not implemented.");
+    traducir(builder: StringBuilder) { console.log("traduccion de switch");
+
+        let trad = new StringBuilder();
+
+        trad.append("switch ("+this.condicion.traducir(builder)+") {");
+
+        for (let instr of this._case) {
+            trad.append(instr.traducir(builder));
+        }
+        
+        if (this._default!=null) {
+            trad.append(this._default.traducir(builder));
+        }
+
+        trad.append("}"); 
+
+        return trad.toString();
+
     }
     
 

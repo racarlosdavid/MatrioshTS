@@ -63,6 +63,14 @@ estos :
 "target": "ES6",                          
 "module": "ESNext",
 
+//PARA HACER UN DEPLOY A GITHUB PAGES
+1. hubicarse en la carpeta /src/assets/MatrioshTS/ y abrir una terminal en esa carpeta
+2. ejecutar el comando tsc para generar todos los .js
+3. una vez que tenemos todos los .js hay que eliminar los export e imports de todos los archivos .js
+4. en el archivo index.html hay que agregar todos los js del proyecto.
+5. ejecutamos el comando npm run desplegar para hacer el desplieque pero antes hacemos lo que dice abajo:
+
 al ejecutar el comando npm run desplegar, hay que quitar los modulos de node de la ruta /src/assets/MatrioshTS/node_modules ya
 que dan problemas al hacer el despliegue una vez que se hizo el commit se puede volver a agregar la carpeta de modules para seguier
 trabajando en modo desarrollador solamente se quitan cuando se va a hacer el despliegue.
+

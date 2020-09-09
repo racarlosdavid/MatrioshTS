@@ -103,7 +103,7 @@
             ],
             "exclude": [
               "**/node_modules/**",
-              "**/assets/MatrioshTS/node_modules/**"
+              "src/assets/MatrioshTS/node_modules"
             ]
           }
         },

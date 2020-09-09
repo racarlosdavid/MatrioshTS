@@ -12,6 +12,18 @@
 /src/assets/Analizer/
 /src/assets/MatrioshTS/node_modules/
 
+src/assets/MatrioshTS/src/Gramatica/Traductor.js
+
+	src/assets/MatrioshTS/src/TypeScript/Interpreter/Edd/
+	src/assets/MatrioshTS/src/TypeScript/Interpreter/Expresion/Acceso.ts
+	src/assets/MatrioshTS/src/TypeScript/Interpreter/FuncionesNativas/
+	src/assets/MatrioshTS/src/TypeScript/Interpreter/Instruccion/Declaracion.ts
+	src/assets/MatrioshTS/src/TypeScript/Interpreter/Instruccion/Funcion.ts
+	src/assets/MatrioshTS/src/TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/For.ts
+	src/assets/MatrioshTS/src/TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/If_Old.ts
+	src/assets/MatrioshTS/src/TypeScript/Interpreter/Vault/
+
+
 # dependencies
 /node_modules
 

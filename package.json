@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "desplegar": "ng build --prod --output-path docs --base-href https://racarlosdavid.github.io/MatrioshTS/ && cp docs/index.html docs/404.html && git add . && git commit -m \"Deploy\" && git push origin "
+    "desplegar": "ng build --prod --output-path docs --base-href https://racarlosdavid.github.io/MatrioshTS/ && cp docs/index.html docs/404.html && git add . && git commit -m \"Deploy prueba de graphiz en linea\" && git push origin "
   },
   "private": true,
   "dependencies": {
@@ -20,6 +20,7 @@
     "@angular/platform-browser": "~10.0.11",
     "@angular/platform-browser-dynamic": "~10.0.11",
     "@angular/router": "~10.0.11",
+    "d3-graphviz": "^3.1.0",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"
@@ -43,5 +44,6 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.9.5"
-  }
+  },
+  "browser": { "fs": false, "path": false, "os": false}
 }

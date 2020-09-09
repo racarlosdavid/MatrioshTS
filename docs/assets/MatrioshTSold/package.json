@@ -1,0 +1,22 @@
+{
+  "name": "matrioshts",
+  "version": "1.0.0",
+  "description": "codigo del interprete y el traductor",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "dev": "nodemon"
+  },
+  "author": "carlos david",
+  "license": "ISC",
+  "dependencies": {
+    "jison": "^0.4.18",
+    "typescript": "^4.0.2",
+    "typescript-collections": "^1.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "ts-node-dev": "^1.0.0-pre.61"
+  }
+}

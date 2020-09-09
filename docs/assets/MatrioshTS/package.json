@@ -1,0 +1,21 @@
+{
+  "name": "atriosts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc",
+    "dev": "nodemon",
+    "build": "node ./build/",
+    "magia": "jison ./src/Gramatica/InterpreteGrammar.jison && mv InterpreteGrammar.js ./src/Gramatica/  && nodemon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "ts-node-dev": "^1.0.0-pre.61",
+    "typescript": "^4.0.2"
+  }
+}

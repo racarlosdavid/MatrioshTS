@@ -32,9 +32,10 @@
 </nav>
 <!-- Toolbar -->
 <div class="col-8 pt-2">
-  <button type="button" class="m-2 btn btn-success btn-lg" id="run">Ejecutar</button>
+  <!--<button type="button" class="m-2 btn btn-success btn-lg" id="run">Ejecutar</button> -->
+  <button type="button" class="m-2 btn btn-success btn-lg" onclick="interpretar()">Interpretar </button> 
+  <button type="button" class="m-2 btn btn-success btn-lg" onclick="traducir()">Traducir </button> 
   <button type="button" class="m-2 btn btn-success btn-lg" onclick="nuevaPestaña()">Nueva Pestaña </button>
-  <button type="button" class="m-2 btn btn-success btn-lg" onclick="correr()">Interpretar </button> 
   <!--<button type="button" class="m-2 btn btn-success btn-lg" (click)="ejecutar()">Interpretar </button> -->
 </div>
 
@@ -72,8 +73,7 @@
   <button class="tablinksR" id="buttonConsola" onclick="mostarPestaniaR(event, 'Consola')">Consola</button>
   <button class="tablinksR" onclick="mostarPestaniaR(event, 'Tabla de Simbolos')">Tabla de Simbolos</button>
   <button class="tablinksR" onclick="mostarPestaniaR(event, 'Errores')">Errores</button>
-  <button class="tablinksR" onclick="mostarPestaniaR(event, 'Stack')">Stack</button>
-  <button class="tablinksR" onclick="mostarPestaniaR(event, 'Heap')">Heap</button>
+  <button class="tablinksR" onclick="mostarPestaniaR(event, 'AST')">AST</button>
 </div>
 
 <div id="Consola" class="tabcontentR">
@@ -114,34 +114,13 @@
         </table>
 </div>
 
-<div id="Stack" class="tabcontentR">
-    <table class="table table-striped mt-3">
-    <thead>
-       <tr>
-          <th scope="col">Posicion</th>
-           <th scope="col">Contenido</th>
-           <th scope="col">Ambito</th>
-        </tr>
-    </thead>
-          <tbody id="contenido_tablaStack">
-                              
-             </tbody>
-        </table>
+<div id="AST" class="tabcontentR">
+ 
+  <div id="graph" style="text-align: center;"></div>
+    
 </div>
 
-<div id="Heap" class="tabcontentR">
-    <table class="table table-striped mt-3">
-    <thead>
-       <tr>
-          <th scope="col">Posicion</th>
-           <th scope="col">Contenido</th>
-        </tr>
-    </thead>
-          <tbody id="contenido_tablaHeap">
-                              
-             </tbody>
-        </table>
-</div>
+
 </div>
 
 <footer>

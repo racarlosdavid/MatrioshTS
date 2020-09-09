@@ -8,8 +8,8 @@
 /bazel-out
 
 # Mis archivos a ignorar
-/src/assets/MatrioshTSold/
-/src/assets/Analizer/
+/src/assets/MatrioshTSold
+/src/assets/Analizer
 /src/assets/MatrioshTS/node_modules
 
 # dependencies

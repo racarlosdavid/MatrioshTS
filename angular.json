@@ -35,21 +35,6 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ], 
-              "assets": [
-                {
-                  "glob": "**/*",
-                  "input": "src/assets/",
-                  "ignore": [
-                    "**/MatrioshTS/node_modules"
-                  ],
-                  "output": "/assets/"
-                },
-                {
-                  "glob": "favicon.ico",
-                  "input": "src/",
-                  "output": "/"
-                }
               ],
               "optimization": true,
               "outputHashing": "all",

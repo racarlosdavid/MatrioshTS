@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "MatrioshTS": {
+    "matrioshts": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -103,7 +103,7 @@
             ],
             "exclude": [
               "**/node_modules/**",
-              "/src/assets/MatrioshTS/node_modules"
+              "**/src/assets/MatrioshTS/node_modules/**"
             ]
           }
         },

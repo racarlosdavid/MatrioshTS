@@ -50,3 +50,19 @@ npm install handlebars
 
 npm start //para correr el script que ejecuta index.js
 npm run dev // para corre el script que ejecuta nodemon índex.js 
+
+
+//NOTAS IMPORTANTES
+cuando este en modo desarrollador en el archivo tsconfig.json hubicado en la ruta /src/assets/MatrioshTS 
+tiene que esta descomentado:
+"target": "es5",                          
+"module": "commonjs",        
+
+cuando vaya a convertir los archivos ts a js para hacer el despliegue hay que cambiar comentar los anteriores y descomentar 
+estos : 
+"target": "ES6",                          
+"module": "ESNext",
+
+al ejecutar el comando npm run desplegar, hay que quitar los modulos de node de la ruta /src/assets/MatrioshTS/node_modules ya
+que dan problemas al hacer el despliegue una vez que se hizo el commit se puede volver a agregar la carpeta de modules para seguier
+trabajando en modo desarrollador solamente se quitan cuando se va a hacer el despliegue.

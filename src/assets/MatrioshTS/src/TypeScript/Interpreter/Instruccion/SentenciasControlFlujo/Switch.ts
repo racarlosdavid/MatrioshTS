@@ -96,7 +96,7 @@ export class Switch extends Instruccion{
 
         let trad = new StringBuilder();
 
-        trad.append("switch ("+this.condicion.traducir(builder)+") {");
+        trad.append("switch ("+this.condicion.traducir(builder)+") {\n");
 
         for (let instr of this._case) {
             trad.append(instr.traducir(builder));
@@ -106,7 +106,7 @@ export class Switch extends Instruccion{
             trad.append(this._default.traducir(builder));
         }
 
-        trad.append("}"); 
+        trad.append("}\n"); 
 
         return trad.toString();
 

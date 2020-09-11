@@ -21,7 +21,7 @@ export class Continue extends Instruccion{
     }
 
     traducir(builder: StringBuilder) {
-        return "continue;"
+        return "continue;\n"
     }
  
 

@@ -59,7 +59,7 @@ export class Case extends Instruccion{
     
     traducir(builder: StringBuilder) {
         let trad = new StringBuilder();
-        trad.append("case "+this.condicion.traducir(builder)+" : ");
+        trad.append("case "+this.condicion.traducir(builder)+" : \n");
         
         for (let instr of this.instrucciones) {
             trad.append(instr.traducir(builder));

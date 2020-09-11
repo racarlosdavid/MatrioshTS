@@ -26,7 +26,7 @@ export class Log extends Instruccion{
     }
 
     traducir(builder: StringBuilder) {
-        return "console.log("+this.valor.traducir(builder)+");";
+        return "console.log("+this.valor.traducir(builder)+");\n";
     }
    
 

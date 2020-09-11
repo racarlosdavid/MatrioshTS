@@ -55,6 +55,6 @@ export class If extends Instruccion {
     }
     
     traducir(builder: StringBuilder) {
-        return "if ("+this.condicion.traducir(builder)+") {"+this.instrucciones.traducir+"}";
+        return "if ("+this.condicion.traducir(builder)+") {"+this.instrucciones.traducir+"}\n";
     } 
 }

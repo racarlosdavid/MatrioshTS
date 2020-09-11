@@ -17,7 +17,7 @@ export class Break extends Instruccion{
     }
 
     traducir(builder: StringBuilder) {
-        return "break;"
+        return "break;\n"
     }
     
 

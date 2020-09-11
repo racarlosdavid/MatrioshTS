@@ -18,7 +18,13 @@ export class Return extends Instruccion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        let nodo:string = "nodo" + ++cont;
+        builder.append(nodo+" [label=\"Return\"];\n");
+        builder.append(parent+" -> "+nodo+";\n");
+        
+        cont = this.valor.getDot(builder, nodo, cont);
+        
+        return cont;
     }
     
     traducir(builder: StringBuilder) {

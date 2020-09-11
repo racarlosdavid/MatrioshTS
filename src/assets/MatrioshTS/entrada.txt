@@ -171,3 +171,5 @@ switch (4) {
         console.log("No such day exists!");
         break;
 }
+
+console.log(4 > 8 ? "hola" : "mundo");

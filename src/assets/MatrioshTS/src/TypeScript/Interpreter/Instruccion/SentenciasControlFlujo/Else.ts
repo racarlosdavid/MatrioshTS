@@ -23,7 +23,7 @@ export class Else extends Instruccion{
     }
 
     traducir(builder: StringBuilder) {
-        return "{\n"+this.instrucciones.traducir(builder)+"}";
+        return "{\n"+this.instrucciones.traducir(builder)+"}\n";
     }
    
     

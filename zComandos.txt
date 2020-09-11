@@ -31,26 +31,18 @@ ng serve                        //Inicial el servidor local para realizar las pr
 -------------------------------------------------------------------------------
 comandos para el codigo del interprete y traductor usando nodejs
 
+//Ejecutarlos en la ruta del codigo del interprete osea /src/assets/MatrioshTS
+npm init 			                    //para iniciar el proyecto
+npm i typescript 	                    //para instalar typescript
+npm i typescript-collections            //para instalar
+tsc --init                              //para crear tsconfig.json y auto generar los .js
+tsc                                     //poner typescript en escucha y auto genera los .js
+npm install jison                       //para instalar jison
+jison nombre_archivo                    //para compilar lagramatica y generar el .js
+npm install ts-node-dev nodemon -D      //Para instalar nodemon 
 
-npm init 			            //para iniciar el proyecto
-npm i typescript 	            //para instalar typescript
-npm i typescript-collections    //para instalar
-tsc --init                      //para crear tsconfig.json y auto generar los .js
-tsc                             //poner typescript en escucha y auto genera los .js
-npm install jison               //para instalar jison
-jison nombre_archivo            //para compilar lagramatica y generar el .js
-
-
-
-npm install typescript-collections --save   //para instalar estructuras de datos en typescript
-npm install express --save                  //para instalar express
-npm install nodemon
-npm express-handlebars
-npm install handlebars
-
-npm start //para correr el script que ejecuta index.js
-npm run dev // para corre el script que ejecuta nodemon índex.js 
-
+correr en el la ruta principal del proyecto ose /MatrioshTS
+npm install d3-graphviz         //para instalar liberia d3 y utilizar graphviz en el browser 
 
 //NOTAS IMPORTANTES
 cuando este en modo desarrollador en el archivo tsconfig.json hubicado en la ruta /src/assets/MatrioshTS 

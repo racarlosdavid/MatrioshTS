@@ -145,6 +145,7 @@
 	const {Relacional,TipoOperacionRelacional} = require('../TypeScript/Interpreter/Expresion/Relacional');
 	const {Logica,TipoOperacionLogica} = require('../TypeScript/Interpreter/Expresion/Logica');
 	const {Literal,TipoString} = require('../TypeScript/Interpreter/Expresion/Literal');
+	const {Ternario} = require('../TypeScript/Interpreter/Expresion/Ternario');
 
 	const {Funcion} = require('../TypeScript/Interpreter/Instruccion/Funcion');
 
@@ -196,6 +197,7 @@ const {Declaracion,TipoDeclaracion} = require('../TypeScript/Interpreter/Instruc
 
 /* Asociación de operadores y precedencia */
 //----> precedencia de menor a mayor 
+%left pregunta
 
 //Operaciones logicas
 %left or
@@ -398,12 +400,13 @@ E : ARITMETICA      	{ $$ = $1; }
 	| RELACIONAL		{ $$ = $1; } 
     | LOGICA			{ $$ = $1; } 
 	| parizq E parder	{ $$ = $2; }
+	| E pregunta E dospuntos E { $$ = new Ternario($1,$3,$5,@1.first_line,@1.first_column); }  
 	| corizq L_E corder { $$ = new ArrayTS($1,@1.first_line,@1.first_column);}
 	| corizq corder 	{ $$ = new ArrayTS([],@1.first_line,@1.first_column);}
 	| identificador 	{ $$ = new Acceso($1,TipoAcceso.ID,[],@1.first_line,@1.first_column); }
 	| entero        	{ $$ = new Literal(Number(yytext),Type.NUMBER,TipoString.INDEF,@1.first_line,@1.first_column); } 
 	| decimal	    	{ $$ = new Literal(Number(yytext),Type.NUMBER,TipoString.INDEF,@1.first_line,@1.first_column); }
-	| string	    	{ $$ = new Literal(String(yytext),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column); }
+	| string1	    	{ $$ = new Literal(String(yytext),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column); }
 	| string2        	{ $$ = new Literal(String(yytext),Type.STRING,TipoString.STRING2,@1.first_line,@1.first_column); } 
 	| string3	    	{ $$ = new Literal(String(yytext),Type.STRING,TipoString.STRING3,@1.first_line,@1.first_column); }
 	| pr_true        	{ $$ = new Literal(Boolean(true),Type.BOOLEAN,TipoString.INDEF,@1.first_line,@1.first_column); } 

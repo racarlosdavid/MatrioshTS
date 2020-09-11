@@ -45,6 +45,9 @@ export class Default extends Instruccion{
 
     traducir(builder: StringBuilder) {
         let trad = new StringBuilder();
+
+        trad.append("default : \n");
+        
         for (let instr of this.instrucciones) {
             trad.append(instr.traducir(builder));
         }

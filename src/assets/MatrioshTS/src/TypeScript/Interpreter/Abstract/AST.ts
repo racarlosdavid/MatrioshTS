@@ -28,6 +28,7 @@ export class AST {
     }
     
     public ejecutar(ent:Entorno, er:ErrorManager):any { console.log("Ok. Vamos a interpretar la cadena de entrada");
+       
         for(const instr of this.instrucciones){
             try {
                 instr.ejecutar(ent,er);

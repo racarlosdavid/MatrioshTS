@@ -33,8 +33,8 @@
 <!-- Toolbar -->
 <div class="col-8 pt-2">
   <!--<button type="button" class="m-2 btn btn-success btn-lg" id="run">Ejecutar</button> -->
-  <button type="button" class="m-2 btn btn-success btn-lg" onclick="interpretar()">Interpretar </button> 
-  <button type="button" class="m-2 btn btn-success btn-lg" onclick="traducir()">Traducir </button> 
+  <button type="button" class="m-2 btn btn-success btn-lg" id="interpretar">Interpretar </button> 
+  <button type="button" class="m-2 btn btn-success btn-lg" id="traducir">Traducir </button> 
   <button type="button" class="m-2 btn btn-success btn-lg" onclick="nuevaPestaña()">Nueva Pestaña </button>
   <!--<button type="button" class="m-2 btn btn-success btn-lg" (click)="ejecutar()">Interpretar </button> -->
 </div>
@@ -59,7 +59,7 @@
       <div class="card-header">
         <h4>Codigo Traducido</h4>
       </div>
-      <textarea class="codemirror-textarea" name="" id="code" cols="30" rows="10">
+      <textarea class="codemirror-textarea" name="" id="code_traducido" cols="30" rows="10">
 
       </textarea>
     </div>

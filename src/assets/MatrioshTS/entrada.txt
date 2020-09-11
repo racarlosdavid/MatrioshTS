@@ -165,7 +165,8 @@ switch (4) {
         console.log("Result: 5");
         
     case 10:
-        console.log("Result: 10");
+        console.log("Res@lt: 10");
+        console.log("Result: 5");
         
     default:
         console.log("No such day exists!");

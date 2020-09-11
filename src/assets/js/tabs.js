@@ -1,7 +1,6 @@
 var counter = 1;
 var tabActual;
 var textMap = new Map();
-var consola;
 
 function mostarPestaniaR(evt, tabId) {
   // Declare all variables
@@ -83,29 +82,3 @@ function nuevaPestaña() {
   document.getElementById("button" + tabName).click();
 }
 
-function inicializarConsola() {
-  var tempo = CodeMirror.fromTextArea(document.getElementById("consola"),{
-    lineNumbers : true,
-    mode: "modo",
-    theme : "base16-dark",
-  });
-  tempo.setSize(null,250);
-  tempo.setValue("\n\n\n\n\n\n\n\n\n\n");
-  //Guardo la referencia del nuevo textmirror para la pestaña que contiene la consola
-  consola = tempo;
-  document.getElementById("buttonConsola").click();
-}
-
-function interpretar() {
-  console.log("Interpetando la entrada...")
-  //Obtengo el textarea del tab actual 
-  let tempo = textMap.get("text" + tabActual); 
-  //Imprimo el texto que esta en el textarea de codemirror
-  console.log(tempo.getValue());
-  /*
-  textMap.forEach( (value, key, map) => {
-    console.log(`${key}: ${value}`); 
-  });
-  */
-  //correr();
-}

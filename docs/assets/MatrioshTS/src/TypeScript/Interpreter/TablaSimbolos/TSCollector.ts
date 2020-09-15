@@ -18,7 +18,6 @@ export class TSCollector {
 
     public GetValue(id:string):Entorno|null{
         id = id.toLowerCase();
-        let temp:Entorno|null  = null;
         if (this.ts.has(id)){
             let s:Entorno = this.ts.get(id);
             return s;

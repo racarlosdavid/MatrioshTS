@@ -3,6 +3,7 @@ import { Entorno } from "../TablaSimbolos/Entorno";
 import { StringBuilder } from "../Edd/StringBuilder";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { Type } from "../TablaSimbolos/Tipo";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
 
 export abstract class Instruccion{
 
@@ -14,30 +15,30 @@ export abstract class Instruccion{
         this.columna = columna;
     }
 
-    abstract ejecutar(ent:Entorno, er:ErrorManager):any;
+    abstract ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector):any;
 
     abstract getDot(builder:StringBuilder, parent:string, cont:number):number;
 
-    abstract traducir(builder:StringBuilder):any;
+    abstract traducir(builder:StringBuilder, parent:string):any;
 
-    getTipoToString(tipo:Type):string{
+    getTipoToString(tipo:Type|string|null):string{
         switch (tipo) {
             case Type.NUMBER:
-                return "NUMBER";
+                return "number";
             case Type.STRING:
-                return "STRING";
+                return "string";
             case Type.BOOLEAN:
-                return "BOOLEAN";
+                return "boolean";
             case Type.NULL:
-                return "NULL";
+                return "null";
             case Type.ARRAY:
-                return "ARRAY";
+                return "array";
             case Type.VOID:
-                return "VOID";
+                return "void";
             case Type.TYPE:
-                return "TYPE";
+                return "type";
             default:
-                return "INDEF";
+                return tipo+"";
         }
     }
 }

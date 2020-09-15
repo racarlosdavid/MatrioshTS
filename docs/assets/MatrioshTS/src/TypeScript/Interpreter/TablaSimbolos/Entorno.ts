@@ -2,7 +2,9 @@
 import { Tipo,Type } from "./Tipo";
 import { Simbolo } from "./Simbolo";
 import { TipoDeclaracion } from "../Instruccion/Declaracion";
-
+import { Funcion } from "../Instruccion/Funcion";
+import { NTS } from "../Reportes/NTS";
+import { ArrayTS } from "../Edd/ArrayTS";
 
 export class Entorno {
     
@@ -14,15 +16,15 @@ export class Entorno {
         this.anterior = anterior;
     }
     
-    public Add(id:string, value:any, tipo:Type, inicializado : boolean, tipodeclaracion : TipoDeclaracion):void{
+    public Add(id:string, value:any, tipo:Type|string, dimensiones : number, tipodeclaracion : TipoDeclaracion):void{
         id = id.toLowerCase();
         if (!this.ts.has(id)){
-            this.ts.set(id, new Simbolo(id,value,tipo,inicializado,tipodeclaracion));
+            this.ts.set(id, new Simbolo(id,value,tipo,dimensiones,tipodeclaracion));
         }else{
             //("Ya existe el id: " + id);
         }
     }
-/*
+
     public  AddFunction(id:string, funcion:Funcion):void{
         id = "$" + id.toLowerCase();
         if (!this.ts.has(id)){
@@ -44,7 +46,7 @@ export class Entorno {
         //("No existe la funcion: " + id);
         return null;
     }
- */       
+     
     public ChangeValue(id:any, value:any):void{
         let temp:Entorno | null = this;
         id = id.toLowerCase();
@@ -107,16 +109,42 @@ export class Entorno {
     public setAnterior(anterior:Entorno):void {
         this.anterior = anterior;
     }
-    
-    public getTipo(valor:any):string {
-        if (valor instanceof Number ) {
-            return "numeric";
-        } else if (valor instanceof String) {
-            return "String";
-        } else if (valor instanceof Boolean) {
-            return "boolean";
+
+
+    getReporte(ambito:string, padre:string):Array<NTS>{
+        let tabla:Array<NTS>  = []; 
+        if (this.ts.size != 0){
+            this.ts.forEach(function(valor, clave) {
+                //console.log(clave + " = " + valor);
+                let nombre = clave+"";
+                let tipo = "null";
+                let sim = valor;
+                if (sim instanceof Funcion) {
+                    let f:Funcion = sim;
+                    tipo = "Funcion";
+                    
+                }else if(sim instanceof Simbolo){
+                    let simbol:Simbolo = sim;
+                    let val = simbol.valor;
+                 
+                    //if (val instanceof ArrayTS) {
+                        //Arreglo ar = (Arreglo)val;
+                        //tipo = "Arreglo: "+ar.getTipo();
+                    //}else{
+                        tipo = sim.getTipoToString();
+                    //}
+                
+                }
+                
+                let descripcion = valor.valor.toString();
+                //console.log(nombre, tipo, ambito, padre, descripcion)
+                tabla.push(new NTS(nombre, tipo, ambito, padre, descripcion));
+             
+            });
+        } else {
+            console.log("No hay nada para reportar la tabla de simbolos esta vacia");   
         }
-        return "null";
+        return tabla;
     }
     
 }

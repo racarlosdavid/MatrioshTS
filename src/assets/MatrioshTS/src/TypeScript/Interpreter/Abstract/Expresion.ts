@@ -3,7 +3,7 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { Type } from "../TablaSimbolos/Tipo";
 import { tipos } from "../Vault/MatrizTipos";
 import { ErrorManager } from "../Reportes/ErrorManager";
-import { Console } from "console";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
 
 export abstract class Expresion{
 
@@ -22,24 +22,24 @@ export abstract class Expresion{
         return type;
     }
 
-    getTipoToString(tipo:Type):string{
+    getTipoToString(tipo:Type|string):string{
         switch (tipo) {
             case Type.NUMBER:
-                return "NUMBER";
+                return "number";
             case Type.STRING:
-                return "STRING";
+                return "string";
             case Type.BOOLEAN:
-                return "BOOLEAN";
+                return "boolean";
             case Type.NULL:
-                return "NULL";
+                return "null";
             case Type.ARRAY:
-                return "ARRAY";
+                return "array";
             case Type.VOID:
-                return "VOID";
+                return "void";
             case Type.TYPE:
-                return "TYPE";
+                return "type";
             default:
-                return "INDEF";
+                return tipo+"";
         }
     }
 

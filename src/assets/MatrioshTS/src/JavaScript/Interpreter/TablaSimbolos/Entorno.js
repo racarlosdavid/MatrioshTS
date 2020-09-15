@@ -1,41 +1,38 @@
-
 class Entorno {
     constructor(anterior) {
         this.ts = new Map();
         this.anterior = anterior;
     }
-    Add(id, value, tipo, inicializado, tipodeclaracion) {
+    Add(id, value, tipo, dimensiones, tipodeclaracion) {
         id = id.toLowerCase();
         if (!this.ts.has(id)) {
-            this.ts.set(id, new Simbolo(id, value, tipo, inicializado, tipodeclaracion));
+            this.ts.set(id, new Simbolo(id, value, tipo, dimensiones, tipodeclaracion));
         }
         else {
             //("Ya existe el id: " + id);
         }
     }
-    /*
-        public  AddFunction(id:string, funcion:Funcion):void{
-            id = "$" + id.toLowerCase();
-            if (!this.ts.has(id)){
-                this.ts.set(id, funcion);
-            }else{
-                //("Ya existe la funcion: " + id);
-            }
+    AddFunction(id, funcion) {
+        id = "$" + id.toLowerCase();
+        if (!this.ts.has(id)) {
+            this.ts.set(id, funcion);
         }
-    
-        public GetFuncion(id:string):Funcion|null{
-            let temp:Entorno|null = this;
-            id = "$" + id.toLowerCase();
-            while (temp != null){
-                if (temp.ts.has(id)){
-                    return temp.ts.get(id);
-                }
-                temp = temp.anterior;
-            }
-            //("No existe la funcion: " + id);
-            return null;
+        else {
+            //("Ya existe la funcion: " + id);
         }
-     */
+    }
+    GetFuncion(id) {
+        let temp = this;
+        id = "$" + id.toLowerCase();
+        while (temp != null) {
+            if (temp.ts.has(id)) {
+                return temp.ts.get(id);
+            }
+            temp = temp.anterior;
+        }
+        //("No existe la funcion: " + id);
+        return null;
+    }
     ChangeValue(id, value) {
         let temp = this;
         id = id.toLowerCase();
@@ -91,16 +88,36 @@ class Entorno {
     setAnterior(anterior) {
         this.anterior = anterior;
     }
-    getTipo(valor) {
-        if (valor instanceof Number) {
-            return "numeric";
+    getReporte(ambito, padre) {
+        let tabla = [];
+        if (this.ts.size != 0) {
+            this.ts.forEach(function (valor, clave) {
+                //console.log(clave + " = " + valor);
+                let nombre = clave + "";
+                let tipo = "null";
+                let sim = valor;
+                if (sim instanceof Funcion) {
+                    let f = sim;
+                    tipo = "Funcion";
+                }
+                else if (sim instanceof Simbolo) {
+                    let simbol = sim;
+                    let val = simbol.valor;
+                    //if (val instanceof ArrayTS) {
+                    //Arreglo ar = (Arreglo)val;
+                    //tipo = "Arreglo: "+ar.getTipo();
+                    //}else{
+                    tipo = sim.getTipoToString();
+                    //}
+                }
+                let descripcion = valor.valor.toString();
+                //console.log(nombre, tipo, ambito, padre, descripcion)
+                tabla.push(new NTS(nombre, tipo, ambito, padre, descripcion));
+            });
         }
-        else if (valor instanceof String) {
-            return "String";
+        else {
+            console.log("No hay nada para reportar la tabla de simbolos esta vacia");
         }
-        else if (valor instanceof Boolean) {
-            return "boolean";
-        }
-        return "null";
+        return tabla;
     }
 }

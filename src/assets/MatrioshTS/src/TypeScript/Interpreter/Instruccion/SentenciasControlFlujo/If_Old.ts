@@ -6,6 +6,7 @@ import { Expresion } from "../../Abstract/Expresion";
 import { NodoError, TipoError } from "../../Reportes/NodoError";
 import { Retorno } from "../../Abstract/Retorno";
 import { Type } from "../../TablaSimbolos/Tipo";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 export class If extends Instruccion { 
     
@@ -23,7 +24,7 @@ export class If extends Instruccion {
         this.tipo = tipo;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) { 
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) { 
         let rcondicion:any = this.condicion.ejecutar(ent,er);
         if(rcondicion instanceof Retorno){
             if (rcondicion.tipo != Type.BOOLEAN) {
@@ -31,9 +32,9 @@ export class If extends Instruccion {
                 return null;
             }
             if (rcondicion.valor == true) {
-                return this.instrucciones.ejecutar(ent,er);
+                return this.instrucciones.ejecutar(ent,er,consola,tsCollector);
             }else{
-                return this.ins_else?.ejecutar(ent,er);
+                return this.ins_else?.ejecutar(ent,er,consola,tsCollector);
             }
         }else{
             er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if "+rcondicion+" no es boolean", this.fila, this.columna));
@@ -107,7 +108,7 @@ export class If extends Instruccion {
         return cont;
     }
 
-    traducir(builder: StringBuilder) {
+    traducir(builder: StringBuilder, parent: string) {
         let trad:string;
 
         trad = "\n"

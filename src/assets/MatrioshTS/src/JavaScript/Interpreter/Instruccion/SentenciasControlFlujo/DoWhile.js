@@ -1,18 +1,13 @@
-import { Instruccion } from "../../Abstract/Instruccion";
-import { Break } from "../SentenciasTransferencia/Break";
-import { Continue } from "../SentenciasTransferencia/Continue";
-import { Type } from "../../TablaSimbolos/Tipo";
-import { TipoError, NodoError } from "../../Reportes/NodoError";
-export class DoWhile extends Instruccion {
+class DoWhile extends Instruccion {
     constructor(instrucciones, condicion, fila, columna) {
         super(fila, columna);
         this.instrucciones = instrucciones;
         this.condicion = condicion;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         let rcondicion;
         do {
-            let r = this.instrucciones.ejecutar(ent, er);
+            let r = this.instrucciones.ejecutar(ent, er, consola, tsCollector);
             if (r != null || r != undefined) {
                 if (r instanceof Break) {
                     break;
@@ -30,9 +25,9 @@ export class DoWhile extends Instruccion {
         return null;
     }
     getDot(builder, parent, cont) {
-        throw new Error("Method not implemented.");
+        throw new Error("Method not implemented. DO WHILE");
     }
-    traducir(builder) {
-        throw new Error("Method not implemented.");
+    traducir(builder, parent) {
+        throw new Error("Method not implemented. DO WHILE");
     }
 }

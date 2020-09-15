@@ -132,7 +132,7 @@ export class Relacional extends Expresion{
     getOperacionSimbolo(t:TipoOperacionRelacional):string{
         switch (t) {
             case TipoOperacionRelacional.DIFERENTE:
-                return "<>";
+                return "!=";
             case TipoOperacionRelacional.IGUALQUE:
                 return "==";
             case TipoOperacionRelacional.MAYORIGUAL:

@@ -7,6 +7,7 @@ import { Type } from "../../TablaSimbolos/Tipo";
 import { NodoError, TipoError } from "../../Reportes/NodoError";
 import { Continue } from "../SentenciasTransferencia/Continue";
 import { Break } from "../SentenciasTransferencia/Break";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 
 export class While extends Instruccion{
@@ -20,7 +21,7 @@ export class While extends Instruccion{
         this.instrucciones = instrucciones;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let rcondicion = this.condicion.ejecutar(ent,er);
         
         if(rcondicion.tipo != Type.BOOLEAN){
@@ -28,7 +29,7 @@ export class While extends Instruccion{
             return null;
         }
         while(rcondicion.valor == true){ 
-            let r = this.instrucciones.ejecutar(ent,er);
+            let r = this.instrucciones.ejecutar(ent,er,consola,tsCollector);
             if(r != null || r != undefined){
                 
                 if(r instanceof Break)
@@ -67,11 +68,11 @@ export class While extends Instruccion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        throw new Error("Method not implemented. WHILE");
     }
 
-    traducir(builder: StringBuilder) {
-        throw new Error("Method not implemented.");
+    traducir(builder: StringBuilder, parent: string) {
+        throw new Error("Method not implemented. WHILE");
     }
 
 }

@@ -3,15 +3,16 @@ class Log extends Instruccion {
         super(fila, columna);
         this.valor = valor;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         let val = this.valor.ejecutar(ent, er);
-        console.log(" > " + val.valor);
+        consola.append(" > " + val.valor);
         return null;
     }
     getDot(builder, parent, cont) {
+        console.log("getDot de Log no esta implementado solo retorna el cont para que no de error");
         return cont;
     }
-    traducir(builder) {
-        return "console.log(" + this.valor.traducir(builder) + ");";
+    traducir(builder, parent) {
+        return "console.log(" + this.valor.traducir(builder) + ");\n";
     }
 }

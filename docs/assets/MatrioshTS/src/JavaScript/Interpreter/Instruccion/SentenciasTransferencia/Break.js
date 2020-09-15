@@ -1,6 +1,5 @@
-import { Instruccion } from "../../Abstract/Instruccion";
-export class Break extends Instruccion {
-    ejecutar(ent, er) {
+ class Break extends Instruccion {
+    ejecutar(ent, er, consola, tsCollector) {
         return this;
     }
     getDot(builder, parent, cont) {
@@ -9,7 +8,7 @@ export class Break extends Instruccion {
         builder.append(parent + " -> " + nodo + ";\n");
         return cont;
     }
-    traducir(builder) {
-        return "break;";
+    traducir(builder, parent) {
+        return "break;\n";
     }
 }

@@ -1,4 +1,4 @@
-class ErrorManager {
+ class ErrorManager {
     constructor() {
         this.listaErrores = new Array();
     }

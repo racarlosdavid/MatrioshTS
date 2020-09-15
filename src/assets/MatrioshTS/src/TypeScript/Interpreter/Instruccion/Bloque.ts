@@ -4,9 +4,10 @@ import { ErrorManager } from "../Reportes/ErrorManager";
 import { StringBuilder } from "../Edd/StringBuilder";
 import { NodoError, TipoError } from "../Reportes/NodoError";
 import { Funcion } from "./Funcion";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
 
 export class Bloque extends Instruccion{
-
+    
     instrucciones:Array<Instruccion>;
 
     constructor(instrucciones:Array<Instruccion>, linea:number, columna:number){
@@ -14,11 +15,11 @@ export class Bloque extends Instruccion{
         this.instrucciones = instrucciones; 
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector: TSCollector) {
         let nuevo = new Entorno(ent);
         for(const instr of this.instrucciones){
             try {
-                const element = instr.ejecutar(nuevo,er); 
+                const element = instr.ejecutar(nuevo,er,consola,tsCollector); 
                 if(element != undefined || element != null)
                     return element;                
             } catch (error) {
@@ -33,27 +34,30 @@ export class Bloque extends Instruccion{
         let nodo:string = "nodo" + ++cont;
         builder.append(nodo+" [label=\"Instrucciones\"];\n");
         builder.append(parent+" -> "+nodo+";\n");
-        
+    
         for (const instr of this.instrucciones) {
             cont = instr.getDot(builder, nodo, cont);
         }
         
         return cont;
     }
-    
-    traducir(builder: StringBuilder) {
+
+    traducir(builder: StringBuilder, parent: string) {
         let nuevo = new StringBuilder();
         for(const instr of this.instrucciones){ 
             try {
-                if (instr instanceof Funcion) {
-                    builder.append(instr.traducir(builder));
-                } else {
-                    nuevo.append(instr.traducir(builder)+"\n");
-                }
+                //if (instr instanceof Funcion) { 
+                  //  builder.append(instr.traducir(builder,parent));
+                //} else {
+                    nuevo.append(instr.traducir(builder,parent)+"\n");
+                //}
             } catch (error) {
+                console.log(`Error en la traduccion Bloque: ${error}`);
                 //er.addError(new NodoError(TipoError.SEMANTICO, ""+error+"", this.fila, this.columna));
             }
         }
         return nuevo.toString();
     }
+
+    
 }

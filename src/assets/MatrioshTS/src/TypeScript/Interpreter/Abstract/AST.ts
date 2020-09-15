@@ -3,6 +3,9 @@ import { Entorno } from "../TablaSimbolos/Entorno";
 import { Instruccion }from "./Instruccion";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { StringBuilder } from "../Edd/StringBuilder";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { Manager } from "../Reportes/Manager";
+import { Funcion } from "../Instruccion/Funcion";
 
 
 export class AST {
@@ -16,60 +19,67 @@ export class AST {
         return this.instrucciones;
     }
 
-    traducir(builder: StringBuilder):any { console.log("Ok. Vamos a traducir la cadena de entrada");
+    traducir(builder: StringBuilder, parent:string):any { console.log("Ok. Vamos a traducir la cadena de entrada");
+        //Primera pasada para obtener los nuevos ids los almaceno en la variable traductor de Manager.ts
+        let builder_inservible = new StringBuilder(); 
+        /*Para esta pasade le mando un stringbuilder solo para cumplir con el parametro y que no me genere doble salida 
+        ya que en la siguiente pasada le mando el builder que va a recolectar el codigo traducido */
+
         for(const instr of this.instrucciones){
             try {
-                builder.append(instr.traducir(builder));
+                if (instr instanceof Funcion) {
+                    instr.traducir(builder_inservible,parent);
+                }
             } catch (error) {
                 console.log("Error en la traduccion: "+error);
             }
         }
-        return builder.toString();
-    }
-    
-    public ejecutar(ent:Entorno, er:ErrorManager):any { console.log("Ok. Vamos a interpretar la cadena de entrada");
-       
+
+        //Segunda pasada hago la traduccion
         for(const instr of this.instrucciones){
             try {
-                instr.ejecutar(ent,er);
+                builder.append(instr.traducir(builder,parent));
+            } catch (error) {
+                console.log("Error en la traduccion: "+error);
+            }
+        }
+
+       return builder.toString();
+    }
+    
+    public ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector):any { console.log("Ok. Vamos a interpretar la cadena de entrada");
+        /*
+        for(const instr of this.instrucciones){
+            try {
+                instr.ejecutar(ent,er,consola,tsCollector);
             } catch (error) {
                 console.log("Error en la interpretacion: "+error);
             }
         }
-
-        /*
-        for(const instr of this.instrucciones){
+        */
+        //Primera pasada guarda las funciones en la tabla de simbolos
+        for (const ins of this.instrucciones) {
             try {
-                if(instr instanceof Function)
-                    instr.ejecutar(ent);
+                if (ins instanceof Funcion) {
+                    ins.ejecutar(ent,er,consola,tsCollector);
+                }
             } catch (error) {
-                //errores.push(error);  
+                console.log("Error en la interpretacion: Primera Pasada"+error);
             }
-        }*/
+        }
 
-        /*
-        instrucciones.forEach((ins) -> {//Primera pasada guarda las funciones en la tabla de simbolos
+        //Segunda pasada 
+        for (const ins of this.instrucciones) {
             try {
                 if (ins instanceof Funcion) {
-                    Funcion temp = (Funcion)ins;
-                    temp.ejecutar(ent, ex, g, reporte_ts, ambito, padre);
-                }
-            } catch (Exception e) {
-            }
-        });
-        instrucciones.forEach((ins) -> {
-            try {
-                if (ins instanceof Funcion) {
-                    
+                    continue;
                 }else{
-                    Instruccion temp = (Instruccion)ins;
-                    temp.ejecutar(ent, ex, g, reporte_ts,ambito,padre);
+                    ins.ejecutar(ent,er,consola,tsCollector);
                 }
-                
-                
-            } catch (Exception e) {
+            } catch (error) {
+                console.log("Error en la interpretacion: Segunda Pasada "+error);
             }
-        });*/
+        }
         return null;
     }
     

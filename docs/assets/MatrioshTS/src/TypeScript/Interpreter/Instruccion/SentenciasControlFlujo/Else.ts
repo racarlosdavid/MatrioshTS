@@ -2,6 +2,7 @@ import { Instruccion } from "../../Abstract/Instruccion";
 import { Entorno } from "../../TablaSimbolos/Entorno";
 import { ErrorManager } from "../../Reportes/ErrorManager";
 import { StringBuilder } from "../../Edd/StringBuilder";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 export class Else extends Instruccion{
     instrucciones:Instruccion;
@@ -11,8 +12,8 @@ export class Else extends Instruccion{
         this.instrucciones = instrucciones;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
-        return this.instrucciones.ejecutar(ent,er);
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
+        return this.instrucciones.ejecutar(ent,er,consola,tsCollector);
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
@@ -22,8 +23,8 @@ export class Else extends Instruccion{
         return cont;
     }
 
-    traducir(builder: StringBuilder) {
-        return "{\n"+this.instrucciones.traducir(builder)+"}";
+    traducir(builder: StringBuilder, parent: string) {
+        return "{\n"+this.instrucciones.traducir(builder,parent)+"}\n";
     }
    
     

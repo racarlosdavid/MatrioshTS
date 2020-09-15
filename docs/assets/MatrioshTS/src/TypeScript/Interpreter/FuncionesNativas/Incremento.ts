@@ -5,6 +5,7 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { Simbolo } from "../TablaSimbolos/Simbolo";
 import { Retorno } from "../Abstract/Retorno";
 import { Type } from "../TablaSimbolos/Tipo";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
 
 
 export class Incremento extends Instruccion{
@@ -14,7 +15,7 @@ export class Incremento extends Instruccion{
         super(fila,columna);
         this.identificador = identificador;
     }
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let obj:Simbolo|null = ent.GetValue(this.identificador);
 
         if (obj instanceof Simbolo) {  
@@ -33,7 +34,7 @@ export class Incremento extends Instruccion{
     getDot(builder: StringBuilder, parent: string, cont: number): number {
         throw new Error("Method not implemented. getdot Incremento");
     }
-    traducir(builder: StringBuilder) {
+    traducir(builder: StringBuilder, parent: string) {
         throw new Error("Method not implemented.traducir incrementos");
     }
 

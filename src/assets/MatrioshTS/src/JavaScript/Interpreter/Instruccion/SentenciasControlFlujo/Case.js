@@ -1,14 +1,13 @@
-
-class Case extends Instruccion {
+ class Case extends Instruccion {
     constructor(condicion, instrucciones, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;
         this.instrucciones = instrucciones;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         let nuevo = new Entorno(ent);
         for (let inst of this.instrucciones) {
-            let r = inst.ejecutar(nuevo, er);
+            let r = inst.ejecutar(nuevo, er, consola, tsCollector);
             if (r != null) {
                 if (r instanceof Continue) {
                     er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna));
@@ -37,11 +36,11 @@ class Case extends Instruccion {
         }
         return cont;
     }
-    traducir(builder) {
+    traducir(builder, parent) {
         let trad = new StringBuilder();
-        trad.append("case " + this.condicion.traducir(builder) + " : ");
+        trad.append("case " + this.condicion.traducir(builder) + " : \n");
         for (let instr of this.instrucciones) {
-            trad.append(instr.traducir(builder));
+            trad.append(instr.traducir(builder, parent));
         }
         return trad.toString();
     }

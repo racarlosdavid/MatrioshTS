@@ -1,5 +1,4 @@
-import { Expresion } from "../Abstract/Expresion";
-export class ArrayTS extends Expresion {
+class ArrayTS extends Expresion {
     constructor(valores, fila, columna) {
         super(fila, columna);
         this.valores = valores;

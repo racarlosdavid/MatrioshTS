@@ -5,6 +5,7 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { Simbolo } from "../TablaSimbolos/Simbolo";
 import { Retorno } from "../Abstract/Retorno";
 import { Type } from "../TablaSimbolos/Tipo";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
 
 
 export class Decremento extends Instruccion{
@@ -14,7 +15,7 @@ export class Decremento extends Instruccion{
         super(fila,columna);
         this.identificador = identificador;
     }
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let obj:Simbolo|null = ent.GetValue(this.identificador);
 
         if (obj instanceof Simbolo) {  
@@ -35,8 +36,8 @@ export class Decremento extends Instruccion{
         throw new Error("Method not implemented. getdot Decementos");
     }
     
-    traducir(builder: StringBuilder) {
-        throw new Error("Method not implemented. traducir Decementos");
+    traducir(builder: StringBuilder, parent: string) {
+        return "";
     }
 
 

@@ -1,8 +1,4 @@
-import { Instruccion } from "../../Abstract/Instruccion";
-import { NodoError, TipoError } from "../../Reportes/NodoError";
-import { Retorno } from "../../Abstract/Retorno";
-import { Type } from "../../TablaSimbolos/Tipo";
-export class If extends Instruccion {
+class If extends Instruccion {
     constructor(condicion, instrucciones, ins_else, tipo, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;
@@ -10,7 +6,7 @@ export class If extends Instruccion {
         this.ins_else = ins_else;
         this.tipo = tipo;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         var _a;
         let rcondicion = this.condicion.ejecutar(ent, er);
         if (rcondicion instanceof Retorno) {
@@ -19,10 +15,10 @@ export class If extends Instruccion {
                 return null;
             }
             if (rcondicion.valor == true) {
-                return this.instrucciones.ejecutar(ent, er);
+                return this.instrucciones.ejecutar(ent, er, consola, tsCollector);
             }
             else {
-                return (_a = this.ins_else) === null || _a === void 0 ? void 0 : _a.ejecutar(ent, er);
+                return (_a = this.ins_else) === null || _a === void 0 ? void 0 : _a.ejecutar(ent, er, consola, tsCollector);
             }
         }
         else {
@@ -79,7 +75,7 @@ export class If extends Instruccion {
         }
         return cont;
     }
-    traducir(builder) {
+    traducir(builder, parent) {
         let trad;
         trad = "\n";
         return trad;
@@ -97,7 +93,7 @@ export class If extends Instruccion {
         }
     }
 }
-export var TipoIf;
+ var TipoIf;
 (function (TipoIf) {
     TipoIf[TipoIf["IF"] = 0] = "IF";
     TipoIf[TipoIf["IFELSEIF"] = 1] = "IFELSEIF";

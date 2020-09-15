@@ -74,11 +74,12 @@ function nuevaPestaña() {
       theme : "base16-dark",
   });
   tempo.setSize(null,655);
-  tempo.setValue("\n\n\n\n\n\n\n\n\n\n");
+  
   
   //Guardo la referencia del nuevo textmirror para la pestaña nueva
   textMap.set(identificador,tempo);
  
   document.getElementById("button" + tabName).click();
+  tempo.setValue("\n\n\n\n\n\n\n\n\n\n");
 }
 

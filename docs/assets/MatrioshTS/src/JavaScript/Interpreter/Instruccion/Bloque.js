@@ -1,13 +1,13 @@
-class Bloque extends Instruccion {
+ class Bloque extends Instruccion {
     constructor(instrucciones, linea, columna) {
         super(linea, columna);
         this.instrucciones = instrucciones;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         let nuevo = new Entorno(ent);
         for (const instr of this.instrucciones) {
             try {
-                const element = instr.ejecutar(nuevo, er);
+                const element = instr.ejecutar(nuevo, er, consola, tsCollector);
                 if (element != undefined || element != null)
                     return element;
             }
@@ -26,18 +26,18 @@ class Bloque extends Instruccion {
         }
         return cont;
     }
-    traducir(builder) {
+    traducir(builder, parent) {
         let nuevo = new StringBuilder();
         for (const instr of this.instrucciones) {
             try {
-                if (instr instanceof Funcion) {
-                    builder.append(instr.traducir(builder));
-                }
-                else {
-                    nuevo.append(instr.traducir(builder) + "\n");
-                }
+                //if (instr instanceof Funcion) { 
+                //  builder.append(instr.traducir(builder,parent));
+                //} else {
+                nuevo.append(instr.traducir(builder, parent) + "\n");
+                //}
             }
             catch (error) {
+                console.log(`Error en la traduccion Bloque: ${error}`);
                 //er.addError(new NodoError(TipoError.SEMANTICO, ""+error+"", this.fila, this.columna));
             }
         }

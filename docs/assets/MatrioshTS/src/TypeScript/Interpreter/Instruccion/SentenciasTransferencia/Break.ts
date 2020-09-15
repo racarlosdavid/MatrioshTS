@@ -2,10 +2,11 @@ import { Instruccion } from "../../Abstract/Instruccion";
 import { Entorno } from "../../TablaSimbolos/Entorno";
 import { ErrorManager } from "../../Reportes/ErrorManager";
 import { StringBuilder } from "../../Edd/StringBuilder";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 export class Break extends Instruccion{
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         return this;
     }
 
@@ -16,8 +17,8 @@ export class Break extends Instruccion{
         return cont;
     }
 
-    traducir(builder: StringBuilder) {
-        return "break;"
+    traducir(builder: StringBuilder, parent: string) {
+        return "break;\n"
     }
     
 

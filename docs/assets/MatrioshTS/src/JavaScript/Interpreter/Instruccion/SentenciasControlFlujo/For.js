@@ -1,5 +1,4 @@
-import { Instruccion } from "../../Abstract/Instruccion";
-export class For extends Instruccion {
+class For extends Instruccion {
     /*
     private inicio:Declaracion | Asignacion;
     private condicion:Expresion;
@@ -14,13 +13,13 @@ export class For extends Instruccion {
         this.instrucciones = instrucciones;
     }
     */
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         throw new Error("Method not implemented.");
     }
     getDot(builder, parent, cont) {
         throw new Error("Method not implemented.");
     }
-    traducir(builder) {
+    traducir(builder, parent) {
         throw new Error("Method not implemented.");
     }
 }

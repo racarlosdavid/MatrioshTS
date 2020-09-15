@@ -2,9 +2,11 @@ import { Instruccion } from "../../Abstract/Instruccion";
 import { Entorno } from "../../TablaSimbolos/Entorno";
 import { ErrorManager } from "../../Reportes/ErrorManager";
 import { StringBuilder } from "../../Edd/StringBuilder";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 
 export class For extends Instruccion {
+    
     
     /*
     private inicio:Declaracion | Asignacion;
@@ -21,14 +23,18 @@ export class For extends Instruccion {
     }
     */
 
-   ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola: StringBuilder, tsCollector: TSCollector) {
     throw new Error("Method not implemented.");
-}
-getDot(builder: StringBuilder, parent: string, cont: number): number {
-    throw new Error("Method not implemented.");
-}
-traducir(builder: StringBuilder) {
-    throw new Error("Method not implemented.");
-}
+    }
+
+    getDot(builder: StringBuilder, parent: string, cont: number): number {
+        throw new Error("Method not implemented.");
+    }
+    
+    traducir(builder: StringBuilder, parent: string) {
+        throw new Error("Method not implemented.");
+    }
+
+
 
 }

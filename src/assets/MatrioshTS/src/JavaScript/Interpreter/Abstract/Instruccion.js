@@ -1,4 +1,3 @@
-
 class Instruccion {
     constructor(fila, columna) {
         this.fila = fila;
@@ -7,21 +6,21 @@ class Instruccion {
     getTipoToString(tipo) {
         switch (tipo) {
             case Type.NUMBER:
-                return "NUMBER";
+                return "number";
             case Type.STRING:
-                return "STRING";
+                return "string";
             case Type.BOOLEAN:
-                return "BOOLEAN";
+                return "boolean";
             case Type.NULL:
-                return "NULL";
+                return "null";
             case Type.ARRAY:
-                return "ARRAY";
+                return "array";
             case Type.VOID:
-                return "VOID";
+                return "void";
             case Type.TYPE:
-                return "TYPE";
+                return "type";
             default:
-                return "INDEF";
+                return tipo + "";
         }
     }
 }

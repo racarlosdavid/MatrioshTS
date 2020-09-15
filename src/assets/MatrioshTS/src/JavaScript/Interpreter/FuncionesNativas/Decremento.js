@@ -1,13 +1,9 @@
-import { Instruccion } from "../Abstract/Instruccion";
-import { Simbolo } from "../TablaSimbolos/Simbolo";
-import { Retorno } from "../Abstract/Retorno";
-import { Type } from "../TablaSimbolos/Tipo";
-export class Decremento extends Instruccion {
+ class Decremento extends Instruccion {
     constructor(identificador, fila, columna) {
         super(fila, columna);
         this.identificador = identificador;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         let obj = ent.GetValue(this.identificador);
         if (obj instanceof Simbolo) {
             if (obj.valor instanceof Retorno) {
@@ -25,7 +21,7 @@ export class Decremento extends Instruccion {
     getDot(builder, parent, cont) {
         throw new Error("Method not implemented. getdot Decementos");
     }
-    traducir(builder) {
-        throw new Error("Method not implemented. traducir Decementos");
+    traducir(builder, parent) {
+        return "";
     }
 }

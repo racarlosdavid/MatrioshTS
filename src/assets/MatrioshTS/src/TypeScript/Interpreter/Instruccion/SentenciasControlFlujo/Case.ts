@@ -6,6 +6,7 @@ import { Expresion } from "../../Abstract/Expresion";
 import { Break } from "../SentenciasTransferencia/Break";
 import { Continue } from "../SentenciasTransferencia/Continue";
 import { NodoError, TipoError } from "../../Reportes/NodoError";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 
 export class Case extends Instruccion{
@@ -19,10 +20,10 @@ export class Case extends Instruccion{
         this.instrucciones = instrucciones;
     }
     
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let nuevo=new Entorno(ent);
         for(let inst of this.instrucciones){ 
-            let r = inst.ejecutar(nuevo,er);
+            let r = inst.ejecutar(nuevo,er,consola,tsCollector);
             if(r!=null){
                 if(r instanceof Continue){
                     er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna));
@@ -57,12 +58,12 @@ export class Case extends Instruccion{
         return cont;
     }
     
-    traducir(builder: StringBuilder) {
+    traducir(builder: StringBuilder, parent: string) {
         let trad = new StringBuilder();
         trad.append("case "+this.condicion.traducir(builder)+" : \n");
         
         for (let instr of this.instrucciones) {
-            trad.append(instr.traducir(builder));
+            trad.append(instr.traducir(builder,parent));
         }
         
         return trad.toString();

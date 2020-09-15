@@ -1,14 +1,10 @@
-import { Instruccion } from "../../Abstract/Instruccion";
-import { Retorno } from "../../Abstract/Retorno";
-import { Type } from "../../TablaSimbolos/Tipo";
-import { NodoError, TipoError } from "../../Reportes/NodoError";
-export class If extends Instruccion {
+class If extends Instruccion {
     constructor(condicion, instrucciones, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;
         this.instrucciones = instrucciones;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         let rcondicion = this.condicion.ejecutar(ent, er);
         if (rcondicion instanceof Retorno) {
             if (rcondicion.tipo != Type.BOOLEAN) {
@@ -16,7 +12,7 @@ export class If extends Instruccion {
                 return null;
             }
             if (rcondicion.valor == true) {
-                return this.instrucciones.ejecutar(ent, er);
+                return this.instrucciones.ejecutar(ent, er, consola, tsCollector);
             }
         }
         else {
@@ -38,7 +34,7 @@ export class If extends Instruccion {
         cont = this.instrucciones.getDot(builder, nodoInstrucciones, cont);
         return cont;
     }
-    traducir(builder) {
-        return "if (" + this.condicion.traducir(builder) + ") {" + this.instrucciones.traducir + "}";
+    traducir(builder, parent) {
+        return "if (" + this.condicion.traducir(builder) + ") {" + this.instrucciones.traducir + "}\n";
     }
 }

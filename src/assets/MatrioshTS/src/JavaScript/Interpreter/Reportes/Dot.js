@@ -1,4 +1,3 @@
-
 class Dot {
     constructor(instrucciones) {
         this.instrucciones = instrucciones;

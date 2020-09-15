@@ -2,6 +2,7 @@ import { Instruccion } from "../../Abstract/Instruccion";
 import { Entorno } from "../../TablaSimbolos/Entorno";
 import { ErrorManager } from "../../Reportes/ErrorManager";
 import { StringBuilder } from "../../Edd/StringBuilder";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 export class Continue extends Instruccion{
 
@@ -9,7 +10,7 @@ export class Continue extends Instruccion{
         super(fila,columna);
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         return this;
     }
 
@@ -20,8 +21,8 @@ export class Continue extends Instruccion{
         return cont;
     }
 
-    traducir(builder: StringBuilder) {
-        return "continue;"
+    traducir(builder: StringBuilder, parent: string) {
+        return "continue;\n"
     }
  
 

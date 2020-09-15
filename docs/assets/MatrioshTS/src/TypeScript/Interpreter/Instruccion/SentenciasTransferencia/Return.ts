@@ -3,6 +3,7 @@ import { Entorno } from "../../TablaSimbolos/Entorno";
 import { ErrorManager } from "../../Reportes/ErrorManager";
 import { StringBuilder } from "../../Edd/StringBuilder";
 import { Expresion } from "../../Abstract/Expresion";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 export class Return extends Instruccion{
 
@@ -13,15 +14,21 @@ export class Return extends Instruccion{
         this.valor = valor;
     }
     
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         return this.valor.ejecutar(ent,er);
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        let nodo:string = "nodo" + ++cont;
+        builder.append(nodo+" [label=\"Return\"];\n");
+        builder.append(parent+" -> "+nodo+";\n");
+        
+        cont = this.valor.getDot(builder, nodo, cont);
+        
+        return cont;
     }
     
-    traducir(builder: StringBuilder) {
+    traducir(builder: StringBuilder, parent: string) {
         return "return "+this.valor.traducir(builder)+";\n";
     }
 

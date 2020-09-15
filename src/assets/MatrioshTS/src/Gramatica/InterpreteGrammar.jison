@@ -41,23 +41,18 @@
 "while"			        return 'pr_while';
 "do"			        return 'pr_do';
 
-/*
-
-
 "return"		        return 'pr_return'; 
 
-"public"		        return 'pr_public';
+"type"		        return 'pr_type';
+
+/*
 "private"		        return 'pr_private';
-
-
 "define"		        return 'pr_define';
 "as"			        return 'pr_as';
 "strc"			        return 'pr_strc';
-
 "try"			        return 'pr_try';
 "catch"			        return 'pr_catch';
 "throw"			        return 'pr_throw';
-
 */
 
 //-----> Simbolos Aritmeticos
@@ -146,24 +141,25 @@
 	const {Logica,TipoOperacionLogica} = require('../TypeScript/Interpreter/Expresion/Logica');
 	const {Literal,TipoString} = require('../TypeScript/Interpreter/Expresion/Literal');
 	const {Ternario} = require('../TypeScript/Interpreter/Expresion/Ternario');
-
-	const {Funcion} = require('../TypeScript/Interpreter/Instruccion/Funcion');
-
-const {Declaracion,TipoDeclaracion} = require('../TypeScript/Interpreter/Instruccion/Declaracion');
+	const {Null} = require('../TypeScript/Interpreter/Expresion/Null');
 
 	const {Bloque} = require('../TypeScript/Interpreter/Instruccion/Bloque');
+	const {Funcion} = require('../TypeScript/Interpreter/Instruccion/Funcion');
+	const {Llamada} = require('../TypeScript/Interpreter/Instruccion/Llamada');
 	const {If} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/If');
 	const {IfElse} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/IfElse');
 	const {Else} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Else');
 	const {While} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/While');
 	const {DoWhile} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/DoWhile');
-	const {For} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/For');
+	const {Declaracion,TipoDeclaracion} = require('../TypeScript/Interpreter/Instruccion/Declaracion');
+const {For} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/For');
 
 	const {Switch} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Switch');
 	const {Case} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Case');
 	const {Default} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Default');
 
 	const {ArrayTS} = require('../TypeScript/Interpreter/Edd/ArrayTS');
+	const {TypeTS} = require('../TypeScript/Interpreter/Edd/TypeTS');
 
 	const {Log} = require('../TypeScript/Interpreter/FuncionesNativas/Log');
 	const {Incremento} = require('../TypeScript/Interpreter/FuncionesNativas/Incremento');
@@ -178,9 +174,6 @@ const {Declaracion,TipoDeclaracion} = require('../TypeScript/Interpreter/Instruc
 	const {Continue} = require('../TypeScript/Interpreter/Instruccion/SentenciasTransferencia/Continue');
 
     /*	
-	const Cadena = require('../JavaScript/Expresion/Cadena');
-	const Id = require('../JavaScript/Expresion/Id');
-	const CasteoExplicito = require('../JavaScript/Expresion/CasteoExplicito');
 	const LlamadaE = require('../JavaScript/Expresion/LlamadaE');
 	const Acceso = require('../JavaScript/Expresion/Acceso');
 	const Asignacion = require('../JavaScript/Instruccion/Asignacion');
@@ -232,6 +225,7 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
 	| CONSOLELOG 		{ $$ = $1; } 
 	| DECLARACION		{ $$ = $1; } 
 	| IF 				{ $$ = $1; } 
+	| TYPES 			{ $$ = $1; } 
 	| WHILE 			{ $$ = $1; } 
 	| DOWHILE 			{ $$ = $1; } 
 	| SWITCH 			{ $$ = $1; } 
@@ -239,12 +233,15 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
     | CONTINUE			{ $$ = $1; } 
 	| RETURN			{ $$ = $1; } 
 	| INC				{ $$ = $1; } 
+	| LLAMADA           { $$ = $1; } 
 	| error ptcoma { Manager.getManager().addError(new NodoError(TipoError.SINTACTICO, `El caracter ${yytext} no se esperaba en esta posicion`, this._$.first_line, this._$.first_column)); } ;
+
+
+TYPES : pr_type identificador igual llaveizq L_PARAMETROS llaveder ptcoma { $$ = new TypeTS($2,$5,@1.first_line,@1.first_column); } ;
 
 RETURN : pr_return E ptcoma { $$ = new Return($2,@1.first_line,@1.first_column); } ;
 
 INC : identificador inc ptcoma {  $$ = new Incremento($1, @1.first_line, @1.first_column); } ;
-
 
 IF : pr_if parizq E parder BLOQUE	{ $$ = new If($3,$5,@1.first_line,@1.first_column); }
 	| pr_if parizq E parder BLOQUE ELSE    { $$ = new IfElse($3,$5,$6,@1.first_line,@1.first_column); } ;
@@ -287,11 +284,10 @@ FUNCION :  pr_function identificador parizq L_PARAMETROS parder dospuntos TIPO B
 
 FUNCION :  pr_function identificador parizq F { $$ = $4; } ;
 		
-
-F : L_PARAMETROS parder dospuntos TIPO BLOQUE  { 
+F : L_PARAMETROS parder T llaveizq LISTA_INSTRUCCIONES llaveder  { 
 		var s =  eval('$$');
-		var identificador = s[s.length - 7];
-		for(instr of $5.instrucciones){
+		var identificador = s[s.length - 8]; /*s[s.length - 7];*/
+		for(instr of $5){/*for(instr of $5.instrucciones){*/
 			try{
 				if(instr instanceof Funcion){
 					instr.padre = identificador; //Le paso el id del padre al hijo
@@ -300,11 +296,11 @@ F : L_PARAMETROS parder dospuntos TIPO BLOQUE  {
 				console.log("Error al pasar el id del padre al hijo"+e);
 			}
 		}
-		$$ = new Funcion(identificador,null,$1,$5,@1.first_line,@1.first_column); } 
-	| parder dospuntos TIPO BLOQUE { 
+		$$ = new Funcion(identificador,null,$1,$3,$5,@1.first_line,@1.first_column); } 
+	| parder T llaveizq LISTA_INSTRUCCIONES llaveder { 
 		var s =  eval('$$');
-		var identificador = s[s.length - 6];
-		for(instr of $4.instrucciones){
+		var identificador = s[s.length - 7]; /*s[s.length - 6];*/
+		for(instr of $4){/*for(instr of $4.instrucciones){*/
 			try{
 				if(instr instanceof Funcion){
 					instr.padre = identificador; //Le paso el id del padre al hijo
@@ -313,25 +309,27 @@ F : L_PARAMETROS parder dospuntos TIPO BLOQUE  {
 				console.log("Error al pasar el id del padre al hijo"+e);
 			}
 		}
-		
-		$$ = new Funcion(identificador,null,[],$4,@1.first_line,@1.first_column);  
+		$$ = new Funcion(identificador,null,[],$2,$4,@1.first_line,@1.first_column);  
 	} ;
 
+T : dospuntos TIPO { $$ = $2; } 
+	| { $$ = null;} ;
 
 L_PARAMETROS : L_PARAMETROS coma PARAMETRO	{ $1.push($3); $$=$1; }
     | PARAMETRO                             { $$ = [$1]; } ;
 
-PARAMETRO :	identificador dospuntos TIPO{ $$ = new Declaracion(TipoDeclaracion.LET,$1,$3,0,null,@1.first_line,@1.first_column); } ;
+PARAMETRO :	identificador dospuntos TIPO{ $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,0,null,@1.first_line,@1.first_column); }
+	| identificador dospuntos TIPO DIMENSIONES{ $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,$4,null,@1.first_line,@1.first_column); } ;
 
+LLAMADA : identificador parizq parder ptcoma	{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
+	| identificador parizq parder 				{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
+	| identificador parizq L_E parder ptcoma 	{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
+	| identificador parizq L_E parder 			{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } ;
 /*
 
 INSTRUCCION : 
 	| LLAMADAI          { $$ = $1; }
  	| ASIGNACION        { $$ = $1; }     
-    | error ptcoma 		{ Manager.Manager.getManager().addError(new NodoError.NodoError(NodoError.TipoError.SINTACTICO, `El caracter ${yytext} no se esperaba en esta posicion`, this._$.first_line, this._$.first_column, "this.archivo"));
-							//er.addError(new NodoError.NodoError(NodoError.TipoError.SINTACTICO, `El caracter ${yytext} no se esperaba en esta posicion`, this._$.first_line, this._$.first_column, "this.archivo"));
-							//console.error('Este es un error sintáctico: ' + yytext + ', en la linea: ' + this._$.first_line + ', en la columna: ' + this._$.first_column);
-						} ;
 
 L_ID : L_ID coma identificador	{ $1.push($3); $$=$1; }
 	| identificador				{ $$ = [$1]; } ;
@@ -341,15 +339,6 @@ TYPE: TIPO corizq corder { $1.setEsArreglo(true); $$=$1;  }
 
 ASIGNACION : identificador igual E ptcoma { $$ = new Asignacion.Asignacion($1,[],$3,@1.first_line,@1.first_column,"archivo.nombre"); }  ;
 
-LLAMADAI : identificador parizq L_E parder ptcoma  { $$ = new LlamadaI.LlamadaI($1,$3,@1.first_line,@1.first_column,"archivo.nombre"); }
-    | identificador parizq L_E parder  { $$ = new LlamadaI.LlamadaI($1,$3,@1.first_line,@1.first_column,"archivo.nombre"); }
-    | identificador parizq parder ptcoma  { $$ = new LlamadaI.LlamadaI($1,[],@1.first_line,@1.first_column,"archivo.nombre"); }
-    | identificador parizq parder  { $$ = new LlamadaI.LlamadaI($1,[],@1.first_line,@1.first_column,"archivo.nombre"); } ;
-
-LLAMADAE : identificador parizq L_E parder   { $$ = new LlamadaE.LlamadaE($1,$3,@1.first_line,@1.first_column,"archivo.nombre"); }
-    | identificador parizq parder  { $$ = new LlamadaE.LlamadaE($1,[],@1.first_line,@1.first_column,"archivo.nombre"); } ;
-
-
 EXP : CASTEO { $$ = $1; }
 	| E { $$ = $1; } ;
 
@@ -358,9 +347,6 @@ CASTEO : parizq pr_integer parder E { $$ = new CasteoExplicito.CasteoExplicito(C
 	| parizq pr_do parder E  { $$ = new CasteoExplicito.CasteoExplicito(CasteoExplicito.TipoCasteo.TO_DOUBLE,$4,@1.first_line,@1.first_column,"archivo.nombre"); } ;
 
 E : 
-	
-    | LLAMADAE          { $$ = $1; }
-	
 	| identificador punto L_ACCESO { $$ = new Acceso.Acceso($1,$3,@1.first_line,@1.first_column,"archivo.nombre"); }
 	 ;
 
@@ -376,16 +362,12 @@ DECLARACION :TYPE L_ID igual EXP ptcoma { $$ = new Declaracion(Declaracion.TipoM
 	|
 */
 
-DECLARACION :  pr_let identificador igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,null,0,$4,@1.first_line,@1.first_column); }
-	| pr_let identificador ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,null,0,null,@1.first_line,@1.first_column); }
-	| pr_let identificador dospuntos TIPO igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$4,0,$6,@1.first_line,@1.first_column); }
-	| pr_let identificador dospuntos TIPO ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$4,0,null,@1.first_line,@1.first_column); }
-	| pr_let identificador dospuntos TIPO DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$4,$5,$7,@1.first_line,@1.first_column); }
-	| pr_let identificador dospuntos TIPO DIMENSIONES ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$4,$5,null,@1.first_line,@1.first_column); }
-	| pr_const identificador igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,null,0,$4,@1.first_line,@1.first_column); }
-	| pr_const identificador dospuntos TIPO igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$4,0,$6,@1.first_line,@1.first_column); } 
-	| pr_const identificador dospuntos TIPO DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$4,$5,$6,@1.first_line,@1.first_column); };
-	
+DECLARACION : pr_const identificador T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,0,$5,@1.first_line,@1.first_column); }
+	| pr_const identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,$4,$6,@1.first_line,@1.first_column); }
+    | pr_let identificador T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,0,$5,@1.first_line,@1.first_column); }
+   	| pr_let identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,$5,@1.first_line,@1.first_column); }
+    | pr_let identificador T ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,0,null,@1.first_line,@1.first_column); }
+	| pr_let identificador T DIMENSIONES ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,null,@1.first_line,@1.first_column); } ;
 
 DIMENSIONES : DIMENSIONES corizq corder	{ $1 = $1+1; $$=$1 }
     | corizq corder				{ $$ = 1; } ;
@@ -394,7 +376,7 @@ TIPO : pr_number { $$ = Type.NUMBER; }
 	| pr_string	{ $$ = Type.STRING; } 
 	| pr_boolean { $$ = Type.BOOLEAN; }  
 	| pr_void { $$ = Type.VOID; } 
-	| pr_type { $$ = Type.TYPE; } ;
+	| identificador { $$ = yytext; } ;
 
 E : ARITMETICA      	{ $$ = $1; } 
 	| RELACIONAL		{ $$ = $1; } 
@@ -404,6 +386,8 @@ E : ARITMETICA      	{ $$ = $1; }
 	| corizq L_E corder { $$ = new ArrayTS($1,@1.first_line,@1.first_column);}
 	| corizq corder 	{ $$ = new ArrayTS([],@1.first_line,@1.first_column);}
 	| identificador 	{ $$ = new Acceso($1,TipoAcceso.ID,[],@1.first_line,@1.first_column); }
+	| identificador parizq parder { $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
+	| identificador parizq L_E parder { $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
 	| entero        	{ $$ = new Literal(Number(yytext),Type.NUMBER,TipoString.INDEF,@1.first_line,@1.first_column); } 
 	| decimal	    	{ $$ = new Literal(Number(yytext),Type.NUMBER,TipoString.INDEF,@1.first_line,@1.first_column); }
 	| string1	    	{ $$ = new Literal(String(yytext),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column); }
@@ -411,6 +395,7 @@ E : ARITMETICA      	{ $$ = $1; }
 	| string3	    	{ $$ = new Literal(String(yytext),Type.STRING,TipoString.STRING3,@1.first_line,@1.first_column); }
 	| pr_true        	{ $$ = new Literal(Boolean(true),Type.BOOLEAN,TipoString.INDEF,@1.first_line,@1.first_column); } 
 	| pr_false	    	{ $$ = new Literal(Boolean(false),Type.BOOLEAN,TipoString.INDEF,@1.first_line,@1.first_column); }
+	| pr_null           { $$ = new Null(@1.first_line,@1.first_column); }
 	;
 
 ARITMETICA : menos E %prec umenos	{ $$ = new Aritmetica(TipoOperacionAritmetica.NEGACION,null,null,$2,true,@1.first_line,@1.first_column); }

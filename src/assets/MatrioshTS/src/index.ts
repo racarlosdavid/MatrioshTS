@@ -203,32 +203,18 @@ import { ErrorManager } from "./TypeScript/Interpreter/Reportes/ErrorManager";
 import { Entorno } from "./TypeScript/Interpreter/TablaSimbolos/Entorno";
 import { StringBuilder } from "./TypeScript/Interpreter/Edd/StringBuilder";
 import { Dot } from "./TypeScript/Interpreter/Reportes/Dot";
+import { TSCollector } from "./TypeScript/Interpreter/TablaSimbolos/TSCollector";
 
 const parser = require('./Gramatica/InterpreteGrammar');
 const parser_trad = require('./Gramatica/Traductor');
 const fs = require('fs');
 
 try {
-    Manager.getManager().reiniciar(); 
-    const entrada = fs.readFileSync('./entrada.txt');
-    let ast = parser.parse(entrada.toString()); 
-    const env = new Entorno(null);
-    const builder = new StringBuilder();
-
-    Manager.getManager().sizeActual.push(0);
-    var er = new ErrorManager(); 
-    er.addLista(Manager.getManager().getColectorErrores());
-
-    ast.ejecutar(env,er); //Ejecuta la interpretacion
-
-    er.generarReporte();
-
-    ast.traducir(builder); //Ejecuta la traduccion
-    console.log(builder.toString()); //Imprimo la traduccion
-
-    const reporte_AST = new Dot(ast.getInstrucciones());
-    reporte_AST.graficarAST();
-
+    traducir();
+    interpretar();
+    let a:number;
+    let b:number=34;
+    
     
 //--------------------------------------
     /*
@@ -259,5 +245,77 @@ catch (error) {
     console.log(error);
 }
 
-//console.log(errores);
+function interpretar() {
+    console.log("-> Se va a interpretar la cadena ingresada ");
+        try { 
+            Manager.getManager().reiniciar(); 
+            Manager.getManager().sizeActual.push(0);
+            const entrada = fs.readFileSync('./entrada.txt');
+            let ast = parser.parse(entrada.toString()); 
+          
+            
+            
+            const ent = new Entorno(null);
+            const er = new ErrorManager(); 
+            const consola_data = new StringBuilder();
+            const tsCollector = new TSCollector();
+
+            //Agrego los errores lexicos al colector de errores 
+            er.addLista(Manager.getManager().getColectorErrores());
+            
+            //Ejecuto el AST
+            ast.ejecutar(ent,er,consola_data,tsCollector); 
+           
+            //Imprimo los errores
+            er.generarReporte();
+
+            //Imprimo los logs
+            console.log(consola_data.toString()); 
+           
+            //Graficar el ast en modo texto porque el modo grafico hay que compilar el formato dot
+            const reporte_AST = new Dot(ast.getInstrucciones());
+            let ast_dot = reporte_AST.graficarAST();
+            //console.log(ast_dot);
+        }
+        catch (err) {
+            console.log("Error en el boton de interpretar "+err);
+        }
+    
+}
+
+function traducir(){
+    console.log("-> Se va a traducir la cadena ingresada ");
+        try { 
+            Manager.getManager().reiniciar(); 
+            Manager.getManager().sizeActual.push(0);
+            const entrada = fs.readFileSync('./entrada.txt');
+            let ast = parser.parse(entrada.toString()); 
+
+            const er = new ErrorManager(); 
+            const builder = new StringBuilder();
+            const parent = "";
+            
+            //Agrego los errores lexicos al colector de errores 
+            er.addLista(Manager.getManager().getColectorErrores());
+        
+            ast.traducir(builder,parent); //Ejecuta la traduccion
+
+            //Imprimo los errores
+            er.generarReporte();
+
+            //Imprimo el resultado de la traduccion en el textarea de traduccion
+            console.log(builder.toString()); 
+
+            //Graficar el ast en modo texto porque el modo grafico hay que compilar el formato dot
+            const reporte_AST = new Dot(ast.getInstrucciones());
+            let ast_dot = reporte_AST.graficarAST();
+            //console.log(ast_dot);
+
+            
+            
+        }
+        catch (err) {
+            console.log("Error en el boton traducir "+err);
+        }
+}
 

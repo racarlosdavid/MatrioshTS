@@ -1,4 +1,4 @@
-class Literal extends Expresion {
+ class Literal extends Expresion {
     constructor(valor, tipo, tipoString, fila, columna) {
         super(fila, columna);
         this.valor = valor;
@@ -27,7 +27,7 @@ class Literal extends Expresion {
         return this.valor.toString();
     }
 }
-var TipoString;
+ var TipoString;
 (function (TipoString) {
     TipoString[TipoString["STRING1"] = 0] = "STRING1";
     TipoString[TipoString["STRING2"] = 1] = "STRING2";

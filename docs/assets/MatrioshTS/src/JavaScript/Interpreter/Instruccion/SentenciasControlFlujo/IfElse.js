@@ -1,15 +1,11 @@
-import { Instruccion } from "../../Abstract/Instruccion";
-import { Retorno } from "../../Abstract/Retorno";
-import { NodoError, TipoError } from "../../Reportes/NodoError";
-import { Type } from "../../TablaSimbolos/Tipo";
-export class IfElse extends Instruccion {
+class IfElse extends Instruccion {
     constructor(condicion, instrucciones, _else, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;
         this.instrucciones = instrucciones;
         this._else = _else;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         let rcondicion = this.condicion.ejecutar(ent, er);
         if (rcondicion instanceof Retorno) {
             if (rcondicion.tipo != Type.BOOLEAN) {
@@ -17,10 +13,10 @@ export class IfElse extends Instruccion {
                 return null;
             }
             if (rcondicion.valor == true) {
-                return this.instrucciones.ejecutar(ent, er);
+                return this.instrucciones.ejecutar(ent, er, consola, tsCollector);
             }
             else {
-                return this._else.ejecutar(ent, er);
+                return this._else.ejecutar(ent, er, consola, tsCollector);
             }
         }
         else {
@@ -43,7 +39,7 @@ export class IfElse extends Instruccion {
         cont = this._else.getDot(builder, nodoElse, cont);
         return cont;
     }
-    traducir(builder) {
-        return "if (" + this.condicion.traducir(builder) + ") {\n" + this.instrucciones.traducir(builder) + "} else " + this._else.traducir(builder);
+    traducir(builder, parent) {
+        return "if (" + this.condicion.traducir(builder) + ") {\n" + this.instrucciones.traducir(builder, parent) + "} else " + this._else.traducir(builder, parent);
     }
 }

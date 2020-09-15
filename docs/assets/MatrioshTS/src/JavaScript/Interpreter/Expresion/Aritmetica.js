@@ -1,8 +1,4 @@
-import { Expresion } from "../Abstract/Expresion";
-import { Type } from "../TablaSimbolos/Tipo";
-import { Retorno } from "../Abstract/Retorno";
-import { NodoError, TipoError } from "../Reportes/NodoError";
-export class Aritmetica extends Expresion {
+class Aritmetica extends Expresion {
     constructor(tipoOperacion, operadorIzq, operadorDer, operadorU, unario, fila, columna) {
         super(fila, columna);
         this.unario = unario;
@@ -171,7 +167,7 @@ export class Aritmetica extends Expresion {
         }
     }
 }
-export var TipoOperacionAritmetica;
+var TipoOperacionAritmetica;
 (function (TipoOperacionAritmetica) {
     TipoOperacionAritmetica[TipoOperacionAritmetica["SUMA"] = 0] = "SUMA";
     TipoOperacionAritmetica[TipoOperacionAritmetica["RESTA"] = 1] = "RESTA";

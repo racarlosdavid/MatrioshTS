@@ -1,5 +1,4 @@
-import { Expresion } from "../Abstract/Expresion";
-export class Acceso extends Expresion {
+class Acceso extends Expresion {
     constructor(identificador, tipoacceso, accesos, fila, columna) {
         super(fila, columna);
         this.identificador = identificador;
@@ -11,7 +10,14 @@ export class Acceso extends Expresion {
         if (this.tipoacceso == TipoAcceso.ID) {
             //console.log("estas haciendo un acceso de tipo ID del id "+ this.identificador);
             if (obj != null) {
-                return obj.valor;
+                //Primero compruebo que la variable tenga un valor sino hay que reportar error de acceso a variable sin haber asignado un valor
+                if (obj.valor == "null") {
+                    er.addError(new NodoError(TipoError.SEMANTICO, "No se puede usar la variable " + this.identificador + " sin haber asignado un valor", this.fila, this.columna));
+                    return null;
+                }
+                else {
+                    return new Retorno(obj.valor, obj.tipo);
+                }
                 /*
                 if (obj instanceof ArrayTS) {
                     let a:ArrayTS = obj;
@@ -21,6 +27,7 @@ export class Acceso extends Expresion {
                 }
                 */
             }
+            console.log("fds df sdf sdf");
         }
         return null;
     }
@@ -34,7 +41,7 @@ export class Acceso extends Expresion {
         return ""; //falta implementar los otros tipos de acceso
     }
 }
-export var TipoAcceso;
+ var TipoAcceso;
 (function (TipoAcceso) {
     TipoAcceso[TipoAcceso["ID"] = 0] = "ID";
     TipoAcceso[TipoAcceso["ARRAY"] = 1] = "ARRAY";

@@ -5,11 +5,26 @@ class AST {
     getInstrucciones() {
         return this.instrucciones;
     }
-    traducir(builder) {
+    traducir(builder, parent) {
         console.log("Ok. Vamos a traducir la cadena de entrada");
+        //Primera pasada para obtener los nuevos ids los almaceno en la variable traductor de Manager.ts
+        let builder_inservible = new StringBuilder();
+        /*Para esta pasade le mando un stringbuilder solo para cumplir con el parametro y que no me genere doble salida
+        ya que en la siguiente pasada le mando el builder que va a recolectar el codigo traducido */
         for (const instr of this.instrucciones) {
             try {
-                builder.append(instr.traducir(builder));
+                if (instr instanceof Funcion) {
+                    instr.traducir(builder_inservible, parent);
+                }
+            }
+            catch (error) {
+                console.log("Error en la traduccion: " + error);
+            }
+        }
+        //Segunda pasada hago la traduccion
+        for (const instr of this.instrucciones) {
+            try {
+                builder.append(instr.traducir(builder, parent));
             }
             catch (error) {
                 console.log("Error en la traduccion: " + error);
@@ -17,48 +32,42 @@ class AST {
         }
         return builder.toString();
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         console.log("Ok. Vamos a interpretar la cadena de entrada");
-        for (const instr of this.instrucciones) {
-            try {
-                instr.ejecutar(ent, er);
-            }
-            catch (error) {
-                console.log("Error en la interpretacion: " + error);
-            }
-        }
         /*
         for(const instr of this.instrucciones){
             try {
-                if(instr instanceof Function)
-                    instr.ejecutar(ent);
+                instr.ejecutar(ent,er,consola,tsCollector);
             } catch (error) {
-                //errores.push(error);
+                console.log("Error en la interpretacion: "+error);
             }
-        }*/
-        /*
-        instrucciones.forEach((ins) -> {//Primera pasada guarda las funciones en la tabla de simbolos
+        }
+        */
+        //Primera pasada guarda las funciones en la tabla de simbolos
+        for (const ins of this.instrucciones) {
             try {
                 if (ins instanceof Funcion) {
-                    Funcion temp = (Funcion)ins;
-                    temp.ejecutar(ent, ex, g, reporte_ts, ambito, padre);
+                    ins.ejecutar(ent, er, consola, tsCollector);
                 }
-            } catch (Exception e) {
             }
-        });
-        instrucciones.forEach((ins) -> {
+            catch (error) {
+                console.log("Error en la interpretacion: Primera Pasada" + error);
+            }
+        }
+        //Segunda pasada 
+        for (const ins of this.instrucciones) {
             try {
                 if (ins instanceof Funcion) {
-                    
-                }else{
-                    Instruccion temp = (Instruccion)ins;
-                    temp.ejecutar(ent, ex, g, reporte_ts,ambito,padre);
+                    continue;
                 }
-                
-                
-            } catch (Exception e) {
+                else {
+                    ins.ejecutar(ent, er, consola, tsCollector);
+                }
             }
-        });*/
+            catch (error) {
+                console.log("Error en la interpretacion: Segunda Pasada " + error);
+            }
+        }
         return null;
     }
 }

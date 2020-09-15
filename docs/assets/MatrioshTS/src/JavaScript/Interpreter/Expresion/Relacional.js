@@ -1,4 +1,4 @@
-class Relacional extends Expresion {
+ class Relacional extends Expresion {
     constructor(tipoOperacion, operadorIzq, operadorDer, fila, columna, archivo) {
         super(fila, columna);
         this.tipoOperacion = tipoOperacion;
@@ -122,7 +122,7 @@ class Relacional extends Expresion {
         }
     }
 }
-var TipoOperacionRelacional;
+ var TipoOperacionRelacional;
 (function (TipoOperacionRelacional) {
     TipoOperacionRelacional[TipoOperacionRelacional["MAYORQUE"] = 0] = "MAYORQUE";
     TipoOperacionRelacional[TipoOperacionRelacional["MENORQUE"] = 1] = "MENORQUE";

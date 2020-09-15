@@ -7,6 +7,7 @@ import { Break } from "../SentenciasTransferencia/Break";
 import { Continue } from "../SentenciasTransferencia/Continue";
 import { Type } from "../../TablaSimbolos/Tipo";
 import { TipoError, NodoError } from "../../Reportes/NodoError";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 export class DoWhile extends Instruccion{
 
@@ -19,10 +20,10 @@ export class DoWhile extends Instruccion{
         this.condicion = condicion;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let rcondicion;
         do {    
-            let r = this.instrucciones.ejecutar(ent,er);
+            let r = this.instrucciones.ejecutar(ent,er,consola,tsCollector);
             
             if(r != null || r != undefined){
                 if(r instanceof Break){ 
@@ -41,11 +42,11 @@ export class DoWhile extends Instruccion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented.");
+        throw new Error("Method not implemented. DO WHILE");
     }
 
-    traducir(builder: StringBuilder) {
-        throw new Error("Method not implemented.");
+    traducir(builder: StringBuilder, parent: string) {
+        throw new Error("Method not implemented. DO WHILE");
     }
     
 }

@@ -6,6 +6,7 @@ import { Expresion } from "../../Abstract/Expresion";
 import { Case } from "./Case";
 import { Default } from "./Default";
 import { Break } from "../SentenciasTransferencia/Break";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 
 export class Switch extends Instruccion{
@@ -22,7 +23,7 @@ export class Switch extends Instruccion{
         this._default = _default
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let retorno = null;
         let bandera:boolean = false; // me dice si hay coincidencia o no con los casos para ejecutar el default si existe
         let continuar:boolean = false;
@@ -36,7 +37,7 @@ export class Switch extends Instruccion{
             if ((!bandera && condicionBuscada.valor==condicionCaso.valor) || continuar) {
                 bandera = true;
                 eje_default = false;
-                let r = inst.ejecutar(ent,er);
+                let r = inst.ejecutar(ent,er,consola,tsCollector);
                 if(r!=null){
                     if(r instanceof Break){
                         continuar=false;
@@ -54,7 +55,7 @@ export class Switch extends Instruccion{
         //Priguntar que se hace con el defaul si no hay breaks en el caso en el que entro -- si lo ejecuta o no lo ejecuta ;
         if(eje_default==true && ((!bandera && this._default!=null)||continuar)){ //Si no hay break en los casos ejecuta todo excepto el default ya que si entro a un case
             /*if((!bandera && this._default!=null)||continuar){ //Si no hay break en los casos ejecuta hasta el default sin importar que ya alla entrado a un case */
-            let r = this._default?.ejecutar(ent,er);
+            let r = this._default?.ejecutar(ent,er,consola,tsCollector);
             if(r!=null){
                 if(r instanceof Break){
                     retorno = null;
@@ -92,21 +93,21 @@ export class Switch extends Instruccion{
         return cont;
     }
 
-    traducir(builder: StringBuilder) { console.log("traduccion de switch");
+    traducir(builder: StringBuilder, parent: string) { 
 
         let trad = new StringBuilder();
 
-        trad.append("switch ("+this.condicion.traducir(builder)+") {");
+        trad.append("switch ("+this.condicion.traducir(builder)+") {\n");
 
         for (let instr of this._case) {
-            trad.append(instr.traducir(builder));
+            trad.append(instr.traducir(builder,parent));
         }
         
         if (this._default!=null) {
-            trad.append(this._default.traducir(builder));
+            trad.append(this._default.traducir(builder,parent));
         }
 
-        trad.append("}"); 
+        trad.append("}\n"); 
 
         return trad.toString();
 

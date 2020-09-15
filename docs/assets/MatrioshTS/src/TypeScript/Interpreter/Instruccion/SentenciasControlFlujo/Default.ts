@@ -4,6 +4,7 @@ import { ErrorManager } from "../../Reportes/ErrorManager";
 import { StringBuilder } from "../../Edd/StringBuilder";
 import { Continue } from "../SentenciasTransferencia/Continue";
 import { NodoError, TipoError } from "../../Reportes/NodoError";
+import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
 export class Default extends Instruccion{
     private instrucciones:Array<Instruccion> ;
@@ -13,10 +14,10 @@ export class Default extends Instruccion{
         this.instrucciones = instrucciones;
     }
     
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let nuevo=new Entorno(ent);
         for(let inst of this.instrucciones){
-            let r = inst.ejecutar(nuevo,er);
+            let r = inst.ejecutar(nuevo,er,consola,tsCollector);
             if(r!=null){
                 if(r instanceof Continue){
                     er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna));
@@ -43,10 +44,13 @@ export class Default extends Instruccion{
         return cont;
     }
 
-    traducir(builder: StringBuilder) {
+    traducir(builder: StringBuilder, parent: string) {
         let trad = new StringBuilder();
+
+        trad.append("default : \n");
+        
         for (let instr of this.instrucciones) {
-            trad.append(instr.traducir(builder));
+            trad.append(instr.traducir(builder,parent));
         }
         
         return trad.toString();

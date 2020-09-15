@@ -143,31 +143,35 @@ function Suma(x: number, y: number) : number {
         return 5;
     }
 }
+
+
+function abuelo(x: number, y: number):number{
+    function padre(x: number, y: number):number{
+        console.log(nieto(5,23));
+        function nieto(x: number):number{
+            console.log("hola_mundo");
+            return "hola";
+        }
+        
+        return 4 > 8 ? "hola" : "mundo";
+    }
+    return 5>4;
+}
+
 */
 
-if (5<1){
-    console.log("es menor");
-}else if (10>13) {
-    console.log("10 SI ES MAYOR QUE 13");
-}else if (1330>13) {
-    console.log("15 SI ES MAYOR QUE 13");
-}else{
-    console.log(`Ninguno es valido {alfa}`);
+
+function hofstaderMasculino(n: number): number {
+    if (n < 0) {
+        return 0;
+    } else {
+        if (n != 0) {
+            return n - hofstaderMasculino(n - 1);
+        } else {
+            return 0;
+        }
+    }
 }
 
-
-switch (4) {
-    case 0:
-        console.log("Result: 0 ");
-        break;
-    
-    case 5:
-        console.log("Result: 5");
-        
-    case 10:
-        console.log("Result: 10");
-        
-    default:
-        console.log("No such day exists!");
-        break;
-}
+    console.log(hofstaderMasculino(1238)); //75
+  

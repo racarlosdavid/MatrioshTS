@@ -1,4 +1,4 @@
-export class TSCollector {
+class TSCollector {
     constructor() {
         this.ts = new Map();
     }
@@ -13,7 +13,6 @@ export class TSCollector {
     }
     GetValue(id) {
         id = id.toLowerCase();
-        let temp = null;
         if (this.ts.has(id)) {
             let s = this.ts.get(id);
             return s;

@@ -1,4 +1,4 @@
-class NodoError {
+ class NodoError {
     constructor(tipo, descripcion, fila, columna) {
         this.tipo = tipo;
         this.descripcion = descripcion;
@@ -40,7 +40,7 @@ class NodoError {
         }
     }
 }
-var TipoError;
+ var TipoError;
 (function (TipoError) {
     TipoError[TipoError["LEXICO"] = 0] = "LEXICO";
     TipoError[TipoError["SINTACTICO"] = 1] = "SINTACTICO";

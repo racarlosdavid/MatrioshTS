@@ -1,4 +1,4 @@
-var Type;
+ var Type;
 (function (Type) {
     Type[Type["NUMBER"] = 0] = "NUMBER";
     Type[Type["STRING"] = 1] = "STRING";
@@ -9,7 +9,7 @@ var Type;
     Type[Type["TYPE"] = 6] = "TYPE";
     Type[Type["INDEF"] = 7] = "INDEF";
 })(Type || (Type = {}));
-class Tipo {
+ class Tipo {
     constructor(tipo) {
         this.esArreglo = false;
         this.tipo = tipo;

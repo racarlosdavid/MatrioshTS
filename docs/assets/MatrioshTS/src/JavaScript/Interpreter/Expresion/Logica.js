@@ -1,8 +1,4 @@
-import { Expresion } from "../Abstract/Expresion";
-import { Retorno } from "../Abstract/Retorno";
-import { Type } from "../TablaSimbolos/Tipo";
-import { NodoError, TipoError } from "../Reportes/NodoError";
-export class Logica extends Expresion {
+ class Logica extends Expresion {
     constructor(tipoOperacion, operadorIzq, operadorDer, operadorU, not, fila, columna) {
         super(fila, columna);
         this.tipoOperacion = tipoOperacion;
@@ -102,7 +98,7 @@ export class Logica extends Expresion {
         }
     }
 }
-export var TipoOperacionLogica;
+ var TipoOperacionLogica;
 (function (TipoOperacionLogica) {
     TipoOperacionLogica[TipoOperacionLogica["AND"] = 0] = "AND";
     TipoOperacionLogica[TipoOperacionLogica["OR"] = 1] = "OR";

@@ -1,9 +1,8 @@
-import { Instruccion } from "../../Abstract/Instruccion";
-export class Continue extends Instruccion {
+class Continue extends Instruccion {
     constructor(fila, columna) {
         super(fila, columna);
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector) {
         return this;
     }
     getDot(builder, parent, cont) {
@@ -12,7 +11,7 @@ export class Continue extends Instruccion {
         builder.append(parent + " -> " + nodo + ";\n");
         return cont;
     }
-    traducir(builder) {
-        return "continue;";
+    traducir(builder, parent) {
+        return "continue;\n";
     }
 }

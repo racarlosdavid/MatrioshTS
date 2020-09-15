@@ -1,4 +1,4 @@
- class Ternario extends Expresion {
+class Ternario extends Expresion {
     constructor(condicion, retornarTrue, retornarFalse, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;

@@ -1,4 +1,4 @@
- class Else extends Instruccion {
+class Else extends Instruccion {
     constructor(instrucciones, fila, columna) {
         super(fila, columna);
         this.instrucciones = instrucciones;

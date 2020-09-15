@@ -1,4 +1,4 @@
- class Declaracion extends Instruccion {
+class Declaracion extends Instruccion {
     constructor(tipoDeclaracion, identificador, tipo, dimensiones, valor, fila, columna) {
         super(fila, columna);
         this.tipoDeclaracion = tipoDeclaracion;

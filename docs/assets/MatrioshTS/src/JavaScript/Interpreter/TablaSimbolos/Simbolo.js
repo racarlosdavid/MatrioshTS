@@ -1,4 +1,4 @@
- class Simbolo {
+class Simbolo {
     constructor(id, valor, tipo, dimensiones, tipodeclaracion) {
         this.id = id;
         this.valor = valor;

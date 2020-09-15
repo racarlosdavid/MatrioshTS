@@ -1,4 +1,4 @@
-class Incremento extends Instruccion {
+ class Incremento extends Instruccion {
     constructor(identificador, fila, columna) {
         super(fila, columna);
         this.identificador = identificador;

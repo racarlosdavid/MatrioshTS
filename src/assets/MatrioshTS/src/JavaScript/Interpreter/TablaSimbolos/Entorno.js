@@ -120,4 +120,36 @@ class Entorno {
         }
         return tabla;
     }
+    imprimir() {
+        let tabla = [];
+        if (this.ts.size != 0) {
+            console.log("ID", "TIPIO", "AMBITO", "PADRE", "DESCRIPCION", "\n");
+            this.ts.forEach(function (valor, clave) {
+                //console.log(clave + " = " + valor);
+                let nombre = clave + "";
+                let tipo = "null";
+                let sim = valor;
+                if (sim instanceof Funcion) {
+                    let f = sim;
+                    tipo = "Funcion";
+                }
+                else if (sim instanceof Simbolo) {
+                    let simbol = sim;
+                    let val = simbol.valor;
+                    //if (val instanceof ArrayTS) {
+                    //Arreglo ar = (Arreglo)val;
+                    //tipo = "Arreglo: "+ar.getTipo();
+                    //}else{
+                    tipo = sim.getTipoToString();
+                    //}
+                }
+                let descripcion = valor.valor.toString();
+                console.log(nombre, tipo, "ambito", "padre", descripcion, "\n");
+            });
+        }
+        else {
+            console.log("No hay nada para reportar la tabla de simbolos esta vacia");
+        }
+        return tabla;
+    }
 }

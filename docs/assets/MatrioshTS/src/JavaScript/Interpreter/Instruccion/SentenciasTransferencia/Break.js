@@ -1,4 +1,4 @@
- class Break extends Instruccion {
+class Break extends Instruccion {
     ejecutar(ent, er, consola, tsCollector) {
         return this;
     }

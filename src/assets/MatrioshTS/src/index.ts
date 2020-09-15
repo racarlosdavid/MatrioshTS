@@ -206,7 +206,6 @@ import { Dot } from "./TypeScript/Interpreter/Reportes/Dot";
 import { TSCollector } from "./TypeScript/Interpreter/TablaSimbolos/TSCollector";
 
 const parser = require('./Gramatica/InterpreteGrammar');
-const parser_trad = require('./Gramatica/Traductor');
 const fs = require('fs');
 
 try {
@@ -252,8 +251,6 @@ function interpretar() {
             Manager.getManager().sizeActual.push(0);
             const entrada = fs.readFileSync('./entrada.txt');
             let ast = parser.parse(entrada.toString()); 
-          
-            
             
             const ent = new Entorno(null);
             const er = new ErrorManager(); 

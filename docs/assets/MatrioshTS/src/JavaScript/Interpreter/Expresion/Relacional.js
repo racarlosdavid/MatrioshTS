@@ -106,7 +106,7 @@
     getOperacionSimbolo(t) {
         switch (t) {
             case TipoOperacionRelacional.DIFERENTE:
-                return "<>";
+                return "!=";
             case TipoOperacionRelacional.IGUALQUE:
                 return "==";
             case TipoOperacionRelacional.MAYORIGUAL:

@@ -1,4 +1,4 @@
- class Return extends Instruccion {
+class Return extends Instruccion {
     constructor(valor, fila, columna) {
         super(fila, columna);
         this.valor = valor;

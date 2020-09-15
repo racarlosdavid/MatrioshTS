@@ -1,4 +1,4 @@
- class Default extends Instruccion {
+class Default extends Instruccion {
     constructor(instrucciones, fila, columna) {
         super(fila, columna);
         this.instrucciones = instrucciones;

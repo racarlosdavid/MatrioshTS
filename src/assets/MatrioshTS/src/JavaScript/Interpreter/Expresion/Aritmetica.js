@@ -167,7 +167,7 @@ class Aritmetica extends Expresion {
         }
     }
 }
-var TipoOperacionAritmetica;
+ var TipoOperacionAritmetica;
 (function (TipoOperacionAritmetica) {
     TipoOperacionAritmetica[TipoOperacionAritmetica["SUMA"] = 0] = "SUMA";
     TipoOperacionAritmetica[TipoOperacionAritmetica["RESTA"] = 1] = "RESTA";

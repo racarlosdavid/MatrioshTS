@@ -26,26 +26,16 @@ export class Llamada extends Instruccion {
         if (funcion!=null) {
             let nuevo:Entorno = new Entorno(ent);
             //tsCollector.addTS(this.identificador,new Entorno(ent));
-            let valores:any = [];
-            this.argumentos.forEach(element => {
-                valores.push(element.ejecutar(ent,er));
-            });
+       
             if (funcion.parametros.length == this.argumentos.length) {
                 for (let index = 0; index < this.argumentos.length; index++) {
                     const param:Declaracion = funcion.parametros[index];
-                    //const v = this.argumentos[index].ejecutar(ent,er);
-                    if (valores[index].tipo != param.tipo) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
-                        er.addError(new NodoError(TipoError.SEMANTICO,"El tipo del parametro "+valores[index].tipo+" no coinciden con el tipo "+param.tipo+" de la funcion", this.fila, this.columna));
+                    let v = this.argumentos[index].ejecutar(ent,er);
+                    if (v.tipo != param.tipo) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
+                        er.addError(new NodoError(TipoError.SEMANTICO,"El tipo del parametro "+v.tipo+" no coinciden con el tipo "+param.tipo+" de la funcion", this.fila, this.columna));
                         return null; 
                     }
-                    //Le paso los valores y el tipo de declaracion
-                    //param.valor = this.argumentos[index];
-                    //param.tipoDeclaracion = TipoDeclaracion.LET;
-                    //Ejecuto la declaracion para que se guarden en la tabla de simbolos de la funcion
-                    //param.ejecutar(nuevo,er,consola,tsCollector); 
-                    nuevo.Add(param.identificador,valores[index].valor,param.tipo!=null?param.tipo:Type.INDEF,param.dimensiones,param.tipoDeclaracion);
-                    
-                    
+                    nuevo.Add(param.identificador,v.valor,param.tipo!=null?param.tipo:Type.INDEF,param.dimensiones,param.tipoDeclaracion);
                     
                 }
             } else {

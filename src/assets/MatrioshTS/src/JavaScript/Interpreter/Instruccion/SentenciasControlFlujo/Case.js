@@ -1,4 +1,4 @@
- class Case extends Instruccion {
+class Case extends Instruccion {
     constructor(condicion, instrucciones, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;

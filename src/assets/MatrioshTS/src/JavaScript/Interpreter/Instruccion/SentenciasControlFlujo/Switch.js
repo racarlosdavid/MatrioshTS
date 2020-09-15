@@ -1,4 +1,4 @@
- class Switch extends Instruccion {
+class Switch extends Instruccion {
     constructor(condicion, _case, _default, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;

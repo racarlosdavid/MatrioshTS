@@ -1,4 +1,4 @@
- class Bloque extends Instruccion {
+class Bloque extends Instruccion {
     constructor(instrucciones, linea, columna) {
         super(linea, columna);
         this.instrucciones = instrucciones;

@@ -35,6 +35,6 @@ class If extends Instruccion {
         return cont;
     }
     traducir(builder, parent) {
-        return "if (" + this.condicion.traducir(builder) + ") {" + this.instrucciones.traducir + "}\n";
+        return "if (" + this.condicion.traducir(builder) + ") {" + this.instrucciones.traducir(builder, parent) + "}\n";
     }
 }

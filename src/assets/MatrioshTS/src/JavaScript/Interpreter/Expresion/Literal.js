@@ -1,4 +1,4 @@
- class Literal extends Expresion {
+class Literal extends Expresion {
     constructor(valor, tipo, tipoString, fila, columna) {
         super(fila, columna);
         this.valor = valor;

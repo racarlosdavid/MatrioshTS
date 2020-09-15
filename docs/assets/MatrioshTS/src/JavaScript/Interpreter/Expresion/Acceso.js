@@ -13,9 +13,10 @@ class Acceso extends Expresion {
                 //Primero compruebo que la variable tenga un valor sino hay que reportar error de acceso a variable sin haber asignado un valor
                 if (obj.valor == "null") {
                     er.addError(new NodoError(TipoError.SEMANTICO, "No se puede usar la variable " + this.identificador + " sin haber asignado un valor", this.fila, this.columna));
-                    return null;
+                    return "null";
                 }
                 else {
+                    //console.log(obj.valor + " " + obj.tipo);
                     return new Retorno(obj.valor, obj.tipo);
                 }
                 /*
@@ -27,9 +28,8 @@ class Acceso extends Expresion {
                 }
                 */
             }
-            console.log("fds df sdf sdf");
         }
-        return null;
+        return "null";
     }
     getDot(builder, parent, cont) {
         return cont;

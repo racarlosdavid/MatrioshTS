@@ -27,7 +27,7 @@ class Literal extends Expresion {
         return this.valor.toString();
     }
 }
- var TipoString;
+export var TipoString;
 (function (TipoString) {
     TipoString[TipoString["STRING1"] = 0] = "STRING1";
     TipoString[TipoString["STRING2"] = 1] = "STRING2";

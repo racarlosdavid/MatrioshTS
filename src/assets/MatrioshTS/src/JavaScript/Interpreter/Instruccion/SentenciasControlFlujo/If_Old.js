@@ -1,4 +1,4 @@
-class If extends Instruccion {
+class If_Old extends Instruccion {
     constructor(condicion, instrucciones, ins_else, tipo, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;

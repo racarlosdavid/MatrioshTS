@@ -1,4 +1,4 @@
- class Relacional extends Expresion {
+class Relacional extends Expresion {
     constructor(tipoOperacion, operadorIzq, operadorDer, fila, columna, archivo) {
         super(fila, columna);
         this.tipoOperacion = tipoOperacion;

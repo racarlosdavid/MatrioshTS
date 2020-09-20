@@ -6,6 +6,8 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { Manager } from "../Reportes/Manager";
 import { Funcion } from "../Instruccion/Funcion";
+import { Return } from "../Instruccion/SentenciasTransferencia/Return";
+import { NodoError, TipoError } from "../Reportes/NodoError";
 
 
 export class AST {
@@ -72,6 +74,9 @@ export class AST {
         for (const ins of this.instrucciones) {
             try {
                 if (ins instanceof Funcion) {
+                    continue;
+                }if (ins instanceof Return){
+                    er.addError(new NodoError(TipoError.SEMANTICO,"Return fuera de funcion ", ins.fila, ins.columna));
                     continue;
                 }else{
                     ins.ejecutar(ent,er,consola,tsCollector);

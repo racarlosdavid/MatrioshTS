@@ -33,7 +33,6 @@ class Llamada extends Instruccion {
                         return result;
                     }
                     else {
-                        console.log("error en el retorno de llamada");
                         er.addError(new NodoError(TipoError.SEMANTICO, "El tipo de retorno " + result.tipo + " no coinciden con el tipo de retorno" + funcion.tipoRetorno + " de la funcion", this.fila, this.columna));
                         return null;
                     }

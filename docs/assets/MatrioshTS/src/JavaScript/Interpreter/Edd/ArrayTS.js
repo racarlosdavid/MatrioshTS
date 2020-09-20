@@ -2,32 +2,41 @@ class ArrayTS extends Expresion {
     constructor(valores, fila, columna) {
         super(fila, columna);
         this.valores = valores;
-        this.arreglo = [];
     }
     ejecutar(ent, er) {
-        return this;
-    }
-    /*
-        imprimirArray():string {
-            if (this.valores.length == 0) {
-                return "[]";
+        let lista = [];
+        let lista_tipos = [];
+        if (this.valores.length != 0) {
+            //console.log(this.valores);
+            for (let i = 0; i < this.valores.length; i++) {
+                const element = this.valores[i].ejecutar(ent, er);
+                lista.push(element.valor);
+                lista_tipos.push(element.tipo);
             }
-            let sb = new StringBuilder();
-            sb.append("[");
-            let s:string = this.valores[0];
-            sb.append(s); consoloe.log(this.valores[1]);
-            for (int t = 1; t < valores.size(); t++) {
-                sb.append(",").append(valores.get(t).toString());
+            let bandera = true;
+            for (let i = 0; i < lista_tipos.length - 1; i++) {
+                if (lista_tipos[i] == lista_tipos[i + 1]) {
+                    console.log(lista_tipos[i] + " " + lista_tipos[i + 1]);
+                    continue;
+                }
+                else {
+                    bandera = false;
+                    break;
+                }
             }
-            sb.append("]");
-            return sb.toString();
-           
+            if (!bandera) {
+                er.addError(new NodoError(TipoError.SEMANTICO, "Los valores del arreglo, son de diferente tipo de dato ", this.fila, this.columna));
+                return "null";
+            }
+            return new Retorno(new Arreglo(lista, lista_tipos[0]), lista_tipos[0]);
         }
-     */
+        return new Retorno(new Arreglo(lista, Type.ARRAY), Type.ARRAY);
+    }
     getDot(builder, parent, cont) {
-        throw new Error("Method not implemented.");
+        console.log("Method not implemented. ARRAY TS");
+        return cont;
     }
     traducir(builder) {
-        throw new Error("Method not implemented.");
+        throw new Error("Method not implemented. ARRAY TS");
     }
 }

@@ -1,4 +1,4 @@
- class Logica extends Expresion {
+class Logica extends Expresion {
     constructor(tipoOperacion, operadorIzq, operadorDer, operadorU, not, fila, columna) {
         super(fila, columna);
         this.tipoOperacion = tipoOperacion;
@@ -31,17 +31,17 @@
         }
     }
     and(left, right, ent, er) {
-        let tipoResultante = this.getTipoResultante(left.tipo, right.tipo);
-        if (tipoResultante == Type.BOOLEAN) {
-            return new Retorno((left.valor && right.valor), tipoResultante);
+        //let tipoResultante = this.getTipoResultante(left.tipo,right.tipo);
+        if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
+            return new Retorno((left.valor && right.valor), left.tipo);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el and entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
         return null;
     }
     or(left, right, ent, er) {
-        let tipoResultante = this.getTipoResultante(left.tipo, right.tipo);
-        if (tipoResultante == Type.BOOLEAN) {
-            return new Retorno((left.valor || right.valor), tipoResultante);
+        //let tipoResultante = this.getTipoResultante(left.tipo,right.tipo);
+        if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
+            return new Retorno((left.valor || right.valor), left.tipo);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el or entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
         return null;

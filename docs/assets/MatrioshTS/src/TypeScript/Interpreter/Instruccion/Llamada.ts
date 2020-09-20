@@ -49,7 +49,7 @@ export class Llamada extends Instruccion {
                     //Compruebo que el tipo de retorno sea igual que el tipo de retorno de la funcion
                     if (result.tipo == funcion.tipoRetorno || funcion.tipoRetorno == null) {
                         return result;
-                    } else { console.log("error en el retorno de llamada");
+                    } else { 
                         er.addError(new NodoError(TipoError.SEMANTICO,"El tipo de retorno "+result.tipo+" no coinciden con el tipo de retorno"+funcion.tipoRetorno+" de la funcion", this.fila, this.columna));
                         return null; 
                     }

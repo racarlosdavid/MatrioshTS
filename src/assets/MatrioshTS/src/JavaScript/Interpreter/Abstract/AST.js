@@ -60,6 +60,10 @@ class AST {
                 if (ins instanceof Funcion) {
                     continue;
                 }
+                if (ins instanceof Return) {
+                    er.addError(new NodoError(TipoError.SEMANTICO, "Return fuera de funcion ", ins.fila, ins.columna));
+                    continue;
+                }
                 else {
                     ins.ejecutar(ent, er, consola, tsCollector);
                 }

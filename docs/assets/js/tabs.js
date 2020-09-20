@@ -73,7 +73,7 @@ function nuevaPestaña() {
       mode: "modo",
       theme : "base16-dark",
   });
-  tempo.setSize(null,655);
+  tempo.setSize(null,420);
   
   
   //Guardo la referencia del nuevo textmirror para la pestaña nueva
@@ -81,5 +81,44 @@ function nuevaPestaña() {
  
   document.getElementById("button" + tabName).click();
   tempo.setValue("\n\n\n\n\n\n\n\n\n\n");
+}
+
+
+function nuevaPestañaTraducido(code) { 
+  var tabLinks = document.getElementById("tabslinks");
+  var tabs = document.getElementById("tabs");
+  var tabName = "Codigo Traducido";
+  //Creacion del boton
+  var btn = document.createElement("BUTTON");
+  btn.innerHTML = tabName;
+  btn.onclick = function () { mostarPestania(event, tabName) };
+  btn.className = "tablinks";
+  btn.id = "button" + tabName;
+  tabLinks.appendChild(btn);
+  //Creacion del cuadro de texto
+  var divTab = document.createElement("DIV");
+  divTab.id = tabName;
+  divTab.className = "tabcontent"
+  var textArea = document.createElement("TEXTAREA");//Creacion del textarea
+  textArea.className = "tabedText";
+  textArea.id = "text" + tabName;
+  var identificador = "text" + tabName;
+  divTab.appendChild(textArea);
+  tabs.appendChild(divTab);
+
+  var tempo = CodeMirror.fromTextArea(document.getElementById(identificador),{
+      lineNumbers : true,
+      mode: "modo",
+      theme : "base16-dark",
+  });
+  tempo.setSize(null,420);
+  
+  
+  //Guardo la referencia del nuevo textmirror para la pestaña nueva
+  textMap.set(identificador,tempo);
+ 
+  document.getElementById("button" + tabName).click();
+  tempo.setValue("\n\n\n\n\n\n\n\n\n\n");
+  tempo.setValue(code);
 }
 

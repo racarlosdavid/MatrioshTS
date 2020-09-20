@@ -1,4 +1,4 @@
-class StringBuilder {
+ class StringBuilder {
     constructor() {
         this.cadena = new Array();
     }

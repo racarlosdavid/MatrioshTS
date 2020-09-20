@@ -5,7 +5,12 @@ class Log extends Instruccion {
     }
     ejecutar(ent, er, consola, tsCollector) {
         let val = this.valor.ejecutar(ent, er);
-        consola.append(" > " + val.valor);
+        if (val.valor instanceof Arreglo) {
+            consola.append(" > " + val.valor.imprimirArreglo() + "\n");
+        }
+        else {
+            consola.append(" > " + val.valor + "\n");
+        }
         return null;
     }
     getDot(builder, parent, cont) {

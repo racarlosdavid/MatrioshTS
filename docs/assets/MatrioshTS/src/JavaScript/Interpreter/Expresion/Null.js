@@ -1,4 +1,4 @@
- class Null extends Expresion {
+class Null extends Expresion {
     constructor(fila, columna) {
         super(fila, columna);
     }

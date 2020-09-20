@@ -4,6 +4,7 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { Expresion } from "../Abstract/Expresion";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { Arreglo } from "../Edd/Arreglo";
 
 
 
@@ -18,7 +19,11 @@ export class Log extends Instruccion{
 
     ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let val = this.valor.ejecutar(ent,er);
-        consola.append(" > "+val.valor);
+        if (val.valor instanceof Arreglo) {
+            consola.append(" > "+val.valor.imprimirArreglo()+"\n");
+        } else {
+            consola.append(" > "+val.valor+"\n"); 
+        }
         return null;
     }
     

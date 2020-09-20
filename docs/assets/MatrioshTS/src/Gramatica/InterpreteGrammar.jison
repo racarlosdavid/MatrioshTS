@@ -40,20 +40,9 @@
 "for"			        return 'pr_for';
 "while"			        return 'pr_while';
 "do"			        return 'pr_do';
-
 "return"		        return 'pr_return'; 
+"type"		        	return 'pr_type';
 
-"type"		        return 'pr_type';
-
-/*
-"private"		        return 'pr_private';
-"define"		        return 'pr_define';
-"as"			        return 'pr_as';
-"strc"			        return 'pr_strc';
-"try"			        return 'pr_try';
-"catch"			        return 'pr_catch';
-"throw"			        return 'pr_throw';
-*/
 
 //-----> Simbolos Aritmeticos
 "++"                    return 'inc';
@@ -133,6 +122,7 @@
 
 %{
 	
+	
 	const {AST} = require('../TypeScript/Interpreter/Abstract/AST');
 
 	const {Acceso,TipoAcceso} = require('../TypeScript/Interpreter/Expresion/Acceso');
@@ -140,19 +130,22 @@
 	const {Relacional,TipoOperacionRelacional} = require('../TypeScript/Interpreter/Expresion/Relacional');
 	const {Logica,TipoOperacionLogica} = require('../TypeScript/Interpreter/Expresion/Logica');
 	const {Literal,TipoString} = require('../TypeScript/Interpreter/Expresion/Literal');
+	const {Id} = require('../TypeScript/Interpreter/Expresion/Id');
 	const {Ternario} = require('../TypeScript/Interpreter/Expresion/Ternario');
 	const {Null} = require('../TypeScript/Interpreter/Expresion/Null');
 
 	const {Bloque} = require('../TypeScript/Interpreter/Instruccion/Bloque');
 	const {Funcion} = require('../TypeScript/Interpreter/Instruccion/Funcion');
 	const {Llamada} = require('../TypeScript/Interpreter/Instruccion/Llamada');
+	//const {If_Old,TipoIf} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/If_Old');
 	const {If} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/If');
 	const {IfElse} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/IfElse');
 	const {Else} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Else');
 	const {While} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/While');
 	const {DoWhile} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/DoWhile');
 	const {Declaracion,TipoDeclaracion} = require('../TypeScript/Interpreter/Instruccion/Declaracion');
-const {For} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/For');
+	const {Asignacion} = require('../TypeScript/Interpreter/Instruccion/Asignacion');
+	const {For} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/For');
 
 	const {Switch} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Switch');
 	const {Case} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Case');
@@ -163,6 +156,7 @@ const {For} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFl
 
 	const {Log} = require('../TypeScript/Interpreter/FuncionesNativas/Log');
 	const {Incremento} = require('../TypeScript/Interpreter/FuncionesNativas/Incremento');
+	const {Decremento} = require('../TypeScript/Interpreter/FuncionesNativas/Decremento');
 
 	const {Manager} = require('../TypeScript/Interpreter/Reportes/Manager');
 	const {NodoError,TipoError} = require('../TypeScript/Interpreter/Reportes/NodoError');
@@ -176,7 +170,7 @@ const {For} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFl
     /*	
 	const LlamadaE = require('../JavaScript/Expresion/LlamadaE');
 	const Acceso = require('../JavaScript/Expresion/Acceso');
-	const Asignacion = require('../JavaScript/Instruccion/Asignacion');
+	
 	const LlamadaI = require('../JavaScript/Instruccion/LlamadaI');
     */
 
@@ -193,18 +187,22 @@ const {For} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFl
 %left pregunta
 
 //Operaciones logicas
+//%left or
+//%left and
+//%right not
 %left or
 %left and
-%right not
 
 //Operaciones Relacionales
 %left diferente,igualque
-%left  menorque,mayorque,menorigual,mayorigual
+%left menorque,mayorque,menorigual,mayorigual
 
 //Operaciones numericas
 %left mas, menos
 %left por, div
 %left pot,mod
+
+%right not
 
 %right umenos
 %left parizq,parder
@@ -224,8 +222,10 @@ BLOQUE : llaveizq LISTA_INSTRUCCIONES llaveder  { $$ = new Bloque($2, @1.first_l
 INSTRUCCION : FUNCION	{ $$ = $1; } 
 	| CONSOLELOG 		{ $$ = $1; } 
 	| DECLARACION		{ $$ = $1; } 
+	| ASIGNACION        { $$ = $1; }     
 	| IF 				{ $$ = $1; } 
-	| TYPES 			{ $$ = $1; } 
+	| TYPES 			{ $$ = $1; }
+	| FOR  				{ $$ = $1; }
 	| WHILE 			{ $$ = $1; } 
 	| DOWHILE 			{ $$ = $1; } 
 	| SWITCH 			{ $$ = $1; } 
@@ -234,14 +234,21 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
 	| RETURN			{ $$ = $1; } 
 	| INC				{ $$ = $1; } 
 	| LLAMADA           { $$ = $1; } 
-	| error ptcoma { Manager.getManager().addError(new NodoError(TipoError.SINTACTICO, `El caracter ${yytext} no se esperaba en esta posicion`, this._$.first_line, this._$.first_column)); } ;
+	| error ptcoma {	Console.log(` Error Sintactico se recupero con ${yytext} en la posicion`,@1.last_line,@1.last_column); 
+					//Para reportar el error compilar el archivo jison y en el .js buscar -> if (!recovering) { y pegar el codigo hasta de ultimo de ese if
+					//Manager.getManager().addError(new NodoError(TipoError.SINTACTICO, `El caracter ${(this.terminals_[symbol] || symbol)} no se esperaba en esta posicion`, yyloc.last_line, yyloc.last_column));
+                } ;
 
 
 TYPES : pr_type identificador igual llaveizq L_PARAMETROS llaveder ptcoma { $$ = new TypeTS($2,$5,@1.first_line,@1.first_column); } ;
 
 RETURN : pr_return E ptcoma { $$ = new Return($2,@1.first_line,@1.first_column); } ;
 
-INC : identificador inc ptcoma {  $$ = new Incremento($1, @1.first_line, @1.first_column); } ;
+INC : identificador inc ptcoma {  $$ = new Incremento($1, @1.first_line, @1.first_column); } 
+	| identificador inc  {  $$ = new Incremento($1, @1.first_line, @1.first_column); } ;
+
+DEC : identificador dec ptcoma {  $$ = new Decremento($1, @1.first_line, @1.first_column); } 
+	| identificador dec  {  $$ = new Decremento($1, @1.first_line, @1.first_column); } ;
 
 IF : pr_if parizq E parder BLOQUE	{ $$ = new If($3,$5,@1.first_line,@1.first_column); }
 	| pr_if parizq E parder BLOQUE ELSE    { $$ = new IfElse($3,$5,$6,@1.first_line,@1.first_column); } ;
@@ -249,8 +256,16 @@ IF : pr_if parizq E parder BLOQUE	{ $$ = new If($3,$5,@1.first_line,@1.first_col
 ELSE : pr_else BLOQUE { $$ = new Else($2,@1.first_line,@1.first_column); }
     | pr_else IF { $$ = $2; } ;
 
+FOR : pr_for parizq FOR_D E ptcoma FOR_A parder BLOQUE { $$ = new For($3,$4,$6,$8,@1.first_line,@1.first_column); } ;
+
+FOR_D : DECLARACION { $$ = $1; }
+	| ASIGNACION { $$ = $1; } ;
+
+FOR_A : INC  { $$ = $1; }
+	| DEC { $$ = $1; }
+	| ASIGNACION { $$ = $1; };
 /*
-IF : pr_if parizq E parder BLOQUE ELSE	{ $$ = new If($3,$5,$6.valor,$6.tipo,@1.first_line,@1.first_column); };
+IF : pr_if parizq E parder BLOQUE ELSE	{ $$ = new If_Old($3,$5,$6.valor,$6.tipo,@1.first_line,@1.first_column); };
 
 ELSE : pr_else BLOQUE	{ $$ = {tipo:TipoIf.IFELSE, valor:$2}; } 
 	| pr_else IF   	{ $$ = {tipo:TipoIf.IFELSEIF, valor:$2}; } 
@@ -325,49 +340,16 @@ LLAMADA : identificador parizq parder ptcoma	{ $$ = new Llamada($1,[],@1.first_l
 	| identificador parizq parder 				{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
 	| identificador parizq L_E parder ptcoma 	{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
 	| identificador parizq L_E parder 			{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } ;
-/*
-
-INSTRUCCION : 
-	| LLAMADAI          { $$ = $1; }
- 	| ASIGNACION        { $$ = $1; }     
-
-L_ID : L_ID coma identificador	{ $1.push($3); $$=$1; }
-	| identificador				{ $$ = [$1]; } ;
-
-TYPE: TIPO corizq corder { $1.setEsArreglo(true); $$=$1;  }
-	| TIPO { $$=$1; } ;
-
-ASIGNACION : identificador igual E ptcoma { $$ = new Asignacion.Asignacion($1,[],$3,@1.first_line,@1.first_column,"archivo.nombre"); }  ;
-
-EXP : CASTEO { $$ = $1; }
-	| E { $$ = $1; } ;
-
-CASTEO : parizq pr_integer parder E { $$ = new CasteoExplicito.CasteoExplicito(CasteoExplicito.TipoCasteo.TO_INTEGER,$4,@1.first_line,@1.first_column,"archivo.nombre"); }
-	| parizq pr_char parder E { $$ = new CasteoExplicito.CasteoExplicito(CasteoExplicito.TipoCasteo.TO_CHAR,$4,@1.first_line,@1.first_column,"archivo.nombre"); }
-	| parizq pr_do parder E  { $$ = new CasteoExplicito.CasteoExplicito(CasteoExplicito.TipoCasteo.TO_DOUBLE,$4,@1.first_line,@1.first_column,"archivo.nombre"); } ;
-
-E : 
-	| identificador punto L_ACCESO { $$ = new Acceso.Acceso($1,$3,@1.first_line,@1.first_column,"archivo.nombre"); }
-	 ;
-
-L_ACCESO : L_ACCESO punto ACCESO	{ $1.push($3); $$=$1 }
-    | ACCESO				{ $$ = [$1]; } ;
-
-ACCESO : LLAMADAE          { $$ = $1; }
-	;
-
-
-ya no se si lo voy a usar
-DECLARACION :TYPE L_ID igual EXP ptcoma { $$ = new Declaracion(Declaracion.TipoModificador.VAR,Declaracion.TipoDeclaracion.TIPO1,$1,$2,$4,@1.first_line,@1.first_column,"archivo.nombre"); }
-	|
-*/
 
 DECLARACION : pr_const identificador T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,0,$5,@1.first_line,@1.first_column); }
 	| pr_const identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,$4,$6,@1.first_line,@1.first_column); }
     | pr_let identificador T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,0,$5,@1.first_line,@1.first_column); }
-   	| pr_let identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,$5,@1.first_line,@1.first_column); }
+   	| pr_let identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,$6,@1.first_line,@1.first_column); }
     | pr_let identificador T ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,0,null,@1.first_line,@1.first_column); }
 	| pr_let identificador T DIMENSIONES ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,null,@1.first_line,@1.first_column); } ;
+
+ASIGNACION : identificador L_ACCESO igual E ptcoma { $$ = new Asignacion($1,$2,$4,@1.first_line,@1.first_column); } 
+    |  identificador igual E ptcoma   { $$ = new Asignacion($1,[],$3,@1.first_line,@1.first_column); } ;
 
 DIMENSIONES : DIMENSIONES corizq corder	{ $1 = $1+1; $$=$1 }
     | corizq corder				{ $$ = 1; } ;
@@ -383,11 +365,12 @@ E : ARITMETICA      	{ $$ = $1; }
     | LOGICA			{ $$ = $1; } 
 	| parizq E parder	{ $$ = $2; }
 	| E pregunta E dospuntos E { $$ = new Ternario($1,$3,$5,@1.first_line,@1.first_column); }  
-	| corizq L_E corder { $$ = new ArrayTS($1,@1.first_line,@1.first_column);}
-	| corizq corder 	{ $$ = new ArrayTS([],@1.first_line,@1.first_column);}
-	| identificador 	{ $$ = new Acceso($1,TipoAcceso.ID,[],@1.first_line,@1.first_column); }
+	| identificador 	{ $$ = new Id($1,@1.first_line,@1.first_column); }
+	| identificador L_ACCESO { $$ = new Acceso($1,$2,@1.first_line,@1.first_column); }
 	| identificador parizq parder { $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
 	| identificador parizq L_E parder { $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
+	| corizq L_E corder { $$ = new ArrayTS($2,@1.first_line,@1.first_column);}
+	| corizq corder 	{ $$ = new ArrayTS([],@1.first_line,@1.first_column);}
 	| entero        	{ $$ = new Literal(Number(yytext),Type.NUMBER,TipoString.INDEF,@1.first_line,@1.first_column); } 
 	| decimal	    	{ $$ = new Literal(Number(yytext),Type.NUMBER,TipoString.INDEF,@1.first_line,@1.first_column); }
 	| string1	    	{ $$ = new Literal(String(yytext),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column); }
@@ -418,4 +401,13 @@ LOGICA : E and E	{ $$ = new Logica(TipoOperacionLogica.AND,$1,$3,null,false,@1.f
 	| not E         { $$ = new Logica(TipoOperacionLogica.NOT,null,null,$2,true,@1.first_line,@1.first_column); } ;
 
 L_E : L_E coma E  { $1.push($3); $$=$1; }
- | E              { $$ = [$1]; } ;
+	| E              { $$ = [$1]; } ;
+
+L_ACCESO : L_ACCESO ACCESO	{ $1.push($2); $$=$1 }
+    | ACCESO				{ $$ = [$1]; } ;
+
+ACCESO : identificador parizq parder { $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
+	| identificador parizq L_E parder { $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
+	| punto identificador  { $$ = new Id($2,@1.first_line,@1.first_column); }
+	| corizq E corder   { $$ = $2; }
+	;

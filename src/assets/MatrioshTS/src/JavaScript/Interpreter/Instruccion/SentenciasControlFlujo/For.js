@@ -1,25 +1,44 @@
 class For extends Instruccion {
-    /*
-    private inicio:Declaracion | Asignacion;
-    private condicion:Expresion;
-    private fin:Asignacion | Expresion;
-    private instrucciones:Instruccion;
-
-    constructor(inicio:Declaracion | Asignacion, condicion:Expresion, fin:Asignacion | Expresion, instrucciones:Array<Instruccion>, fila:number, columna:number, archivo:string) {
-        super(fila,columna,archivo);
+    constructor(inicio, condicion, actualizacion, instrucciones, fila, columna) {
+        super(fila, columna);
         this.inicio = inicio;
         this.condicion = condicion;
-        this.fin = fin;
+        this.actualizacion = actualizacion;
         this.instrucciones = instrucciones;
     }
-    */
     ejecutar(ent, er, consola, tsCollector) {
-        throw new Error("Method not implemented.");
+        let nuevo = new Entorno(ent);
+        this.inicio.ejecutar(nuevo, er, consola, tsCollector);
+        let condicionFor = this.condicion.ejecutar(nuevo, er);
+        if (condicionFor.tipo != Type.BOOLEAN) {
+            er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
+            return null;
+        }
+        while (condicionFor.valor == true) {
+            let r = this.instrucciones.ejecutar(nuevo, er, consola, tsCollector);
+            if (r != null || r != undefined) {
+                if (r instanceof Break) {
+                    break;
+                }
+                else if (r instanceof Continue) {
+                    this.actualizacion.ejecutar(nuevo, er, consola, tsCollector);
+                    continue;
+                }
+            }
+            this.actualizacion.ejecutar(nuevo, er, consola, tsCollector);
+            condicionFor = this.condicion.ejecutar(nuevo, er);
+            if (condicionFor.tipo != Type.BOOLEAN) {
+                er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
+                return null;
+            }
+        }
+        return null;
     }
     getDot(builder, parent, cont) {
-        throw new Error("Method not implemented.");
+        console.log("Method not implemented. FOR");
+        return cont;
     }
     traducir(builder, parent) {
-        throw new Error("Method not implemented.");
+        console.log("Method not implemented.FOR ");
     }
 }

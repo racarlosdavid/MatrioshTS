@@ -8,7 +8,7 @@ import { Retorno } from "../../Abstract/Retorno";
 import { Type } from "../../TablaSimbolos/Tipo";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
 
-export class If extends Instruccion { 
+export class If_Old extends Instruccion { 
     
     condicion:Expresion ; 
     instrucciones:Instruccion;

@@ -209,10 +209,18 @@ const parser = require('./Gramatica/InterpreteGrammar');
 const fs = require('fs');
 
 try {
-    traducir();
-    interpretar();
-    let a:number;
-    let b:number=34;
+    //traducir(); 
+    interpretar();    
+    let arr :number [][][] = []; 
+    console.log(arr.length);
+    arr[0]=[]; 
+    arr[1]=[];
+    arr[2] = [];
+    arr.push([]);
+    arr[1] = [[5],[5],[5]];
+    arr.push([[10]]); 
+    console.log(arr);
+    console.log("el tamaño de arr es "+arr.length)
     
     
 //--------------------------------------
@@ -261,7 +269,7 @@ function interpretar() {
             er.addLista(Manager.getManager().getColectorErrores());
             
             //Ejecuto el AST
-            ast.ejecutar(ent,er,consola_data,tsCollector); 
+            ast.ejecutar(ent,er,consola_data,tsCollector);  
            
             //Imprimo los errores
             er.generarReporte();

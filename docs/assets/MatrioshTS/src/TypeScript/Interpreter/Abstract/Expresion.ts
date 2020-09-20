@@ -43,6 +43,17 @@ export abstract class Expresion{
         }
     }
 
+    getTipo(val:any){
+        if (typeof val === "number") {
+            return Type.NUMBER;
+        } else if (typeof val === "string") {
+            return Type.STRING;
+        } else if(val instanceof Boolean){
+            return Type.BOOLEAN
+        }
+        return Type.INDEF;
+    }
+
     abstract getDot(builder:StringBuilder, parent:string, cont:number):number;
 
     abstract traducir(builder:StringBuilder):any;

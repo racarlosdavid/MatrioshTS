@@ -52,7 +52,7 @@ export class Logica extends Expresion{
      
         //let tipoResultante = this.getTipoResultante(left.tipo,right.tipo);
         if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
-            return new Retorno((left.valor && right.valor),left.tipo);
+            return {valor:(left.valor && right.valor),tipo:left.tipo};
         } 
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible el and entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo), this.fila, this.columna));
         return null; 

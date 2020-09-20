@@ -42,7 +42,7 @@ export class Relacional extends Expresion{
 
     igualQue(left:any ,right:any, er:ErrorManager) { 
         if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor == right.valor),Type.BOOLEAN);
+            return {valor:(left.valor == right.valor),tipo:Type.BOOLEAN};
         }
         else if(left.tipo == Type.STRING && right.tipo == Type.STRING){
             return new Retorno((left.valor == right.valor),Type.BOOLEAN);
@@ -71,7 +71,7 @@ export class Relacional extends Expresion{
     mayorQue(left:any ,right:any, er:ErrorManager) { 
 
         if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor > right.valor),Type.BOOLEAN);
+            return {valor:(left.valor > right.valor),tipo:Type.BOOLEAN};
         }
         else if (left.tipo == Type.STRING && right.tipo == Type.STRING){ 
             return new Retorno((left.valor.length > left.valor.length),Type.BOOLEAN);

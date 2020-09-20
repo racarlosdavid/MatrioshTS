@@ -18,7 +18,7 @@ export class Literal extends Expresion{
     }
     
     ejecutar(ent: Entorno, er: ErrorManager) {
-        return new Retorno(this.valor,this.tipo);
+        return {valor:this.valor,tipo:this.tipo};
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {

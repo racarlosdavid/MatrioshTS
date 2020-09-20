@@ -610,7 +610,7 @@ _handle_error:
 }};
 
 	
-	/*
+	
 	const {AST} = require('../TypeScript/Interpreter/Abstract/AST');
 
 	const {Acceso,TipoAcceso} = require('../TypeScript/Interpreter/Expresion/Acceso');

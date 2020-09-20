@@ -13,7 +13,7 @@ class Id extends Expresion {
                 return "null";
             }
             else {
-                return new Retorno(obj.valor, obj.tipo);
+                return {valor:obj.valor, tipo:obj.tipo};
             }
         }
         return "null";

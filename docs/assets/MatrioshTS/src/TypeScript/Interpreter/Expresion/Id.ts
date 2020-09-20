@@ -25,7 +25,7 @@ export class Id extends Expresion{
                     er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable "+this.identificador+" sin haber asignado un valor", this.fila, this.columna));
                     return "null";  
                 } else {
-                     return new Retorno(obj.valor,obj.tipo); 
+                     return {valor:obj.valor,tipo:obj.tipo}; 
                     
                 }
             }

@@ -21,7 +21,7 @@ export class If extends Instruccion {
 
     ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
         let rcondicion:any = this.condicion.ejecutar(ent,er);
-        if(rcondicion instanceof Retorno){
+        
             if (rcondicion.tipo != Type.BOOLEAN) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if "+rcondicion+" no es boolean", this.fila, this.columna));
                 return null;
@@ -29,9 +29,7 @@ export class If extends Instruccion {
             if (rcondicion.valor == true) {
                 return this.instrucciones.ejecutar(ent,er,consola,tsCollector);
             }
-        }else{
-            er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if "+rcondicion+" no es boolean", this.fila, this.columna));
-        }
+      
         return null;
     }
 

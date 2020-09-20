@@ -6,7 +6,7 @@ class Literal extends Expresion {
         this.tipoString = tipoString;
     }
     ejecutar(ent, er) {
-        return new Retorno(this.valor, this.tipo);
+        return {valor:this.valor, tipo:this.tipo};
     }
     getDot(builder, parent, cont) {
         let nodoOp = "nodo" + ++cont;

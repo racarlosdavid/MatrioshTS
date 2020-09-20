@@ -60,8 +60,9 @@ export class Aritmetica extends Expresion{
 
 
     suma(left:any ,right:any, er:ErrorManager) {
+        //if(this.getTipo(left) == Type.NUMBER && this.getTipo(right) == Type.NUMBER){
         if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor + right.valor),Type.NUMBER);
+            return {valor:(left.valor + right.valor),tipo:Type.NUMBER};
         }
         else if(left.tipo == Type.STRING && right.tipo == Type.NUMBER){
             return new Retorno((left.valor + right.valor.toString()),Type.STRING);
@@ -85,7 +86,7 @@ export class Aritmetica extends Expresion{
 
     resta(left:any ,right:any, er:ErrorManager) {
         if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor - right.valor),Type.NUMBER);
+            return {valor:(left.valor - right.valor),tipo:Type.NUMBER};
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la resta entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo),this.fila,this.columna));

@@ -47,7 +47,7 @@ export class Entorno {
         return null;
     }
      
-    public ChangeValue(id:any, value:any):void{
+    public ChangeValue(id:any, value:any):void{ 
         let temp:Entorno | null = this;
         id = id.toLowerCase();
         while(temp != null){

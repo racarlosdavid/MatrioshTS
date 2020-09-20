@@ -18,7 +18,7 @@ function setear() {
         mode: "modo",
         theme : "base16-dark",
     });
-    traducido.setSize(null,720);
+    traducido.setSize(null,520);
 }
 
 $(document).ready(function(){
@@ -142,6 +142,7 @@ $(document).ready(function(){
 
             //Imprimo el resultado de la traduccion en el textarea de traduccion
             traducido.setValue(builder.toString()); 
+            nuevaPestañaTraducido(builder.toString());
 
             //Graficar el ast
             const reporte_AST = new Dot(ast.getInstrucciones());

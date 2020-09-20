@@ -5,24 +5,49 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { Simbolo } from "../TablaSimbolos/Simbolo";
 import { ArrayTS } from "../Edd/ArrayTS";
 import { Retorno } from "../Abstract/Retorno";
-import { Type } from "../TablaSimbolos/Tipo";
 import { NodoError, TipoError } from "../Reportes/NodoError";
+import { Accesos } from "../Edd/Accesos";
+import { Arreglo } from "../Edd/Arreglo";
+import { Type } from "../TablaSimbolos/Tipo";
 
 export class Acceso extends Expresion{
   
     identificador:string;
-    tipoacceso:TipoAcceso;
     accesos:Array<Expresion>;
 
-    constructor(identificador:string, tipoacceso:TipoAcceso, accesos:Array<Expresion>, fila:number, columna:number) {
+    constructor(identificador:string, accesos:Array<Expresion>, fila:number, columna:number) {
         super(fila,columna);
         this.identificador = identificador;
-        this.tipoacceso = tipoacceso;
         this.accesos = accesos;
     }
 
     ejecutar(ent: Entorno, er: ErrorManager) { 
-        let obj:Simbolo|null = ent.GetValue(this.identificador);
+        let result:Simbolo|null = ent.GetValue(this.identificador);
+        if (result !=null) {
+
+            if (result.valor instanceof Arreglo) { 
+                let r = result.valor; 
+                let pos ;
+                for (let index = 0; index < this.accesos.length; index++) {
+                    const tempo = this.accesos[index].ejecutar(ent,er);
+                    pos = tempo.valor;
+                    if (tempo.tipo == Type.NUMBER) {
+                        r = r.getValor(pos);
+                    } else {
+                        er.addError(new NodoError(TipoError.SEMANTICO,"Se esperaba un valor de tipo number ", this.fila, this.columna));
+                        return null; 
+                    }
+                }
+            return new Retorno (r,result.tipo);
+        
+            }
+        }else{
+            er.addError(new NodoError(TipoError.SEMANTICO,"La variable "+this.identificador+" no existe ", this.fila, this.columna));
+            return null; 
+        }
+
+
+/*
         if (this.tipoacceso == TipoAcceso.ID) { 
             //console.log("estas haciendo un acceso de tipo ID del id "+ this.identificador);
             if(obj!=null){ 
@@ -35,18 +60,11 @@ export class Acceso extends Expresion{
                     return new Retorno(obj.valor,obj.tipo); 
                 }
                 
-                /*
-                if (obj instanceof ArrayTS) {
-                    let a:ArrayTS = obj;
-                    return a.valores;
-                } else {
                     
-                }
-                */
-                
             }
+            
         } 
-        
+        */
         
         return "null";
     }
@@ -56,15 +74,8 @@ export class Acceso extends Expresion{
     }
 
     traducir(builder: StringBuilder) {
-        if (this.tipoacceso == TipoAcceso.ID) {
-            return this.identificador;
-        }
+       
         return ""; //falta implementar los otros tipos de acceso
     }
 }
 
-export enum TipoAcceso {
-    ID,
-    ARRAY,
-    TYPE
-}

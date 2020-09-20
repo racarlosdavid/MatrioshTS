@@ -158,8 +158,28 @@ function abuelo(x: number, y: number):number{
     return 5>4;
 }
 
-*/
 
+
+let vari:number[][] = [];
+let otra:number[] = [];
+vari[0]=[];
+vari[1]=[];
+vari[0][0]=543;
+vari[0][1]=54;
+vari[0][2]=4;
+otra[0]=23;
+
+console.log(vari);
+console.log(vari[0][1]+6);
+console.log(otra);
+
+
+for ( let index = 0; index < 10; index++ ) {
+    console.log("el index es "+index);
+}
+
+
+*/
 function ackermann(m: number, n: number): number {
     if (m == 0) {
         return (n + 1);
@@ -169,4 +189,5 @@ function ackermann(m: number, n: number): number {
         return ackermann(m - 1, ackermann(m, n - 1));
     }
 }
-console.log(ackermann(3, 6)); //509
+
+  console.log(ackermann(3, 6)); //509

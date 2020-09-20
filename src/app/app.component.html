@@ -19,6 +19,8 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <button type="button" class="m-2 btn btn-success btn-lg" id="interpretar">Interpretar </button> 
+    <button type="button" class="m-2 btn btn-success btn-lg" id="traducir">Traducir </button> 
       <ul class="navbar-nav ml-auto">
           <li class="nav-item">
               <a class="nav-link" href="">Home</a>
@@ -33,9 +35,8 @@
 <!-- Toolbar -->
 <div class="col-8 pt-2">
   <!--<button type="button" class="m-2 btn btn-success btn-lg" id="run">Ejecutar</button> -->
-  <button type="button" class="m-2 btn btn-success btn-lg" id="interpretar">Interpretar </button> 
-  <button type="button" class="m-2 btn btn-success btn-lg" id="traducir">Traducir </button> 
-  <button type="button" class="m-2 btn btn-success btn-lg" onclick="nuevaPestaña()">Nueva Pestaña </button>
+  
+  
   <!--<button type="button" class="m-2 btn btn-success btn-lg" (click)="ejecutar()">Interpretar </button> -->
 </div>
 
@@ -47,14 +48,16 @@
         <h4>Editor </h4>
       </div>
       <div class="tab" id="tabslinks">
+        <button type="button" onclick="nuevaPestaña()">Nueva Pestaña </button>
           <!-- Aqui van los botones de las tabs pero se crean con la funcion nuevaPestaña en tabs.js -->
       </div>
+      
       <div id="tabs">
         <!-- Aqui van las tabs pero se crean con la funcion nuevaPestaña en tabs.js -->
       </div>
     </div>
   </div>
-  <div class="col-4 mt-3">
+  <div class="col-5 mt-3">
     <div class="card">
       <div class="card-header">
         <h4>Codigo Traducido</h4>

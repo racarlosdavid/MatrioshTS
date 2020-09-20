@@ -80,6 +80,7 @@ export class Funcion extends Instruccion{
 
     traducir(builder: StringBuilder, parent: string) {
         let tempo = new StringBuilder (); 
+        tempo.append("function ");
         if (this.padre!=null) { 
             let nuevo_id  = this.generarNombre(this.identificador,this.padre);
             Manager.getManager().addF(this.identificador,nuevo_id);

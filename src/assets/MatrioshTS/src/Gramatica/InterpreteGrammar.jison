@@ -275,7 +275,8 @@ ELSE : pr_else BLOQUE	{ $$ = {tipo:TipoIf.IFELSE, valor:$2}; }
 
 WHILE : pr_while parizq E parder BLOQUE	{ $$ = new While($3,$5,@1.first_line,@1.first_column); } ;
 
-DOWHILE : pr_do  BLOQUE  pr_while parizq E parder { $$ = new DoWhile($2,$5,@1.first_line,@1.first_column); } ;
+DOWHILE : pr_do  BLOQUE  pr_while parizq E parder { $$ = new DoWhile($2,$5,@1.first_line,@1.first_column); } 
+	| pr_do  BLOQUE  pr_while parizq E parder ptcoma { $$ = new DoWhile($2,$5,@1.first_line,@1.first_column); } ;
 
 SWITCH : pr_switch parizq E parder llaveizq L_CASE DEFAULT llaveder	{ $$ = new Switch($3,$6,$7,@1.first_line,@1.first_column); }
     | pr_switch parizq E parder llaveizq L_CASE llaveder            { $$ = new Switch($3,$6,null,@1.first_line,@1.first_column); } ;

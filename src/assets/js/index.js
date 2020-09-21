@@ -39,12 +39,18 @@ $(document).ready(function(){
             const er = new ErrorManager(); 
             const consola_data = new StringBuilder();
             const tsCollector = new TSCollector();
+            const reporte_ts = new R_TS();
+            const ambito = "global";
+            const padre = "null";
 
             //Agrego los errores lexicos al colector de errores 
             er.addLista(Manager.getManager().getColectorErrores());
 
+            //Seteo las nativas en la ts
+            nativas(ent);
+
             //Ejecuto el AST
-            ast.ejecutar(ent,er,consola_data,tsCollector); 
+            ast.ejecutar(ent,er,consola_data,tsCollector,reporte_ts,ambito,padre); 
            
             //Inserto los errores en la seccion de errores en la pagina
             let result = er.getErrores();
@@ -68,7 +74,7 @@ $(document).ready(function(){
             }
             $("#contenido_tablaErrores").html(colector);
             
-            let result_ts = Manager.getManager().getListaR_TS();
+            let result_ts = reporte_ts.getListaR_TS();
             var colector_ts = '';
             for (let index = 0; index < result_ts.length; index++) {
                 const element = result_ts[index];
@@ -158,6 +164,14 @@ $(document).ready(function(){
     });
 
 });
+
+function nativas(ent){
+    
+    let fGraficar_ts = new Graficar_ts("graficar_ts","",[],null,[],-1,-1);
+    ent.AddFunction("graficar_ts",fGraficar_ts);
+
+}
+
 
 
 /*

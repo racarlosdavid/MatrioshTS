@@ -233,6 +233,7 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
     | CONTINUE			{ $$ = $1; } 
 	| RETURN			{ $$ = $1; } 
 	| INC				{ $$ = $1; } 
+	| DEC				{ $$ = $1; } 
 	| LLAMADA           { $$ = $1; } 
 	| error ptcoma {	Console.log(` Error Sintactico se recupero con ${yytext} en la posicion`,@1.last_line,@1.last_column); 
 					//Para reportar el error compilar el archivo jison y en el .js buscar -> if (!recovering) { y pegar el codigo hasta de ultimo de ese if

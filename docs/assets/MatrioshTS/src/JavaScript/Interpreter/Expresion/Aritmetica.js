@@ -7,9 +7,9 @@ class Aritmetica extends Expresion {
         this.operadorDer = operadorDer;
         this.operadorU = operadorU;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         if (this.unario) {
-            let valorUnario = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent, er);
+            let valorUnario = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionAritmetica.NEGACION:
                     return this.negacion(valorUnario, er);
@@ -19,8 +19,8 @@ class Aritmetica extends Expresion {
             }
         }
         else {
-            let left = (this.operadorIzq == null) ? null : this.operadorIzq.ejecutar(ent, er);
-            let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er);
+            let left = (this.operadorIzq == null) ? null : this.operadorIzq.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+            let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionAritmetica.SUMA:
                     return this.suma(left, right, er);
@@ -41,7 +41,7 @@ class Aritmetica extends Expresion {
     }
     suma(left, right, er) {
         if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
-            return {valor:(left.valor + right.valor), tipo:Type.NUMBER};
+            return new Retorno((left.valor + right.valor), Type.NUMBER);
         }
         else if (left.tipo == Type.STRING && right.tipo == Type.NUMBER) {
             return new Retorno((left.valor + right.valor.toString()), Type.STRING);
@@ -64,7 +64,7 @@ class Aritmetica extends Expresion {
     }
     resta(left, right, er) {
         if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
-            return {valor:(left.valor - right.valor), tipo:Type.NUMBER};
+            return new Retorno((left.valor - right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la resta entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
@@ -167,7 +167,7 @@ class Aritmetica extends Expresion {
         }
     }
 }
- var TipoOperacionAritmetica;
+var TipoOperacionAritmetica;
 (function (TipoOperacionAritmetica) {
     TipoOperacionAritmetica[TipoOperacionAritmetica["SUMA"] = 0] = "SUMA";
     TipoOperacionAritmetica[TipoOperacionAritmetica["RESTA"] = 1] = "RESTA";

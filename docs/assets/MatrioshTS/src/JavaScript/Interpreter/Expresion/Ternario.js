@@ -5,16 +5,16 @@ class Ternario extends Expresion {
         this.retornarTrue = retornarTrue;
         this.retornarFalse = retornarFalse;
     }
-    ejecutar(ent, er) {
-        let condicional = this.condicion.ejecutar(ent, er);
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
+        let condicional = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         if (condicional.tipo != Type.BOOLEAN) {
             er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en el operador ternario", this.fila, this.columna));
         }
         else {
             if (condicional.valor == true) {
-                return this.retornarTrue.ejecutar(ent, er);
+                return this.retornarTrue.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             }
-            return this.retornarFalse.ejecutar(ent, er);
+            return this.retornarFalse.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         }
         return null;
     }

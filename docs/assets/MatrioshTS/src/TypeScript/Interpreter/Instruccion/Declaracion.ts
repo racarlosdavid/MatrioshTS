@@ -7,6 +7,7 @@ import { Expresion } from "../Abstract/Expresion";
 import { NodoError, TipoError } from "../Reportes/NodoError";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { Arreglo } from "../Edd/Arreglo";
+import { R_TS } from "../Reportes/R_TS";
 
 export class Declaracion extends Instruccion{
 
@@ -25,11 +26,11 @@ export class Declaracion extends Instruccion{
         this.valor = valor;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector: TSCollector) {
-        if (!ent.Existe(this.identificador)) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
+        if (!ent.Existe(this.identificador)) {//Verifico que la variable no exista en el entorno actual
         //if (this.tipoDeclaracion == TipoDeclaracion.LET) {
             if (this.valor!=null) { // Si la variable esta inicializada entra a este if, 
-                let val = this.valor?.ejecutar(ent,er);
+                let val = this.valor?.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
                 if (this.tipo!=null) { // Si se declaron con un tipo hay que comprobar que el valor sea del mismo tipo
                     if (this.tipo == val.tipo || val.tipo == Type.ARRAY) { // Ok. se guarda en la TS
                         if (val.valor instanceof Arreglo) {

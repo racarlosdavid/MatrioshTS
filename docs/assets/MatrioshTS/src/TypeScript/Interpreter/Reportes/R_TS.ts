@@ -10,6 +10,10 @@ export class R_TS {
     addListaR_TS(list:NTS[]){
         this.lista_reporte_ts = this.lista_reporte_ts.concat(list);
     }
+
+    addLista(list:NTS[]){
+        this.lista_reporte_ts = this.lista_reporte_ts.concat(list);
+    }
     
     getListaR_TS(){
         return this.lista_reporte_ts;

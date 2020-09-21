@@ -3,8 +3,8 @@ class Return extends Instruccion {
         super(fila, columna);
         this.valor = valor;
     }
-    ejecutar(ent, er, consola, tsCollector) {
-        return this.valor.ejecutar(ent, er);
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
+        return this.valor.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
     }
     getDot(builder, parent, cont) {
         let nodo = "nodo" + ++cont;

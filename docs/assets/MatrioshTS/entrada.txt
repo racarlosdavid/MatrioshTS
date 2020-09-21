@@ -180,6 +180,7 @@ for ( let index = 0; index < 10; index++ ) {
 
 
 */
+
 function ackermann(m: number, n: number): number {
     if (m == 0) {
         return (n + 1);
@@ -190,6 +191,5 @@ function ackermann(m: number, n: number): number {
     }
 }
 
-  console.log(ackermann(3, 6)); //509
-
+  console.log(ackermann(3, 8)); //509
 

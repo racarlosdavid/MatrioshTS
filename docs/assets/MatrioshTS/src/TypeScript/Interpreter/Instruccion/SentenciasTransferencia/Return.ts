@@ -4,6 +4,7 @@ import { ErrorManager } from "../../Reportes/ErrorManager";
 import { StringBuilder } from "../../Edd/StringBuilder";
 import { Expresion } from "../../Abstract/Expresion";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
+import { R_TS } from "../../Reportes/R_TS";
 
 export class Return extends Instruccion{
 
@@ -14,8 +15,8 @@ export class Return extends Instruccion{
         this.valor = valor;
     }
     
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
-        return this.valor.ejecutar(ent,er);
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
+        return this.valor.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {

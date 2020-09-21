@@ -5,8 +5,8 @@ class Literal extends Expresion {
         this.tipo = tipo;
         this.tipoString = tipoString;
     }
-    ejecutar(ent, er) {
-        return {valor:this.valor, tipo:this.tipo};
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
+        return new Retorno(this.valor, this.tipo);
     }
     getDot(builder, parent, cont) {
         let nodoOp = "nodo" + ++cont;
@@ -27,7 +27,7 @@ class Literal extends Expresion {
         return this.valor.toString();
     }
 }
- var TipoString;
+var TipoString;
 (function (TipoString) {
     TipoString[TipoString["STRING1"] = 0] = "STRING1";
     TipoString[TipoString["STRING2"] = 1] = "STRING2";

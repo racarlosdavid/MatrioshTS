@@ -7,12 +7,12 @@ class Declaracion extends Instruccion {
         this.dimensiones = dimensiones;
         this.valor = valor;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         var _a;
-        if (!ent.Existe(this.identificador)) {
+        if (!ent.Existe(this.identificador)) { //Verifico que la variable no exista en el entorno actual
             //if (this.tipoDeclaracion == TipoDeclaracion.LET) {
             if (this.valor != null) { // Si la variable esta inicializada entra a este if, 
-                let val = (_a = this.valor) === null || _a === void 0 ? void 0 : _a.ejecutar(ent, er);
+                let val = (_a = this.valor) === null || _a === void 0 ? void 0 : _a.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 if (this.tipo != null) { // Si se declaron con un tipo hay que comprobar que el valor sea del mismo tipo
                     if (this.tipo == val.tipo || val.tipo == Type.ARRAY) { // Ok. se guarda en la TS
                         if (val.valor instanceof Arreglo) {
@@ -90,7 +90,7 @@ class Declaracion extends Instruccion {
         return trad;
     }
 }
- var TipoDeclaracion;
+var TipoDeclaracion;
 (function (TipoDeclaracion) {
     TipoDeclaracion[TipoDeclaracion["LET"] = 0] = "LET";
     TipoDeclaracion[TipoDeclaracion["CONST"] = 1] = "CONST";

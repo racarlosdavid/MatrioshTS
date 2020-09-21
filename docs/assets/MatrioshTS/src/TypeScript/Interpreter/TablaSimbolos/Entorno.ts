@@ -77,11 +77,8 @@ export class Entorno {
         let result:boolean  = false;
         let temp:Entorno|null  = this;
         id = id.toLowerCase();
-        while(temp != null){
-            if (temp.ts.has(id)){
-                result = true;
-            }
-            temp = temp.anterior;
+        if (temp.ts.has(id)){
+            result = true;
         }
         //("No existe el id: " + id);
         return result;
@@ -119,13 +116,15 @@ export class Entorno {
                 let nombre = clave+"";
                 let tipo = "null";
                 let sim = valor;
+                let val = "";
                 if (sim instanceof Funcion) {
                     let f:Funcion = sim;
                     tipo = "Funcion";
                     
+                    
                 }else if(sim instanceof Simbolo){
                     let simbol:Simbolo = sim;
-                    let val = simbol.valor;
+                    val = simbol.valor;
                  
                     //if (val instanceof ArrayTS) {
                         //Arreglo ar = (Arreglo)val;
@@ -136,9 +135,8 @@ export class Entorno {
                 
                 }
                 
-                let descripcion = valor.valor.toString();
                 //console.log(nombre, tipo, ambito, padre, descripcion)
-                tabla.push(new NTS(nombre, tipo, ambito, padre, descripcion));
+                tabla.push(new NTS(nombre, tipo, ambito, padre, val));
              
             });
         } else {

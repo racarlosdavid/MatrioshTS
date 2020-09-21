@@ -5,20 +5,23 @@ class IfElse extends Instruccion {
         this.instrucciones = instrucciones;
         this._else = _else;
     }
-    ejecutar(ent, er, consola, tsCollector) {
-        let rcondicion = this.condicion.ejecutar(ent, er);
-       
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
+        let rcondicion = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+        if (rcondicion instanceof Retorno) {
             if (rcondicion.tipo != Type.BOOLEAN) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if else " + rcondicion + " no es boolean", this.fila, this.columna));
                 return null;
             }
             if (rcondicion.valor == true) {
-                return this.instrucciones.ejecutar(ent, er, consola, tsCollector);
+                return this.instrucciones.ejecutar(ent, er, consola, tsCollector, reporte_ts, "local: if", padre);
             }
             else {
-                return this._else.ejecutar(ent, er, consola, tsCollector);
+                return this._else.ejecutar(ent, er, consola, tsCollector, reporte_ts, "local: if", padre);
             }
-     
+        }
+        else {
+            er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if else " + rcondicion + " no es boolean", this.fila, this.columna));
+        }
         return null;
     }
     getDot(builder, parent, cont) {

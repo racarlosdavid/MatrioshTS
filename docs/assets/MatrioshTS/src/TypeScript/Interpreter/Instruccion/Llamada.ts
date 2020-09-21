@@ -1,9 +1,11 @@
 import { Expresion } from "../Abstract/Expresion";
 import { Instruccion } from "../Abstract/Instruccion";
 import { StringBuilder } from "../Edd/StringBuilder";
+import { Graficar_ts } from "../FuncionesNativas/Graficar_ts";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { Manager } from "../Reportes/Manager";
 import { NodoError, TipoError } from "../Reportes/NodoError";
+import { R_TS } from "../Reportes/R_TS";
 import { Entorno } from "../TablaSimbolos/Entorno";
 import { Type } from "../TablaSimbolos/Tipo";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
@@ -21,16 +23,22 @@ export class Llamada extends Instruccion {
         this.argumentos = argumentos;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola: StringBuilder, tsCollector: TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let funcion:Funcion|null = ent.GetFuncion(this.identificador);
-        if (funcion!=null) {
+    
+        let tiene_herencia = this.identificador.includes("_");
+        //console.log(tiene_herencia+" ddddddd");
+
+        if (funcion!=null && funcion.parametros.length == this.argumentos.length) {
             let nuevo:Entorno = new Entorno(ent);
             //tsCollector.addTS(this.identificador,new Entorno(ent));
-       
-            if (funcion.parametros.length == this.argumentos.length) {
+            if(funcion instanceof Graficar_ts){
+
+            }else{
+           
                 for (let index = 0; index < this.argumentos.length; index++) {
                     const param:Declaracion = funcion.parametros[index];
-                    let v = this.argumentos[index].ejecutar(ent,er);
+                    let v = this.argumentos[index].ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
                     if (v.tipo != param.tipo) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
                         er.addError(new NodoError(TipoError.SEMANTICO,"El tipo del parametro "+v.tipo+" no coinciden con el tipo "+param.tipo+" de la funcion", this.fila, this.columna));
                         return null; 
@@ -38,24 +46,32 @@ export class Llamada extends Instruccion {
                     nuevo.Add(param.identificador,v.valor,param.tipo!=null?param.tipo:Type.INDEF,param.dimensiones,param.tipoDeclaracion);
                     
                 }
-            } else {
-                er.addError(new NodoError(TipoError.SEMANTICO,"La cantidad de parametros de la funcion "+this.identificador+" no coinciden", this.fila, this.columna));
-                return null; 
             }
-            Manager.getManager().addListaR_TS(nuevo.getReporte("global",""));
-            for (const inst of funcion.instrucciones) {
-                let result = inst.ejecutar(nuevo,er,consola,tsCollector);
-                if(result !=null){
-                    //Compruebo que el tipo de retorno sea igual que el tipo de retorno de la funcion
-                    if (result.tipo == funcion.tipoRetorno || funcion.tipoRetorno == null) {
-                        return result;
-                    } else { 
-                        er.addError(new NodoError(TipoError.SEMANTICO,"El tipo de retorno "+result.tipo+" no coinciden con el tipo de retorno"+funcion.tipoRetorno+" de la funcion", this.fila, this.columna));
-                        return null; 
-                    }
+            if (funcion instanceof Graficar_ts) {
+                let gra = funcion;
+                gra.fila = this.fila;
+                gra.columna = this.columna;
+                let obj = gra.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+                if(obj !=null){
+                    return obj;
                 } 
+                
+            } else {
+                //Manager.getManager().addListaR_TS(nuevo.getReporte("global",""));
+                for (const inst of funcion.instrucciones) {
+                    let result = inst.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
+                    if(result !=null){
+                        //Compruebo que el tipo de retorno sea igual que el tipo de retorno de la funcion
+                        if (result.tipo == funcion.tipoRetorno || funcion.tipoRetorno == null) {
+                            return result;
+                        } else { 
+                            er.addError(new NodoError(TipoError.SEMANTICO,"El tipo de retorno "+result.tipo+" no coinciden con el tipo de retorno"+funcion.tipoRetorno+" de la funcion", this.fila, this.columna));
+                            return null; 
+                        }
+                    } 
+                }
             }
-            
+            reporte_ts.addLista(nuevo.getReporte("Local: "+this.identificador,padre));
         } else {
             er.addError(new NodoError(TipoError.SEMANTICO,"Funcion "+this.identificador+" no encontrada en la tabla de simbolos", this.fila, this.columna));
             return null; 

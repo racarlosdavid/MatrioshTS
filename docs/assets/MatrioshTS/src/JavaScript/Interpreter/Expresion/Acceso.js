@@ -4,14 +4,14 @@ class Acceso extends Expresion {
         this.identificador = identificador;
         this.accesos = accesos;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let result = ent.GetValue(this.identificador);
         if (result != null) {
             if (result.valor instanceof Arreglo) {
                 let r = result.valor;
                 let pos;
                 for (let index = 0; index < this.accesos.length; index++) {
-                    const tempo = this.accesos[index].ejecutar(ent, er);
+                    const tempo = this.accesos[index].ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                     pos = tempo.valor;
                     if (tempo.tipo == Type.NUMBER) {
                         r = r.getValor(pos);

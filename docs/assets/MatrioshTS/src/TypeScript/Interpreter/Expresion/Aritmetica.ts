@@ -5,6 +5,8 @@ import { ErrorManager } from "../Reportes/ErrorManager";
 import { Type } from "../TablaSimbolos/Tipo";
 import { Retorno } from "../Abstract/Retorno";
 import { NodoError, TipoError } from "../Reportes/NodoError";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { R_TS } from "../Reportes/R_TS";
 
 export class Aritmetica extends Expresion{
 
@@ -23,9 +25,9 @@ export class Aritmetica extends Expresion{
         this.operadorU = operadorU;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         if (this.unario) {
-            let valorUnario: any = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent,er);
+            let valorUnario: any = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             
             switch (this.tipoOperacion) {                
                 case TipoOperacionAritmetica.NEGACION:
@@ -36,8 +38,8 @@ export class Aritmetica extends Expresion{
                  
             }
         } else {
-            let left: any = (this.operadorIzq == null) ? null : this.operadorIzq.ejecutar(ent,er);
-            let right: any = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent,er);
+            let left: any = (this.operadorIzq == null) ? null : this.operadorIzq.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+            let right: any = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             
             switch (this.tipoOperacion) {
                 case TipoOperacionAritmetica.SUMA:
@@ -60,9 +62,8 @@ export class Aritmetica extends Expresion{
 
 
     suma(left:any ,right:any, er:ErrorManager) {
-        //if(this.getTipo(left) == Type.NUMBER && this.getTipo(right) == Type.NUMBER){
         if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return {valor:(left.valor + right.valor),tipo:Type.NUMBER};
+            return new Retorno((left.valor + right.valor),Type.NUMBER);
         }
         else if(left.tipo == Type.STRING && right.tipo == Type.NUMBER){
             return new Retorno((left.valor + right.valor.toString()),Type.STRING);
@@ -86,7 +87,7 @@ export class Aritmetica extends Expresion{
 
     resta(left:any ,right:any, er:ErrorManager) {
         if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return {valor:(left.valor - right.valor),tipo:Type.NUMBER};
+            return new Retorno((left.valor - right.valor),Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la resta entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo),this.fila,this.columna));

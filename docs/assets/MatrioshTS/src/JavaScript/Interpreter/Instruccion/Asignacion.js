@@ -5,7 +5,7 @@ class Asignacion extends Instruccion {
         this.accesos = accesos;
         this.valor = valor;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let result = ent.GetValue(this.identificador);
         if (result != null) {
             if (result.tipodeclaracion == TipoDeclaracion.CONST) {
@@ -13,12 +13,12 @@ class Asignacion extends Instruccion {
                 return null;
             }
             else {
-                let new_val = this.valor.ejecutar(ent, er);
+                let new_val = this.valor.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 if (result.valor instanceof Arreglo) {
                     let r = result.valor;
                     let pos;
                     for (let index = 0; index < this.accesos.length; index++) {
-                        const tempo = this.accesos[index].ejecutar(ent, er);
+                        const tempo = this.accesos[index].ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                         pos = tempo.valor;
                         if (tempo.tipo == Type.NUMBER) {
                             if (index < this.accesos.length - 1) {

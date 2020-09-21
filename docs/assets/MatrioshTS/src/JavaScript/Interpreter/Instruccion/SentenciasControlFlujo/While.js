@@ -4,21 +4,21 @@ class While extends Instruccion {
         this.condicion = condicion;
         this.instrucciones = instrucciones;
     }
-    ejecutar(ent, er, consola, tsCollector) {
-        let rcondicion = this.condicion.ejecutar(ent, er);
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
+        let rcondicion = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         if (rcondicion.tipo != Type.BOOLEAN) {
             er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
             return null;
         }
         while (rcondicion.valor == true) {
-            let r = this.instrucciones.ejecutar(ent, er, consola, tsCollector);
+            let r = this.instrucciones.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             if (r != null || r != undefined) {
                 if (r instanceof Break)
                     break;
                 else if (r instanceof Continue)
                     continue;
             }
-            rcondicion = this.condicion.ejecutar(ent, er);
+            rcondicion = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             if (rcondicion.tipo != Type.BOOLEAN) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
                 return null;

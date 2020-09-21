@@ -5,6 +5,7 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { TypeTS } from "../Edd/TypeTS";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { NodoError, TipoError } from "../Reportes/NodoError";
+import { R_TS } from "../Reportes/R_TS";
 import { Entorno } from "../TablaSimbolos/Entorno";
 import { Simbolo } from "../TablaSimbolos/Simbolo";
 import { Type } from "../TablaSimbolos/Tipo";
@@ -24,21 +25,21 @@ export class Asignacion extends Instruccion{
         this.valor = valor;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola: StringBuilder, tsCollector: TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let result:Simbolo|null = ent.GetValue(this.identificador);
         if (result !=null) {
             if (result.tipodeclaracion==TipoDeclaracion.CONST) {
                 er.addError(new NodoError(TipoError.SEMANTICO,"Asignacion no permitida la variable "+this.identificador+" es const ", this.fila, this.columna));
                 return null; 
             } else {
-                let new_val = this.valor.ejecutar(ent, er); 
+                let new_val = this.valor.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre); 
       
                 
                 if (result.valor instanceof Arreglo) { 
                     let r:Arreglo = result.valor; 
                     let pos ;
                     for (let index = 0; index < this.accesos.length; index++) {
-                        const tempo = this.accesos[index].ejecutar(ent,er);
+                        const tempo = this.accesos[index].ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
                         pos = tempo.valor;
                         if (tempo.tipo == Type.NUMBER) {
                             if (index < this.accesos.length-1) {

@@ -3,20 +3,19 @@ class ArrayTS extends Expresion {
         super(fila, columna);
         this.valores = valores;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let lista = [];
         let lista_tipos = [];
         if (this.valores.length != 0) {
             //console.log(this.valores);
             for (let i = 0; i < this.valores.length; i++) {
-                const element = this.valores[i].ejecutar(ent, er);
+                const element = this.valores[i].ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 lista.push(element.valor);
                 lista_tipos.push(element.tipo);
             }
             let bandera = true;
             for (let i = 0; i < lista_tipos.length - 1; i++) {
                 if (lista_tipos[i] == lista_tipos[i + 1]) {
-                    console.log(lista_tipos[i] + " " + lista_tipos[i + 1]);
                     continue;
                 }
                 else {

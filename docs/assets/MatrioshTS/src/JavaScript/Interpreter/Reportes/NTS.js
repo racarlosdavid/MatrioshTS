@@ -1,4 +1,4 @@
- class NTS {
+class NTS {
     constructor(identificador, tipo, ambito, padre, descripcion) {
         this.identificador = identificador;
         this.tipo = tipo;

@@ -1,8 +1,11 @@
- class R_TS {
+class R_TS {
     constructor() {
         this.lista_reporte_ts = [];
     }
     addListaR_TS(list) {
+        this.lista_reporte_ts = this.lista_reporte_ts.concat(list);
+    }
+    addLista(list) {
         this.lista_reporte_ts = this.lista_reporte_ts.concat(list);
     }
     getListaR_TS() {

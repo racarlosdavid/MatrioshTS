@@ -4,6 +4,8 @@ import { ErrorManager } from "../Reportes/ErrorManager";
 import { StringBuilder } from "../Edd/StringBuilder";
 import { Type } from "../TablaSimbolos/Tipo";
 import { Retorno } from "../Abstract/Retorno";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { R_TS } from "../Reportes/R_TS";
 
 export class Literal extends Expresion{
     valor:any;
@@ -17,8 +19,8 @@ export class Literal extends Expresion{
         this.tipoString = tipoString;
     }
     
-    ejecutar(ent: Entorno, er: ErrorManager) {
-        return {valor:this.valor,tipo:this.tipo};
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
+        return new Retorno(this.valor,this.tipo);
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {

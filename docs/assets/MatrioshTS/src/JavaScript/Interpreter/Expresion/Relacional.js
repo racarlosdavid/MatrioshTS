@@ -5,9 +5,9 @@ class Relacional extends Expresion {
         this.operadorIzq = operadorIzq;
         this.operadorDer = operadorDer;
     }
-    ejecutar(ent, er) {
-        let left = (this.operadorIzq == null) ? null : this.operadorIzq.ejecutar(ent, er);
-        let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er);
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
+        let left = (this.operadorIzq == null) ? null : this.operadorIzq.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+        let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         switch (this.tipoOperacion) {
             case TipoOperacionRelacional.IGUALQUE:
                 return this.igualQue(left, right, er);
@@ -53,7 +53,7 @@ class Relacional extends Expresion {
     }
     mayorQue(left, right, er) {
         if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
-            return {valor:(left.valor > right.valor), tipo:Type.BOOLEAN};
+            return new Retorno((left.valor > right.valor), Type.BOOLEAN);
         }
         else if (left.tipo == Type.STRING && right.tipo == Type.STRING) {
             return new Retorno((left.valor.length > left.valor.length), Type.BOOLEAN);
@@ -122,7 +122,7 @@ class Relacional extends Expresion {
         }
     }
 }
- var TipoOperacionRelacional;
+var TipoOperacionRelacional;
 (function (TipoOperacionRelacional) {
     TipoOperacionRelacional[TipoOperacionRelacional["MAYORQUE"] = 0] = "MAYORQUE";
     TipoOperacionRelacional[TipoOperacionRelacional["MENORQUE"] = 1] = "MENORQUE";

@@ -4,6 +4,8 @@ import { ErrorManager } from "../Reportes/ErrorManager";
 import { StringBuilder } from "../Edd/StringBuilder";
 import { NodoError, TipoError } from "../Reportes/NodoError";
 import { Type } from "../TablaSimbolos/Tipo";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { R_TS } from "../Reportes/R_TS";
 
 export class Ternario extends Expresion{
     
@@ -18,15 +20,15 @@ export class Ternario extends Expresion{
         this.retornarFalse= retornarFalse;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) {
-        let condicional = this.condicion.ejecutar(ent,er);
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
+        let condicional = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
         if (condicional.tipo != Type.BOOLEAN) {
             er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en el operador ternario", this.fila, this.columna));
         } else { 
             if(condicional.valor == true){
-                return this.retornarTrue.ejecutar(ent,er);
+                return this.retornarTrue.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             }
-            return this.retornarFalse.ejecutar(ent,er);
+            return this.retornarFalse.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
         }
         return null; 
     }

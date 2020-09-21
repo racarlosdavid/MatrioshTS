@@ -500,6 +500,8 @@ _handle_error:
                     expected: expected,
                     recoverable: (error_rule_depth !== false)
                 });
+                	Manager.getManager().addError(new NodoError(TipoError.SINTACTICO, `El caracter ${(this.terminals_[symbol] || symbol)} no se esperaba en esta posicion`, yyloc.last_line, yyloc.last_column));
+                
             } else if (preErrorSymbol !== EOF) {
                 error_rule_depth = locateNearestErrorRecoveryRule(state);
             }
@@ -610,7 +612,7 @@ _handle_error:
 }};
 
 	
-	
+	  /*
 	const {AST} = require('../TypeScript/Interpreter/Abstract/AST');
 
 	const {Acceso,TipoAcceso} = require('../TypeScript/Interpreter/Expresion/Acceso');
@@ -655,7 +657,7 @@ _handle_error:
 	const {Break} = require('../TypeScript/Interpreter/Instruccion/SentenciasTransferencia/Break');
 	const {Continue} = require('../TypeScript/Interpreter/Instruccion/SentenciasTransferencia/Continue');
 
-    /*	
+  	
 	const LlamadaE = require('../JavaScript/Expresion/LlamadaE');
 	const Acceso = require('../JavaScript/Expresion/Acceso');
 	

@@ -3,10 +3,11 @@ import { Entorno } from "../../TablaSimbolos/Entorno";
 import { ErrorManager } from "../../Reportes/ErrorManager";
 import { StringBuilder } from "../../Edd/StringBuilder";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
+import { R_TS } from "../../Reportes/R_TS";
 
 export class Break extends Instruccion{
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         return this;
     }
 

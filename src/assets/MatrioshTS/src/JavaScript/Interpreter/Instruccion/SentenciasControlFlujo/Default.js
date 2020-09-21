@@ -3,10 +3,10 @@ class Default extends Instruccion {
         super(fila, columna);
         this.instrucciones = instrucciones;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let nuevo = new Entorno(ent);
         for (let inst of this.instrucciones) {
-            let r = inst.ejecutar(nuevo, er, consola, tsCollector);
+            let r = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
             if (r != null) {
                 if (r instanceof Continue) {
                     er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna));

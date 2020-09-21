@@ -204,6 +204,8 @@ import { Entorno } from "./TypeScript/Interpreter/TablaSimbolos/Entorno";
 import { StringBuilder } from "./TypeScript/Interpreter/Edd/StringBuilder";
 import { Dot } from "./TypeScript/Interpreter/Reportes/Dot";
 import { TSCollector } from "./TypeScript/Interpreter/TablaSimbolos/TSCollector";
+import { R_TS } from "./TypeScript/Interpreter/Reportes/R_TS";
+import { Graficar_ts } from "./TypeScript/Interpreter/FuncionesNativas/Graficar_ts";
 
 const parser = require('./Gramatica/InterpreteGrammar');
 const fs = require('fs');
@@ -211,17 +213,7 @@ const fs = require('fs');
 try {
     //traducir(); 
     interpretar();    
-    let arr :number [][][] = []; 
-    console.log(arr.length);
-    arr[0]=[]; 
-    arr[1]=[];
-    arr[2] = [];
-    arr.push([]);
-    arr[1] = [[5],[5],[5]];
-    arr.push([[10]]); 
-    console.log(arr);
-    console.log("el tamaño de arr es "+arr.length)
-    
+   console.log();
     
 //--------------------------------------
     /*
@@ -264,12 +256,18 @@ function interpretar() {
             const er = new ErrorManager(); 
             const consola_data = new StringBuilder();
             const tsCollector = new TSCollector();
+            const reporte_ts = new R_TS();
+            const ambito = "global";
+            const padre = "null";
 
             //Agrego los errores lexicos al colector de errores 
             er.addLista(Manager.getManager().getColectorErrores());
+
+            //Seteo las nativas en la ts
+            nativas(ent);
             
             //Ejecuto el AST
-            ast.ejecutar(ent,er,consola_data,tsCollector);  
+            ast.ejecutar(ent,er,consola_data,tsCollector,reporte_ts,ambito,padre);  
            
             //Imprimo los errores
             er.generarReporte();
@@ -322,5 +320,12 @@ function traducir(){
         catch (err) {
             console.log("Error en el boton traducir "+err);
         }
+}
+
+function nativas(ent:Entorno){
+    
+    let fGraficar_ts = new Graficar_ts("graficar_ts","",[],null,[],-1,-1);
+    ent.AddFunction("graficar_ts",fGraficar_ts);
+
 }
 

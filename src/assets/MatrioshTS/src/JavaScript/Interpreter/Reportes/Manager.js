@@ -1,4 +1,4 @@
- class Manager {
+class Manager {
     constructor() {
         this.error_colector = [];
         this.traductor = new Map();

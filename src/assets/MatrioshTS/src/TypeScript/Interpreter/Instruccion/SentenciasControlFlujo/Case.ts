@@ -7,6 +7,7 @@ import { Break } from "../SentenciasTransferencia/Break";
 import { Continue } from "../SentenciasTransferencia/Continue";
 import { NodoError, TipoError } from "../../Reportes/NodoError";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
+import { R_TS } from "../../Reportes/R_TS";
 
 
 export class Case extends Instruccion{
@@ -20,10 +21,10 @@ export class Case extends Instruccion{
         this.instrucciones = instrucciones;
     }
     
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let nuevo=new Entorno(ent);
         for(let inst of this.instrucciones){ 
-            let r = inst.ejecutar(nuevo,er,consola,tsCollector);
+            let r = inst.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
             if(r!=null){
                 if(r instanceof Continue){
                     er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna));

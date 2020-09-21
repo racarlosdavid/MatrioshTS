@@ -9,6 +9,8 @@ import { NodoError, TipoError } from "../Reportes/NodoError";
 import { Accesos } from "../Edd/Accesos";
 import { Arreglo } from "../Edd/Arreglo";
 import { Type } from "../TablaSimbolos/Tipo";
+import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { R_TS } from "../Reportes/R_TS";
 
 export class Acceso extends Expresion{
   
@@ -21,7 +23,7 @@ export class Acceso extends Expresion{
         this.accesos = accesos;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager) { 
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) { 
         let result:Simbolo|null = ent.GetValue(this.identificador);
         if (result !=null) {
 
@@ -29,7 +31,7 @@ export class Acceso extends Expresion{
                 let r = result.valor; 
                 let pos ;
                 for (let index = 0; index < this.accesos.length; index++) {
-                    const tempo = this.accesos[index].ejecutar(ent,er);
+                    const tempo = this.accesos[index].ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
                     pos = tempo.valor;
                     if (tempo.tipo == Type.NUMBER) {
                         r = r.getValor(pos);

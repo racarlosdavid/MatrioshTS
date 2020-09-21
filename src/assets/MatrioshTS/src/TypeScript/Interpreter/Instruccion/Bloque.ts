@@ -5,6 +5,7 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { NodoError, TipoError } from "../Reportes/NodoError";
 import { Funcion } from "./Funcion";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { R_TS } from "../Reportes/R_TS";
 
 export class Bloque extends Instruccion{
     
@@ -15,11 +16,11 @@ export class Bloque extends Instruccion{
         this.instrucciones = instrucciones; 
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector: TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let nuevo = new Entorno(ent);
         for(const instr of this.instrucciones){
             try {
-                const element = instr.ejecutar(nuevo,er,consola,tsCollector); 
+                const element = instr.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre); 
                 if(element != undefined || element != null)
                     return element;                
             } catch (error) {
@@ -27,6 +28,7 @@ export class Bloque extends Instruccion{
         
             }
         }
+        reporte_ts.addLista(nuevo.getReporte(ambito, padre));
         return null;
     }
 

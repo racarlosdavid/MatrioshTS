@@ -6,6 +6,7 @@ import { Declaracion } from "./Declaracion";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { Type } from "../TablaSimbolos/Tipo";
 import { Manager } from "../Reportes/Manager";
+import { R_TS } from "../Reportes/R_TS";
 
 export class Funcion extends Instruccion{
     identificador:string;
@@ -24,7 +25,7 @@ export class Funcion extends Instruccion{
         this.instrucciones = instrucciones; 
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         ent.AddFunction(this.identificador, this);
         return null;
         //console.log("SOY UNA FUNCION "+this.identificador+" "+this.padre);

@@ -3,7 +3,7 @@ class Incremento extends Instruccion {
         super(fila, columna);
         this.identificador = identificador;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let obj = ent.GetValue(this.identificador);
         if (obj instanceof Simbolo) {
             if (obj.tipo == Type.NUMBER) {

@@ -110,7 +110,7 @@
 [0-9]+"."[0-9]+\b  		return 'decimal';
 [0-9]+\b				return 'entero';
 //[\'][^\'\n][\']         { yytext = yytext.substr(1,yyleng-2); return 'char'; }
-([a-zA-Z])[a-zA-Z0-9_]* return 'identificador';
+([a-zA-Z])[a-zA-Z0-9_.]* return 'identificador';
 
 <<EOF>>				    return 'EOF'; 
 .					    { 	Manager.getManager().addError(new NodoError(TipoError.LEXICO, `El caracter ${yytext} no pertenece al lenguaje`, yylloc.first_line, yylloc.first_column));

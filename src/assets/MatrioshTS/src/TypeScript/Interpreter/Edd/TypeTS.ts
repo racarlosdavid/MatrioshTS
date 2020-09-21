@@ -1,5 +1,6 @@
 import { Instruccion } from "../Abstract/Instruccion";
 import { ErrorManager } from "../Reportes/ErrorManager";
+import { R_TS } from "../Reportes/R_TS";
 import { Entorno } from "../TablaSimbolos/Entorno";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { StringBuilder } from "./StringBuilder";
@@ -16,7 +17,7 @@ export class TypeTS extends Instruccion{
         this.variables = variables;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola: StringBuilder, tsCollector: TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         throw new Error("Method EJECUTAR not implemented. TypeTS");
     }
 

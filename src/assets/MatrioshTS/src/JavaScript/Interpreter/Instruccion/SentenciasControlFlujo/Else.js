@@ -3,8 +3,8 @@ class Else extends Instruccion {
         super(fila, columna);
         this.instrucciones = instrucciones;
     }
-    ejecutar(ent, er, consola, tsCollector) {
-        return this.instrucciones.ejecutar(ent, er, consola, tsCollector);
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
+        return this.instrucciones.ejecutar(ent, er, consola, tsCollector, reporte_ts, "local: else", padre);
     }
     getDot(builder, parent, cont) {
         cont = this.instrucciones.getDot(builder, parent, cont);

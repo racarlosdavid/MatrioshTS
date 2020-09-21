@@ -7,6 +7,7 @@ import { NodoError, TipoError } from "../../Reportes/NodoError";
 import { Retorno } from "../../Abstract/Retorno";
 import { Type } from "../../TablaSimbolos/Tipo";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
+import { R_TS } from "../../Reportes/R_TS";
 
 export class If_Old extends Instruccion { 
     
@@ -24,17 +25,17 @@ export class If_Old extends Instruccion {
         this.tipo = tipo;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) { 
-        let rcondicion:any = this.condicion.ejecutar(ent,er);
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) { 
+        let rcondicion:any = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
         if(rcondicion instanceof Retorno){
             if (rcondicion.tipo != Type.BOOLEAN) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if "+rcondicion+" no es boolean", this.fila, this.columna));
                 return null;
             }
             if (rcondicion.valor == true) {
-                return this.instrucciones.ejecutar(ent,er,consola,tsCollector);
+                return this.instrucciones.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             }else{
-                return this.ins_else?.ejecutar(ent,er,consola,tsCollector);
+                return this.ins_else?.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             }
         }else{
             er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if "+rcondicion+" no es boolean", this.fila, this.columna));

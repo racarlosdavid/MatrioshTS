@@ -1,24 +1,24 @@
-class Switch extends Instruccion {
+ class Switch extends Instruccion {
     constructor(condicion, _case, _default, fila, columna) {
         super(fila, columna);
         this.condicion = condicion;
         this._case = _case;
         this._default = _default;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         var _a;
         let retorno = null;
         let bandera = false; // me dice si hay coincidencia o no con los casos para ejecutar el default si existe
         let continuar = false;
         let eje_default = true;
         let condicionCaso;
-        let condicionBuscada = this.condicion.ejecutar(ent, er);
+        let condicionBuscada = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         for (let inst of this._case) {
-            condicionCaso = inst.getCondicion().ejecutar(ent, er);
+            condicionCaso = inst.getCondicion().ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             if ((!bandera && condicionBuscada.valor == condicionCaso.valor) || continuar) {
                 bandera = true;
                 eje_default = false;
-                let r = inst.ejecutar(ent, er, consola, tsCollector);
+                let r = inst.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 if (r != null) {
                     if (r instanceof Break) {
                         continuar = false;
@@ -37,7 +37,7 @@ class Switch extends Instruccion {
         //Priguntar que se hace con el defaul si no hay breaks en el caso en el que entro -- si lo ejecuta o no lo ejecuta ;
         if (eje_default == true && ((!bandera && this._default != null) || continuar)) { //Si no hay break en los casos ejecuta todo excepto el default ya que si entro a un case
             /*if((!bandera && this._default!=null)||continuar){ //Si no hay break en los casos ejecuta hasta el default sin importar que ya alla entrado a un case */
-            let r = (_a = this._default) === null || _a === void 0 ? void 0 : _a.ejecutar(ent, er, consola, tsCollector);
+            let r = (_a = this._default) === null || _a === void 0 ? void 0 : _a.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             if (r != null) {
                 if (r instanceof Break) {
                     retorno = null;

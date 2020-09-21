@@ -4,10 +4,10 @@ class DoWhile extends Instruccion {
         this.instrucciones = instrucciones;
         this.condicion = condicion;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let rcondicion;
         do {
-            let r = this.instrucciones.ejecutar(ent, er, consola, tsCollector);
+            let r = this.instrucciones.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             if (r != null || r != undefined) {
                 if (r instanceof Break) {
                     break;
@@ -16,7 +16,7 @@ class DoWhile extends Instruccion {
                     continue;
                 }
             }
-            rcondicion = this.condicion.ejecutar(ent, er);
+            rcondicion = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             if (rcondicion.tipo != Type.BOOLEAN) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
                 return null;

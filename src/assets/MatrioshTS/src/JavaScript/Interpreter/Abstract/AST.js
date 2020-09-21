@@ -32,7 +32,7 @@ class AST {
         }
         return builder.toString();
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         console.log("Ok. Vamos a interpretar la cadena de entrada");
         /*
         for(const instr of this.instrucciones){
@@ -47,7 +47,7 @@ class AST {
         for (const ins of this.instrucciones) {
             try {
                 if (ins instanceof Funcion) {
-                    ins.ejecutar(ent, er, consola, tsCollector);
+                    ins.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 }
             }
             catch (error) {
@@ -65,7 +65,7 @@ class AST {
                     continue;
                 }
                 else {
-                    ins.ejecutar(ent, er, consola, tsCollector);
+                    ins.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 }
             }
             catch (error) {

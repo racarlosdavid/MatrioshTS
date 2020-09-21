@@ -3,7 +3,7 @@ class Id extends Expresion {
         super(fila, columna);
         this.identificador = identificador;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let obj = ent.GetValue(this.identificador);
         //console.log("estas haciendo un acceso de tipo ID del id "+ this.identificador);
         if (obj != null) {
@@ -13,7 +13,7 @@ class Id extends Expresion {
                 return "null";
             }
             else {
-                return {valor:obj.valor, tipo:obj.tipo};
+                return new Retorno(obj.valor, obj.tipo);
             }
         }
         return "null";

@@ -7,7 +7,7 @@ class Funcion extends Instruccion {
         this.tipoRetorno = tipoRetorno;
         this.instrucciones = instrucciones;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         ent.AddFunction(this.identificador, this);
         return null;
         //console.log("SOY UNA FUNCION "+this.identificador+" "+this.padre);

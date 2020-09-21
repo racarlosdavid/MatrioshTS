@@ -3,10 +3,6 @@ class Expresion {
         this.fila = fila;
         this.columna = columna;
     }
-    getTipoResultante(tipo1, tipo2) {
-        const type = tipos[tipo1][tipo2];
-        return type;
-    }
     getTipoToString(tipo) {
         switch (tipo) {
             case Type.NUMBER:

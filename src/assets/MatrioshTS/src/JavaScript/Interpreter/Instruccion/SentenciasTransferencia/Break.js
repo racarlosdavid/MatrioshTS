@@ -1,5 +1,5 @@
 class Break extends Instruccion {
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         return this;
     }
     getDot(builder, parent, cont) {

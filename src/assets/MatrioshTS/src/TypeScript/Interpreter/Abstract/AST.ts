@@ -8,6 +8,7 @@ import { Manager } from "../Reportes/Manager";
 import { Funcion } from "../Instruccion/Funcion";
 import { Return } from "../Instruccion/SentenciasTransferencia/Return";
 import { NodoError, TipoError } from "../Reportes/NodoError";
+import { R_TS } from "../Reportes/R_TS";
 
 
 export class AST {
@@ -49,7 +50,7 @@ export class AST {
        return builder.toString();
     }
     
-    public ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector):any { console.log("Ok. Vamos a interpretar la cadena de entrada");
+    public ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string):any { console.log("Ok. Vamos a interpretar la cadena de entrada");
         /*
         for(const instr of this.instrucciones){
             try {
@@ -63,7 +64,7 @@ export class AST {
         for (const ins of this.instrucciones) {
             try {
                 if (ins instanceof Funcion) {
-                    ins.ejecutar(ent,er,consola,tsCollector);
+                    ins.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
                 }
             } catch (error) {
                 console.log("Error en la interpretacion: Primera Pasada"+error);
@@ -79,7 +80,7 @@ export class AST {
                     er.addError(new NodoError(TipoError.SEMANTICO,"Return fuera de funcion ", ins.fila, ins.columna));
                     continue;
                 }else{
-                    ins.ejecutar(ent,er,consola,tsCollector);
+                    ins.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
                 }
             } catch (error) {
                 console.log("Error en la interpretacion: Segunda Pasada "+error);

@@ -3,7 +3,7 @@ class Decremento extends Instruccion {
         super(fila, columna);
         this.identificador = identificador;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let obj = ent.GetValue(this.identificador);
         console.log(" en actualizacion " + this.identificador);
         if (obj instanceof Simbolo) {

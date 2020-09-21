@@ -8,6 +8,7 @@ import { Continue } from "../SentenciasTransferencia/Continue";
 import { Type } from "../../TablaSimbolos/Tipo";
 import { TipoError, NodoError } from "../../Reportes/NodoError";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
+import { R_TS } from "../../Reportes/R_TS";
 
 export class DoWhile extends Instruccion{
 
@@ -20,10 +21,10 @@ export class DoWhile extends Instruccion{
         this.condicion = condicion;
     }
 
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let rcondicion;
         do {    
-            let r = this.instrucciones.ejecutar(ent,er,consola,tsCollector);
+            let r = this.instrucciones.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             
             if(r != null || r != undefined){
                 if(r instanceof Break){ 
@@ -32,7 +33,7 @@ export class DoWhile extends Instruccion{
                     continue;
                 } 
             }
-            rcondicion = this.condicion.ejecutar(ent,er);
+            rcondicion = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             if(rcondicion.tipo != Type.BOOLEAN){ 
                 er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
                 return null;

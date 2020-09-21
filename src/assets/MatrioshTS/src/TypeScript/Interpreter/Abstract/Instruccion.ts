@@ -4,6 +4,7 @@ import { StringBuilder } from "../Edd/StringBuilder";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { Type } from "../TablaSimbolos/Tipo";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { R_TS } from "../Reportes/R_TS";
 
 export abstract class Instruccion{
 
@@ -15,7 +16,7 @@ export abstract class Instruccion{
         this.columna = columna;
     }
 
-    abstract ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector):any;
+    abstract ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string):any;
 
     abstract getDot(builder:StringBuilder, parent:string, cont:number):number;
 

@@ -2,7 +2,7 @@ class Continue extends Instruccion {
     constructor(fila, columna) {
         super(fila, columna);
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         return this;
     }
     getDot(builder, parent, cont) {

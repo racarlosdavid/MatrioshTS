@@ -7,9 +7,9 @@ class Logica extends Expresion {
         this.operadorU = operadorU;
         this.not = not;
     }
-    ejecutar(ent, er) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         if (this.not) {
-            let valorUnario = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent, er);
+            let valorUnario = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionLogica.NOT:
                     return this.notOperacion(valorUnario, ent, er);
@@ -18,8 +18,8 @@ class Logica extends Expresion {
             }
         }
         else {
-            let left = (this.operadorIzq == null) ? null : this.operadorIzq.ejecutar(ent, er);
-            let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er);
+            let left = (this.operadorIzq == null) ? null : this.operadorIzq.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+            let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionLogica.AND:
                     return this.and(left, right, ent, er);
@@ -33,7 +33,7 @@ class Logica extends Expresion {
     and(left, right, ent, er) {
         //let tipoResultante = this.getTipoResultante(left.tipo,right.tipo);
         if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
-            return {valor:(left.valor && right.valor), tipo:left.tipo};
+            return new Retorno((left.valor && right.valor), left.tipo);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el and entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
         return null;
@@ -98,7 +98,7 @@ class Logica extends Expresion {
         }
     }
 }
- var TipoOperacionLogica;
+var TipoOperacionLogica;
 (function (TipoOperacionLogica) {
     TipoOperacionLogica[TipoOperacionLogica["AND"] = 0] = "AND";
     TipoOperacionLogica[TipoOperacionLogica["OR"] = 1] = "OR";

@@ -1,4 +1,4 @@
-class Entorno {
+ class Entorno {
     constructor(anterior) {
         this.ts = new Map();
         this.anterior = anterior;
@@ -61,11 +61,8 @@ class Entorno {
         let result = false;
         let temp = this;
         id = id.toLowerCase();
-        while (temp != null) {
-            if (temp.ts.has(id)) {
-                result = true;
-            }
-            temp = temp.anterior;
+        if (temp.ts.has(id)) {
+            result = true;
         }
         //("No existe el id: " + id);
         return result;
@@ -96,13 +93,14 @@ class Entorno {
                 let nombre = clave + "";
                 let tipo = "null";
                 let sim = valor;
+                let val = "";
                 if (sim instanceof Funcion) {
                     let f = sim;
                     tipo = "Funcion";
                 }
                 else if (sim instanceof Simbolo) {
                     let simbol = sim;
-                    let val = simbol.valor;
+                    val = simbol.valor;
                     //if (val instanceof ArrayTS) {
                     //Arreglo ar = (Arreglo)val;
                     //tipo = "Arreglo: "+ar.getTipo();
@@ -110,9 +108,8 @@ class Entorno {
                     tipo = sim.getTipoToString();
                     //}
                 }
-                let descripcion = valor.valor.toString();
                 //console.log(nombre, tipo, ambito, padre, descripcion)
-                tabla.push(new NTS(nombre, tipo, ambito, padre, descripcion));
+                tabla.push(new NTS(nombre, tipo, ambito, padre, val));
             });
         }
         else {

@@ -1,9 +1,9 @@
 import { Entorno } from "../TablaSimbolos/Entorno";
 import { StringBuilder } from "../Edd/StringBuilder";
 import { Type } from "../TablaSimbolos/Tipo";
-import { tipos } from "../Vault/MatrizTipos";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { R_TS } from "../Reportes/R_TS";
 
 export abstract class Expresion{
 
@@ -15,12 +15,7 @@ export abstract class Expresion{
         this.columna = columna;
     }
 
-    abstract ejecutar(ent:Entorno, er:ErrorManager):any;
-
-    public getTipoResultante(tipo1 : Type, tipo2 : Type) : Type{
-        const type = tipos[tipo1][tipo2];
-        return type;
-    }
+    abstract ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string):any;
 
     getTipoToString(tipo:Type|string):string{
         switch (tipo) {
@@ -41,17 +36,6 @@ export abstract class Expresion{
             default:
                 return tipo+"";
         }
-    }
-
-    getTipo(val:any){
-        if (typeof val === "number") {
-            return Type.NUMBER;
-        } else if (typeof val === "string") {
-            return Type.STRING;
-        } else if(val instanceof Boolean){
-            return Type.BOOLEAN
-        }
-        return Type.INDEF;
     }
 
     abstract getDot(builder:StringBuilder, parent:string, cont:number):number;

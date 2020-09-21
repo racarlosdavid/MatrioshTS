@@ -6,6 +6,7 @@ import { Simbolo } from "../TablaSimbolos/Simbolo";
 import { Retorno } from "../Abstract/Retorno";
 import { Type } from "../TablaSimbolos/Tipo";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { R_TS } from "../Reportes/R_TS";
 
 
 export class Decremento extends Instruccion{
@@ -15,7 +16,7 @@ export class Decremento extends Instruccion{
         super(fila,columna);
         this.identificador = identificador;
     }
-    ejecutar(ent: Entorno, er: ErrorManager, consola:StringBuilder, tsCollector:TSCollector) {
+    ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let obj:Simbolo|null = ent.GetValue(this.identificador);
         console.log(" en actualizacion "+this.identificador);
         if (obj instanceof Simbolo) {  

@@ -4,7 +4,7 @@ class TypeTS extends Instruccion {
         this.identificador = identificador;
         this.variables = variables;
     }
-    ejecutar(ent, er, consola, tsCollector) {
+    ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         throw new Error("Method EJECUTAR not implemented. TypeTS");
     }
     getDot(builder, parent, cont) {

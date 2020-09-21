@@ -40,7 +40,7 @@ export class NodoError {
         }
     }
 }
-export var TipoError;
+var TipoError;
 (function (TipoError) {
     TipoError[TipoError["LEXICO"] = 0] = "LEXICO";
     TipoError[TipoError["SINTACTICO"] = 1] = "SINTACTICO";

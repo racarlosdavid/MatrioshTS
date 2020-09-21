@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "desplegar": "ng build --prod --output-path docs --base-href https://racarlosdavid.github.io/MatrioshTS/ && cp docs/index.html docs/404.html && git add . && git commit -m \"Despligue eliminacion de referencias a lo .ts en la gramatica\" && git push origin "
+    "desplegar": "ng build --prod --output-path docs --base-href https://racarlosdavid.github.io/MatrioshTS/ && cp docs/index.html docs/404.html && git add . && git commit -m \"Deploy\" && git push origin "
   },
   "private": true,
   "dependencies": {

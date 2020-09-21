@@ -1,3 +1,4 @@
+
 /*
 let matrixA : number [][] = [];
 let matrixB : number [][] = [];
@@ -214,6 +215,7 @@ try {
     //traducir(); 
     interpretar();    
    console.log();
+   
     
 //--------------------------------------
     /*
@@ -246,44 +248,58 @@ catch (error) {
 
 function interpretar() {
     console.log("-> Se va a interpretar la cadena ingresada ");
-        try { 
+      
             Manager.getManager().reiniciar(); 
             Manager.getManager().sizeActual.push(0);
-            const entrada = fs.readFileSync('./entrada.txt');
-            let ast = parser.parse(entrada.toString()); 
+            let ast;
+            try{
+                const entrada = fs.readFileSync('./entrada.txt');
+                ast = parser.parse(entrada.toString()); 
+            }catch(error){
+                console.log("Error fatal en compilación de entrada, el archivo de entrada puede contener caracteres no validos.");
+            }
             
-            const ent = new Entorno(null);
-            const er = new ErrorManager(); 
-            const consola_data = new StringBuilder();
-            const tsCollector = new TSCollector();
-            const reporte_ts = new R_TS();
-            const ambito = "global";
-            const padre = "null";
+            if (ast == null) { 
+                try { 
+                    const er = new ErrorManager(); 
+                    //Agrego los errores lexicos al colector de errores 
+                    er.addLista(Manager.getManager().getColectorErrores());
+                    //Imprimo los errores
+                    er.generarReporte();
+                } catch (error) {
+                    console.log("Lista de errores vacia");
+                }
+                
+            } else {
+                const ent = new Entorno(null);
+                const er = new ErrorManager(); 
+                const consola_data = new StringBuilder();
+                const tsCollector = new TSCollector();
+                const reporte_ts = new R_TS();
+                const ambito = "global";
+                const padre = "null";
 
-            //Agrego los errores lexicos al colector de errores 
-            er.addLista(Manager.getManager().getColectorErrores());
+                //Agrego los errores lexicos al colector de errores 
+                er.addLista(Manager.getManager().getColectorErrores());
 
-            //Seteo las nativas en la ts
-            nativas(ent);
+                //Seteo las nativas en la ts
+                nativas(ent);
+                
+                //Ejecuto el AST
+                ast.ejecutar(ent,er,consola_data,tsCollector,reporte_ts,ambito,padre);  
             
-            //Ejecuto el AST
-            ast.ejecutar(ent,er,consola_data,tsCollector,reporte_ts,ambito,padre);  
-           
-            //Imprimo los errores
-            er.generarReporte();
+                //Imprimo los errores
+                er.generarReporte();
 
-            //Imprimo los logs
-            console.log(consola_data.toString()); 
-           
-            //Graficar el ast en modo texto porque el modo grafico hay que compilar el formato dot
-            const reporte_AST = new Dot(ast.getInstrucciones());
-            let ast_dot = reporte_AST.graficarAST();
-            //console.log(ast_dot);
-        }
-        catch (err) {
-            console.log("Error en el boton de interpretar "+err);
-        }
-    
+                //Imprimo los logs
+                console.log(consola_data.toString()); 
+            
+                //Graficar el ast en modo texto porque el modo grafico hay que compilar el formato dot
+                const reporte_AST = new Dot(ast.getInstrucciones());
+                let ast_dot = reporte_AST.graficarAST();
+                //console.log(ast_dot);
+                
+            }
 }
 
 function traducir(){

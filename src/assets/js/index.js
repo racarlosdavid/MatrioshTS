@@ -18,15 +18,49 @@ $(document).ready(function(){
 
     $("#interpretar").click(()=>{ 
         console.log("-> Se va a interpretar la cadena ingresada ");
-        try { 
-            Manager.getManager().reiniciar(); 
-            Manager.getManager().sizeActual.push(0);
+        
+        Manager.getManager().reiniciar(); 
+        Manager.getManager().sizeActual.push(0);
+        let ast = null;
+        try{
             let tempo = textMap.get("text" + tabActual);    //Obtengo la pestaña actual
             var text = tempo.getValue();                    //Obtengo el texto de la pestaña actual
-            let ast = InterpreteGrammar.parse(text);        //Analizo la entrada y obtengo el AST
-          
+            ast = InterpreteGrammar.parse(text);        //Analizo la entrada y obtengo el AST
+        }catch(error){
+            console.log("Error fatal en compilación de entrada, el archivo de entrada puede contener caracteres no validos.");
+        }
     
+        if (ast == null) { 
+            try { 
+                const er = new ErrorManager(); 
+                //Agrego los errores lexicos al colector de errores 
+                er.addLista(Manager.getManager().getColectorErrores());
+                //Inserto los errores en la seccion de errores en la pagina
+                let result = er.getErrores();
+                var colector = '';
+                for (let index = 0; index < result.length; index++) { 
+                    const element = result[index];
+                    let t = "";
+                    if (element.tipo == 0) {
+                        t = "Lexico";
+                    } else if (element.tipo == 1){
+                        t = "Sintactico";
+                    } else if (element.tipo == 2){
+                        t = "Semantico";
+                    }
+                    colector += `<tr>
+                                <th scope="col">${t}</th>
+                                <th scope="col">${element.descripcion}</th>
+                                <th scope="col">${element.fila}</th>
+                                <th scope="col">${element.columna}</th>
+                                </tr>`;
+                }
+                $("#contenido_tablaErrores").html(colector);
+            } catch (error) {
+                console.log("Lista de errores vacia");
+            }
             
+        } else {
             
             const ent = new Entorno(null);
             const er = new ErrorManager(); 
@@ -85,12 +119,6 @@ $(document).ready(function(){
             const reporte_AST = new Dot(ast.getInstrucciones());
             let ast_dot = reporte_AST.graficarAST();
             d3.select("#graph").graphviz().renderDot(ast_dot);
-
-            
-    
-        }
-        catch (err) {
-            console.log("Error en el boton de interpretar "+err);
         }
     });
 

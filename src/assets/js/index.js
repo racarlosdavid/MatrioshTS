@@ -1,4 +1,5 @@
 let consola;
+let traducido;
 
 function setear() {
     nuevaPestaña();
@@ -11,6 +12,14 @@ function setear() {
     consola.setSize(null,250);
     document.getElementById("buttonConsola").click();
     consola.setValue("\n\n\n\n\n\n\n\n\n\n");
+
+    traducido = CodeMirror.fromTextArea(document.getElementById("code_traducido"),{
+        lineNumbers : true,
+        mode: "modo",
+        theme : "base16-dark",
+    });
+    traducido.setSize(null,520);
+    traducido.setValue("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 }
 
 $(document).ready(function(){
@@ -37,9 +46,6 @@ $(document).ready(function(){
 
             //Agrego los errores lexicos al colector de errores 
             er.addLista(Manager.getManager().getColectorErrores());
-
-            //Seteo las nativas en la ts
-            nativas(ent);
 
             //Ejecuto el AST
             ast.ejecutar(ent,er,consola_data,tsCollector,reporte_ts,ambito,padre); 
@@ -139,6 +145,7 @@ $(document).ready(function(){
             $("#contenido_tablaErrores").html(colector);
 
             //Imprimo el resultado de la traduccion en el textarea de traduccion
+            traducido.setValue(builder.toString()); 
             nuevaPestañaTraducido(builder.toString());
 
             //Graficar el ast
@@ -155,14 +162,6 @@ $(document).ready(function(){
     });
 
 });
-
-function nativas(ent){
-    
-    let fGraficar_ts = new Graficar_ts("graficar_ts","",[],null,[],-1,-1);
-    ent.AddFunction("graficar_ts",fGraficar_ts);
-
-}
-
 
 
 /*

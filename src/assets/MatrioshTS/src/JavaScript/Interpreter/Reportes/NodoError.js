@@ -1,4 +1,4 @@
-export class NodoError {
+class NodoError {
     constructor(tipo, descripcion, fila, columna) {
         this.tipo = tipo;
         this.descripcion = descripcion;

@@ -14,11 +14,15 @@ function setear() {
     consola.setValue("\n\n\n\n\n\n\n\n\n\n");
 }
 
+function limpiarConsola(){
+    consola.setValue("\n\n\n\n\n\n\n\n\n\n");
+}
+
 $(document).ready(function(){
 
     $("#interpretar").click(()=>{ 
         console.log("-> Se va a interpretar la cadena ingresada ");
-        
+        limpiarConsola();
         Manager.getManager().reiniciar(); 
         Manager.getManager().sizeActual.push(0);
         let ast = null;

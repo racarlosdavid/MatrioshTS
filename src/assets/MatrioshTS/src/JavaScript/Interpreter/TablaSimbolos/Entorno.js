@@ -1,4 +1,4 @@
- class Entorno {
+class Entorno {
     constructor(anterior) {
         this.ts = new Map();
         this.anterior = anterior;

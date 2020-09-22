@@ -26,11 +26,12 @@ export class Id extends Expresion{
                     er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable "+this.identificador+" sin haber asignado un valor", this.fila, this.columna));
                     return "null";  
                 } else {
-                     return new Retorno(obj.valor,obj.tipo); 
-                    
-                }  
+                     return new Retorno(obj.valor,obj.tipo);
+                }
+            }else{
+                er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable \""+this.identificador+"\" si no ha sido declarada", this.fila, this.columna));
+                return "null";  
             }
-        return "null";
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {

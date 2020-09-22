@@ -5,16 +5,18 @@ class Log extends Instruccion {
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let val = this.valor.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
-        if (val.valor instanceof Arreglo) {
-            consola.append(" > " + val.valor.imprimirArreglo() + "\n");
-        }
-        else {
-            if (val.tipo == Type.STRING && val.valor.includes("${")) {
-                let s = this.procesar(ent, val.valor);
-                consola.append(" > " + s + "\n");
+        if (val != "null") {
+            if (val.valor instanceof Arreglo) {
+                consola.append(" > " + val.valor.imprimirArreglo() + "\n");
             }
             else {
-                consola.append(" > " + val.valor + "\n");
+                if (val.tipo == Type.STRING && val.valor.includes("${")) {
+                    let s = this.procesar(ent, val.valor);
+                    consola.append(" > " + s + "\n");
+                }
+                else {
+                    consola.append(" > " + val.valor + "\n");
+                }
             }
         }
         return null;

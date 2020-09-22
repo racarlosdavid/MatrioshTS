@@ -73,7 +73,7 @@ function nuevaPestaña() {
       mode: "modo",
       theme : "base16-dark",
   });
-  tempo.setSize(null,450);
+  tempo.setSize(null,520);
   
   
   //Guardo la referencia del nuevo textmirror para la pestaña nueva

@@ -1,4 +1,4 @@
- class Accesos {
+class Accesos {
     constructor(valor, tipo, fila, columna) {
         this.valor = valor;
         this.tipo = tipo;
@@ -6,7 +6,7 @@
         this.columna = columna;
     }
 }
- var TipoAcceso;
+var TipoAcceso;
 (function (TipoAcceso) {
     TipoAcceso[TipoAcceso["ID"] = 0] = "ID";
     TipoAcceso[TipoAcceso["ARRAY"] = 1] = "ARRAY";

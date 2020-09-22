@@ -1,4 +1,4 @@
- class TSCollector {
+class TSCollector {
     constructor() {
         this.ts = new Map();
     }

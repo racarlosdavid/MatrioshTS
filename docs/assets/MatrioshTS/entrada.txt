@@ -182,6 +182,5 @@ for ( let index = 0; index < 10; index++ ) {
 */
 
 
-for ( let index = 0; index < 10; index++ ) {
-    console.log("el index es "+index);
-}
+console.log(a);
+let a=3;

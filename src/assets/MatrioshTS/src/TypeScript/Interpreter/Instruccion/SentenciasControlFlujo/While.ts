@@ -9,6 +9,7 @@ import { Continue } from "../SentenciasTransferencia/Continue";
 import { Break } from "../SentenciasTransferencia/Break";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
 import { R_TS } from "../../Reportes/R_TS";
+import { Return } from "../SentenciasTransferencia/Return";
 
 
 export class While extends Instruccion{
@@ -24,7 +25,9 @@ export class While extends Instruccion{
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let rcondicion = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
-        
+        if (rcondicion == null) {
+            return null;
+        }
         if(rcondicion.tipo != Type.BOOLEAN){
             er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
             return null;
@@ -32,13 +35,15 @@ export class While extends Instruccion{
         while(rcondicion.valor == true){ 
             let r = this.instrucciones.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             if(r != null || r != undefined){
-                
-                if(r instanceof Break)
+                if(r instanceof Break || r instanceof Return)
                     break;
                 else if(r instanceof Continue)
                     continue;
             }
             rcondicion = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+            if (rcondicion == null) {
+                return null;
+            }
             if(rcondicion.tipo != Type.BOOLEAN){
                 er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
                 return null;
@@ -69,11 +74,35 @@ export class While extends Instruccion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented. WHILE");
+        let nodo:string = "nodo" + ++cont;
+        builder.append(nodo+" [label=\"While\"];\n");
+        builder.append(parent+" -> "+nodo+";\n");
+        
+        let nodoCondicion:string = "nodo" + ++cont;
+        builder.append(nodoCondicion+" [label=\"Condicion\"];\n");
+        builder.append(nodo+" -> "+nodoCondicion+";\n");
+        
+        cont = this.condicion.getDot(builder, nodoCondicion, cont);
+        
+        let nodoInstrucciones:string = "nodo" + ++cont;
+        builder.append(nodoInstrucciones+" [label=\"Instrucciones\"];\n");
+        builder.append(nodo+" -> "+nodoInstrucciones+";\n");
+
+        cont = this.instrucciones.getDot(builder, nodoInstrucciones, cont);
+        
+        return cont;
     }
 
     traducir(builder: StringBuilder, parent: string) {
-        throw new Error("Method not implemented. WHILE");
+        let trad = new StringBuilder();
+        
+        trad.append("while ("+this.condicion.traducir(builder)+") {\n");
+
+        trad.append(this.instrucciones.traducir(builder,parent));
+        
+        trad.append("}\n"); 
+
+        return trad.toString();
     }
 
 }

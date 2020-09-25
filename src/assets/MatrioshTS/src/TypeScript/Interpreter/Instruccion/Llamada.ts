@@ -11,6 +11,7 @@ import { Type } from "../TablaSimbolos/Tipo";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { Declaracion, TipoDeclaracion } from "./Declaracion";
 import { Funcion } from "./Funcion";
+import { Return } from "./SentenciasTransferencia/Return";
 
 export class Llamada extends Instruccion {
 
@@ -62,13 +63,18 @@ export class Llamada extends Instruccion {
                     let result = inst.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
                     if(result !=null){
                         //Compruebo que el tipo de retorno sea igual que el tipo de retorno de la funcion
-                        if (result.tipo == funcion.tipoRetorno || funcion.tipoRetorno == null) {
+                        if (result.tipo == funcion.tipoRetorno) {
                             return result;
-                        } else { 
+                        } else if(result instanceof Return){
+                            return null;
+                        }else { 
                             er.addError(new NodoError(TipoError.SEMANTICO,"El tipo de retorno "+result.tipo+" no coinciden con el tipo de retorno"+funcion.tipoRetorno+" de la funcion", this.fila, this.columna));
                             return null; 
                         }
                     } 
+                }
+                if(funcion.tipoRetorno == null || funcion.tipoRetorno == Type.VOID){ 
+                    return null;
                 }
             }
             reporte_ts.addLista(nuevo.getReporte("Local: "+this.identificador,padre));
@@ -76,6 +82,7 @@ export class Llamada extends Instruccion {
             er.addError(new NodoError(TipoError.SEMANTICO,"Funcion "+this.identificador+" no encontrada en la tabla de simbolos", this.fila, this.columna));
             return null; 
         }
+        return null;
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {

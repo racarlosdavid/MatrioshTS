@@ -8,6 +8,7 @@ import { Default } from "./Default";
 import { Break } from "../SentenciasTransferencia/Break";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
 import { R_TS } from "../../Reportes/R_TS";
+import { Return } from "../SentenciasTransferencia/Return";
 
 
 export class Switch extends Instruccion{
@@ -25,6 +26,45 @@ export class Switch extends Instruccion{
     }
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
+        let condicionBuscada = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+        var numeroCaso = -1;
+        var numeroDefault = -1;
+        
+        for (let index = 0; index < this._case.length; index++) {
+            const casoActual = this._case[index];
+            let condicionCaso = casoActual.getCondicion().ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+            //console.log("condicion buscada "+condicionBuscada.valor+" condicion caso "+condicionCaso.valor)
+            if(condicionBuscada.valor == condicionCaso.valor){
+                //Si una caso cumple, ya no sigo evaluando los demas y me salgo del for
+                numeroCaso = index; 
+                break;
+            }
+        }
+
+        if(numeroCaso != -1){
+            for(let i = numeroCaso; i < this._case.length; i++){ 
+                let casoActual = this._case[i];		
+                let r = casoActual.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+                if(r!=null){ 
+                    if(r instanceof Break){
+                        break;
+                    } else{
+                        return r;
+                    }
+                }
+            }
+        }else if (numeroCaso == -1) {
+            if (this._default!=null) {
+                let r = this._default.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+                if(r!=null){
+                    return r;
+                }
+            }
+        }
+
+        
+        
+        /*
         let retorno = null;
         let bandera:boolean = false; // me dice si hay coincidencia o no con los casos para ejecutar el default si existe
         let continuar:boolean = false;
@@ -54,8 +94,9 @@ export class Switch extends Instruccion{
             //continuar = true; 
         }
         //Priguntar que se hace con el defaul si no hay breaks en el caso en el que entro -- si lo ejecuta o no lo ejecuta ;
-        if(eje_default==true && ((!bandera && this._default!=null)||continuar)){ //Si no hay break en los casos ejecuta todo excepto el default ya que si entro a un case
-            /*if((!bandera && this._default!=null)||continuar){ //Si no hay break en los casos ejecuta hasta el default sin importar que ya alla entrado a un case */
+        /*if(eje_default==true && ((!bandera && this._default!=null)||continuar)){ //Si no hay break en los casos ejecuta todo excepto el default ya que si entro a un case*/
+        /*
+            if((!bandera && this._default!=null)||continuar){ //Si no hay break en los casos ejecuta hasta el default sin importar que ya alla entrado a un case 
             let r = this._default?.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             if(r!=null){
                 if(r instanceof Break){
@@ -66,6 +107,7 @@ export class Switch extends Instruccion{
             }
         }
         return retorno;
+        */
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {

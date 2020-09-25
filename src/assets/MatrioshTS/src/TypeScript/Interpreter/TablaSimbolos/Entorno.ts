@@ -5,6 +5,7 @@ import { TipoDeclaracion } from "../Instruccion/Declaracion";
 import { Funcion } from "../Instruccion/Funcion";
 import { NTS } from "../Reportes/NTS";
 import { ArrayTS } from "../Edd/ArrayTS";
+import { TypeTS } from "../Edd/TypeTS";
 
 export class Entorno {
     
@@ -46,6 +47,28 @@ export class Entorno {
         //("No existe la funcion: " + id);
         return null;
     }
+
+    public  AddType(id:string, type:TypeTS):void{
+        id = "#" + id.toLowerCase();
+        if (!this.ts.has(id)){
+            this.ts.set(id, type);
+        }else{
+            //("Ya existe la funcion: " + id);
+        }
+    }
+
+    public GetType(id:string):TypeTS|null{
+        let temp:Entorno|null = this;
+        id = "#" + id.toLowerCase();
+        while (temp != null){
+            if (temp.ts.has(id)){
+                return temp.ts.get(id);
+            }
+            temp = temp.anterior;
+        }
+        //("No existe la funcion: " + id);
+        return null;
+    }
      
     public ChangeValue(id:any, value:any):void{ 
         let temp:Entorno | null = this;
@@ -53,7 +76,8 @@ export class Entorno {
         while(temp != null){
             if (temp.ts.has(id)){
                 let s:Simbolo = temp.ts.get(id);
-                s.valor = value;
+                s.valor = value; 
+                break;
             }
             temp = temp.anterior;
         }
@@ -140,7 +164,7 @@ export class Entorno {
              
             });
         } else {
-            console.log("No hay nada para reportar la tabla de simbolos esta vacia");   
+            //console.log("No hay nada para reportar la tabla de simbolos esta vacia");   
         }
         return tabla;
     }
@@ -148,7 +172,9 @@ export class Entorno {
     imprimir(){
         let tabla:Array<NTS>  = []; 
         if (this.ts.size != 0){
-            console.log("ID", "TIPIO", "AMBITO", "PADRE", "DESCRIPCION","\n")
+            //console.log("ID", "TIPIO", "AMBITO", "PADRE", "DESCRIPCION","\n")
+            console.log("ID          TIPO          AMBITO          PADRE          DESCRIPCION\n");
+            
             this.ts.forEach(function(valor, clave) {
                 //console.log(clave + " = " + valor);
                 let nombre = clave+"";
@@ -172,8 +198,8 @@ export class Entorno {
                 }
                 
                 let descripcion = valor.valor.toString();
-                console.log(nombre, tipo, "ambito", "padre", descripcion,"\n")
-                
+                //console.log(nombre, tipo, "ambito", "padre", descripcion,"\n")
+            console.log(`${nombre}   ${tipo}       AMBITO          PADRE          ${descripcion}\n`);
              
             });
         } else {

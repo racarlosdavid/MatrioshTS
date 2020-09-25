@@ -28,11 +28,17 @@ export class Incremento extends Instruccion{
         }
         return null;
     }
+    
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented. getdot Incremento");
+        let nodoId:string = "nodo" + ++cont;
+        builder.append(nodoId+" [label=\""+this.identificador+"++\"];\n");
+        builder.append(parent+" -> "+nodoId+"[color=\"red:black;0.50:red\"];\n");
+        
+        return cont;
     }
+
     traducir(builder: StringBuilder, parent: string) {
-        throw new Error("Method not implemented.traducir incrementos");
+        return this.identificador+"++";
     }
 
 

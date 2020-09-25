@@ -8,15 +8,20 @@ import { R_TS } from "../../Reportes/R_TS";
 
 export class Return extends Instruccion{
 
-    valor:Expresion;
+    valor:Expresion|null;
 
-    constructor(valor:Expresion, fila:number, columna:number){
+    constructor(valor:Expresion|null, fila:number, columna:number){
         super(fila,columna);
         this.valor = valor;
     }
     
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
-        return this.valor.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+        if (this.valor != null) {
+            return this.valor.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+        } else {
+            return this;
+        }
+        
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
@@ -24,13 +29,20 @@ export class Return extends Instruccion{
         builder.append(nodo+" [label=\"Return\"];\n");
         builder.append(parent+" -> "+nodo+";\n");
         
-        cont = this.valor.getDot(builder, nodo, cont);
+        
+        if (this.valor != null) {
+            cont = this.valor.getDot(builder, nodo, cont);
+        }
         
         return cont;
     }
     
     traducir(builder: StringBuilder, parent: string) {
-        return "return "+this.valor.traducir(builder)+";\n";
+        if (this.valor != null) {
+            return "return "+this.valor.traducir(builder)+";\n";
+        } else {
+            return "return ;\n";
+        }
     }
 
 }

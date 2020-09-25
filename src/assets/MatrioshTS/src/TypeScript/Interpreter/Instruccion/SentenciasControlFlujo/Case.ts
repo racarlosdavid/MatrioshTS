@@ -13,12 +13,12 @@ import { R_TS } from "../../Reportes/R_TS";
 export class Case extends Instruccion{
    
     private condicion:Expresion;
-    private instrucciones:Array<Instruccion> ;
+    private instrucciones:Array<Instruccion> ; 
 
     constructor( condicion:Expresion, instrucciones:Array<Instruccion> , fila:number, columna:number) {
         super(fila,columna);
         this.condicion = condicion;
-        this.instrucciones = instrucciones;
+        this.instrucciones = instrucciones; 
     }
     
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {

@@ -6,17 +6,17 @@ import { StringBuilder } from "./StringBuilder";
 import { Arreglo } from "./Arreglo";
 import { Retorno } from "../Abstract/Retorno";
 import { Type } from "../TablaSimbolos/Tipo";
-import { NodoError, TipoError } from "../Reportes/NodoError";
-import { TSCollector } from "../TablaSimbolos/TSCollector";
+import { NodoError, TipoError } from "../Reportes/NodoError";     
+import { TSCollector } from "../TablaSimbolos/TSCollector";  
 import { R_TS } from "../Reportes/R_TS";
 
-export class ArrayTS extends Expresion{ 
+export class ArrayTS extends Expresion{     
 
     valores:Array<Expresion>;
 
-    constructor(valores:Array<Expresion>, fila:number, columna:number){
+    constructor(valores:Array<Expresion>, fila:number, columna:number){   
         super(fila,columna);
-        this.valores = valores;
+        this.valores = valores; 
     }
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {

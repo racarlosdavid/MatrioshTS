@@ -7,33 +7,47 @@ import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { Arreglo } from "../Edd/Arreglo";
 import { R_TS } from "../Reportes/R_TS";
 import { Type } from "../TablaSimbolos/Tipo";
+import { MiType } from "../Edd/MiType";
 
 
 
 export class Log extends Instruccion{
 
-    valor:Expresion ;
+    valor:Array<Expresion>;
 
-    constructor(valor:any, fila:number, columna:number){
+    constructor(valor:Array<Expresion>, fila:number, columna:number){
         super(fila,columna);
         this.valor = valor;
     }
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
-        let val = this.valor.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
-        if (val != "null") {
-            if (val.valor instanceof Arreglo) {
-                consola.append(" > "+val.valor.imprimirArreglo()+"\n");
-            } else {
-                if (val.tipo == Type.STRING && val.valor.includes("${")) {
-                    let s = this.procesar(ent,val.valor);
-                    consola.append(" > "+s+"\n");
-                }else{
-                    consola.append(" > "+val.valor+"\n"); 
+        
+        let salida = "";
+        for (let index = 0; index < this.valor.length; index++) {
+            const element = this.valor[index];
+            let val = element.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+            if (val != null) {
+                if (val.valor instanceof Arreglo) {
+                   salida += val.valor.imprimirArreglo();
+                } else if (val.valor instanceof MiType) {
+                    salida += val.valor.imprimirType();
+                } else {
+                    if (val.tipo == Type.STRING && val.valor.includes("${")) {
+                        let s = this.procesar(ent,val.valor);
+                        salida += s;
+                    }else{
+                        salida += val.valor;
+                    }
+                    
                 }
-                
             }
         }
+        if (salida!="") {
+            consola.append(" > "+salida+"\n");
+        }
+        
+        
+        
         return null;
     }
 
@@ -71,12 +85,27 @@ export class Log extends Instruccion{
     }
     
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        console.log("getDot de Log no esta implementado solo retorna el cont para que no de error");
+        let nodo:string = "nodo" + ++cont;
+        builder.append(nodo+" [label=\"Console.log\"];\n");
+        builder.append(parent+" -> "+nodo+";\n");
+        
+        for (let index = 0; index < this.valor.length; index++) {
+            const element = this.valor[index];
+            cont = element.getDot(builder, parent, cont);
+            
+        }
+        
         return cont;
     }
 
     traducir(builder: StringBuilder, parent: string) {
-        return "console.log("+this.valor.traducir(builder)+");\n";
+        let salida = "";
+        for (let index = 0; index < this.valor.length; index++) {
+            const element = this.valor[index];
+            salida += element.traducir(builder);
+            
+        }
+        return "console.log("+salida+");\n";
     }
    
 

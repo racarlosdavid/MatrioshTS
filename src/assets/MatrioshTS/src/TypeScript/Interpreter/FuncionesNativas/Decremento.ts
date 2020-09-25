@@ -18,7 +18,6 @@ export class Decremento extends Instruccion{
     }
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let obj:Simbolo|null = ent.GetValue(this.identificador);
-        console.log(" en actualizacion "+this.identificador);
         if (obj instanceof Simbolo) {  
             if (obj.tipo == Type.NUMBER) { 
                 ent.ChangeValue(this.identificador,obj.valor-1);
@@ -30,11 +29,15 @@ export class Decremento extends Instruccion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        throw new Error("Method not implemented. getdot Decementos");
+        let nodoId:string = "nodo" + ++cont;
+        builder.append(nodoId+" [label=\""+this.identificador+"--\"];\n");
+        builder.append(parent+" -> "+nodoId+"[color=\"red:black;0.50:red\"];\n");
+        
+        return cont;
     }
-    
+
     traducir(builder: StringBuilder, parent: string) {
-        return "";
+        return this.identificador+"--";
     }
 
 

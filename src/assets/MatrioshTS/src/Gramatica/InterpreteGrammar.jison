@@ -84,33 +84,33 @@
 
 \"[^\"]*\"				{ //yytext = yytext.substr(1,yyleng-2);
 						 let cad1 = yytext.substr(1,yyleng-2);
-                            cad1 = cad1.replace("\\","\\");
-                            cad1 = cad1.replace("\\n","\n");
-                            cad1 = cad1.replace("\\r","\r");
-                            cad1 = cad1.replace("\\t","\t");
+                            cad1 = cad1.replace(/\\/g,"\\");
+                            cad1 = cad1.replace(/\\n/g,"\n");
+                            cad1 = cad1.replace(/\\r/g,"\r");
+                            cad1 = cad1.replace(/\\t/g,"\t");
 							yytext = cad1;
 						return 'string1'; }
 [\'][^\']*[\']				{ //yytext = yytext.substr(1,yyleng-2);
 						 let cad2 = yytext.substr(1,yyleng-2);
-                            cad2 = cad2.replace("\\","\\");
-                            cad2 = cad2.replace("\\n","\n");
-                            cad2 = cad2.replace("\\r","\r");
-                            cad2 = cad2.replace("\\t","\t");
+                            cad2 = cad2.replace(/\\/g,"\\");
+                            cad2 = cad2.replace(/\\n/g,"\n");
+                            cad2 = cad2.replace(/\\r/g,"\r");
+                            cad2 = cad2.replace(/\\t/g,"\t");
 							yytext = cad2;
 						return 'string2'; }
 [\`][^\`]*[\`]				{ //yytext = yytext.substr(1,yyleng-2);
 						 let cad3 = yytext.substr(1,yyleng-2);
-                            cad3 = cad3.replace("\\","\\");
-                            cad3 = cad3.replace("\\n","\n");
-                            cad3 = cad3.replace("\\r","\r");
-                            cad3 = cad3.replace("\\t","\t");
+                            cad3 = cad3.replace(/\\/g,"\\");
+                            cad3 = cad3.replace(/\\n/g,"\n");
+                            cad3 = cad3.replace(/\\r/g,"\r");
+                            cad3 = cad3.replace(/\\t/g,"\t");
 							yytext = cad3;
 						return 'string3'; }
 						
 [0-9]+"."[0-9]+\b  		return 'decimal';
 [0-9]+\b				return 'entero';
 //[\'][^\'\n][\']         { yytext = yytext.substr(1,yyleng-2); return 'char'; }
-([a-zA-Z])[a-zA-Z0-9_.]* return 'identificador';
+([a-zA-Z])[a-zA-Z0-9_]* return 'identificador';
 
 <<EOF>>				    return 'EOF'; 
 .					    { 	Manager.getManager().addError(new NodoError(TipoError.LEXICO, `El caracter ${yytext} no pertenece al lenguaje`, yylloc.first_line, yylloc.first_column));
@@ -153,7 +153,8 @@
 
 	const {ArrayTS} = require('../TypeScript/Interpreter/Edd/ArrayTS');
 	const {TypeTS} = require('../TypeScript/Interpreter/Edd/TypeTS');
-
+	const {TypeTSDefinicion} = require('../TypeScript/Interpreter/Edd/TypeTSDefinicion');
+	
 	const {Log} = require('../TypeScript/Interpreter/FuncionesNativas/Log');
 	const {Incremento} = require('../TypeScript/Interpreter/FuncionesNativas/Incremento');
 	const {Decremento} = require('../TypeScript/Interpreter/FuncionesNativas/Decremento');
@@ -241,9 +242,12 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
                 } ;
 
 
-TYPES : pr_type identificador igual llaveizq L_PARAMETROS llaveder ptcoma { $$ = new TypeTS($2,$5,@1.first_line,@1.first_column); } ;
+TYPES : pr_type identificador igual llaveizq TYPE_L_PARAM llaveder ptcoma { $$ = new TypeTS($2,$5,@1.first_line,@1.first_column); } 
+	| pr_type identificador igual llaveizq TYPE_L_PARAM llaveder  { $$ = new TypeTS($2,$5,@1.first_line,@1.first_column); } ;
 
-RETURN : pr_return E ptcoma { $$ = new Return($2,@1.first_line,@1.first_column); } ;
+
+RETURN : pr_return E ptcoma { $$ = new Return($2,@1.first_line,@1.first_column); } 
+	| pr_return ptcoma { $$ = new Return(null,@1.first_line,@1.first_column); } ;
 
 INC : identificador inc ptcoma {  $$ = new Incremento($1, @1.first_line, @1.first_column); } 
 	| identificador inc  {  $$ = new Incremento($1, @1.first_line, @1.first_column); } ;
@@ -292,7 +296,7 @@ BREAK : pr_break ptcoma   { $$ = new Break(@1.first_line,@1.first_column); } ;
 
 CONTINUE : pr_continue ptcoma { $$ = new Continue(@1.first_line,@1.first_column); };
 
-CONSOLELOG : pr_consolelog parizq E parder ptcoma	{ $$ = new Log($3,@1.first_line,@1.first_column); } ;
+CONSOLELOG : pr_consolelog parizq L_E parder ptcoma	{ $$ = new Log($3,@1.first_line,@1.first_column); } ;
 
 /*
 FUNCION :  pr_function identificador parizq L_PARAMETROS parder dospuntos TIPO BLOQUE  { $$ = new Funcion($1,$2,$4,$6,@1.first_line,@1.first_column); } 
@@ -332,11 +336,16 @@ F : L_PARAMETROS parder T llaveizq LISTA_INSTRUCCIONES llaveder  {
 T : dospuntos TIPO { $$ = $2; } 
 	| { $$ = null;} ;
 
+TYPE_L_PARAM : TYPE_L_PARAM PARAMETRO SEPARADOR { $1.push($2); $$=$1; }
+	| PARAMETRO SEPARADOR 								{ $$ = [$1]; } ;
+
+SEPARADOR : coma | ptcoma | ;
+
 L_PARAMETROS : L_PARAMETROS coma PARAMETRO	{ $1.push($3); $$=$1; }
     | PARAMETRO                             { $$ = [$1]; } ;
 
 PARAMETRO :	identificador dospuntos TIPO{ $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,0,null,@1.first_line,@1.first_column); }
-	| identificador dospuntos TIPO DIMENSIONES{ $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,$4,null,@1.first_line,@1.first_column); } ;
+	| identificador dospuntos TIPO DIMENSIONES { $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,$4,null,@1.first_line,@1.first_column); } ;
 
 LLAMADA : identificador parizq parder ptcoma	{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
 	| identificador parizq parder 				{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
@@ -373,6 +382,7 @@ E : ARITMETICA      	{ $$ = $1; }
 	| identificador parizq L_E parder { $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
 	| corizq L_E corder { $$ = new ArrayTS($2,@1.first_line,@1.first_column);}
 	| corizq corder 	{ $$ = new ArrayTS([],@1.first_line,@1.first_column);}
+	| llaveizq L_E_TYPE llaveder { $$ = new TypeTSDefinicion($2,@1.first_line,@1.first_column);}
 	| entero        	{ $$ = new Literal(Number(yytext),Type.NUMBER,TipoString.INDEF,@1.first_line,@1.first_column); } 
 	| decimal	    	{ $$ = new Literal(Number(yytext),Type.NUMBER,TipoString.INDEF,@1.first_line,@1.first_column); }
 	| string1	    	{ $$ = new Literal(String(yytext),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column); }
@@ -404,6 +414,12 @@ LOGICA : E and E	{ $$ = new Logica(TipoOperacionLogica.AND,$1,$3,null,false,@1.f
 
 L_E : L_E coma E  { $1.push($3); $$=$1; }
 	| E              { $$ = [$1]; } ;
+
+L_E_TYPE : L_E_TYPE coma E_TYPE  { $1.push($3); $$=$1; }
+	|  E_TYPE               { $$ = [$1]; } ;
+
+E_TYPE : identificador dospuntos E { $$ = new Declaracion(TipoDeclaracion.TYPEVAL,$1,null,0,$3,@1.first_line,@1.first_column); } ;
+
 
 L_ACCESO : L_ACCESO ACCESO	{ $1.push($2); $$=$1 }
     | ACCESO				{ $$ = [$1]; } ;

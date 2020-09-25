@@ -6,6 +6,7 @@ import { NodoError, TipoError } from "../Reportes/NodoError";
 import { Funcion } from "./Funcion";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { R_TS } from "../Reportes/R_TS";
+import { Incremento } from "../FuncionesNativas/Incremento";
 
 export class Bloque extends Instruccion{
     
@@ -13,16 +14,18 @@ export class Bloque extends Instruccion{
 
     constructor(instrucciones:Array<Instruccion>, linea:number, columna:number){
         super(linea, columna);
-        this.instrucciones = instrucciones; 
+        this.instrucciones = instrucciones;  
     }
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let nuevo = new Entorno(ent);
         for(const instr of this.instrucciones){
             try {
-                const element = instr.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre); 
-                if(element != undefined || element != null)
-                    return element;                
+                let element = instr.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre); 
+                if(element != undefined || element != null){
+                    return element;       
+                }
+                             
             } catch (error) {
                 er.addError(new NodoError(TipoError.SEMANTICO, ""+error+"", this.fila, this.columna));
         

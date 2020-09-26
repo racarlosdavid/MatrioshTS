@@ -13,6 +13,7 @@ import { Type } from "../TablaSimbolos/Tipo";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { Declaracion, TipoDeclaracion } from "./Declaracion";
 import { Funcion } from "./Funcion";
+import { Break } from "./SentenciasTransferencia/Break";
 import { Return } from "./SentenciasTransferencia/Return";
 
 export class Llamada extends Instruccion {
@@ -73,15 +74,22 @@ export class Llamada extends Instruccion {
             }else {
                 //Manager.getManager().addListaR_TS(nuevo.getReporte("global",""));
                 for (const inst of funcion.instrucciones) { 
-                    let result = inst.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
+                    let result = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
                     if(result !=null ){
                         //Compruebo que el tipo de retorno sea igual que el tipo de retorno de la funcion
-                        if ((result.tipo == funcion.tipoRetorno &&  funcion.tipoRetorno != Type.VOID) || funcion.tipoRetorno == null ) {
-                            return result;
-                        } else if(result instanceof Return){
+                        if (inst instanceof Llamada){
+                            //console.log("Es una llamada como instruccion no como expresion por eso no retorno nada");
+                        }else if(result instanceof Return){
                             return null;
+                        }else if(result instanceof Break){
+                            er.addError(new NodoError(TipoError.SEMANTICO,"Break fuera de ciclo ", this.fila, this.columna));
+                        }else if ((result.tipo == funcion.tipoRetorno && funcion.tipoRetorno != Type.VOID) || funcion.tipoRetorno == null ) {
+                            return result;
                         }else { 
-                            if (!(inst instanceof Llamada) || funcion.tipoRetorno != Type.VOID ) {
+                            if(funcion.tipoRetorno == Type.VOID){
+                                er.addError(new NodoError(TipoError.SEMANTICO,"Una funcion tipo "+this.getTipoToString(funcion.tipoRetorno)+" no puede retornar algo. ", this.fila, this.columna));
+                                return null;
+                            }else {
                                 er.addError(new NodoError(TipoError.SEMANTICO,"El tipo de retorno "+this.getTipoToString(result.tipo)+" no coinciden con el tipo de retorno "+this.getTipoToString(funcion.tipoRetorno)+" de la funcion", this.fila, this.columna));
                                 return null;
                             }

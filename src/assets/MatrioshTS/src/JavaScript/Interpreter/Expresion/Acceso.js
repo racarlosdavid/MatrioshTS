@@ -23,6 +23,9 @@ class Acceso extends Expresion {
                                 pos = tempo.valor;
                                 if (tempo.tipo == Type.NUMBER) {
                                     r = r.getValor(pos);
+                                    if (r == undefined) {
+                                        t = Type.INDEF;
+                                    }
                                 }
                                 else {
                                     er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba un valor de tipo number ", this.fila, this.columna));
@@ -35,6 +38,9 @@ class Acceso extends Expresion {
                             pos = tempo.valor;
                             if (tempo.tipo == Type.NUMBER) {
                                 r = r.getValor(pos);
+                                if (r == undefined) {
+                                    t = Type.INDEF;
+                                }
                             }
                             else {
                                 er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba un valor de tipo number ", this.fila, this.columna));

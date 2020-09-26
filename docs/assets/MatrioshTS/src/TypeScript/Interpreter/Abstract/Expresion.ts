@@ -35,6 +35,8 @@ export abstract class Expresion{
                 return "void";
             case Type.TYPE:
                 return "type";
+            case Type.INDEF:
+                return "undefined";
             default:
                 return tipo+"";
         }

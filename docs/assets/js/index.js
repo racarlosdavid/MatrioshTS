@@ -1,4 +1,5 @@
 let consola;
+let punto_dot;
 
 
 function setear() {
@@ -17,6 +18,12 @@ function setear() {
 function limpiarConsola(){
     consola.setValue("\n\n\n\n\n\n\n\n\n\n");
     document.getElementById("buttonConsola").click();
+}
+
+function saveDynamicDataToFile(data) {
+
+    var blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, "Matriosh_AST_201213132.txt");
 }
 
 function nativas(ent){
@@ -149,6 +156,8 @@ $(document).ready(function(){
             const reporte_AST = new Dot(ast.getInstrucciones());
             let ast_dot = reporte_AST.graficarAST();
             d3.select("#graph").graphviz().renderDot(ast_dot);
+            punto_dot = ast_dot;
+            
         }
     });
 
@@ -207,6 +216,15 @@ $(document).ready(function(){
         }
         catch (err) {
             console.log("Error en el boton traducir "+err);
+        }
+    });
+
+    $("#guardar_dot").click(()=>{ 
+        console.log("-> Se va a crear el txt con el codigo dot ");
+        try { 
+            saveDynamicDataToFile(punto_dot);
+        } catch (err) {
+            console.log("Error en el boton guardar dot "+err);
         }
     });
 

@@ -62,23 +62,23 @@ export class Aritmetica extends Expresion{
 
 
     suma(left:any ,right:any, er:ErrorManager) {
-        if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor + right.valor),Type.NUMBER);
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
+            return new Retorno((left.valor + right.valor), Type.NUMBER);
         }
-        else if(left.tipo == Type.STRING && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor + right.valor.toString()),Type.STRING);
+        else if (typeof left.valor === "string" && typeof right.valor === "number") {
+            return new Retorno((left.valor + right.valor.toString()), Type.STRING);
         }
-        else if(left.tipo == Type.NUMBER && right.tipo == Type.STRING){ 
-            return new Retorno((left.valor.toString() + right.valor),Type.STRING);
+        else if (typeof left.valor === "number" && typeof right.valor === "string") {
+            return new Retorno((left.valor.toString() + right.valor), Type.STRING);
         }
-        else if(left.tipo == Type.STRING && right.tipo == Type.BOOLEAN){
-            return new Retorno((left.valor + right.valor.toString()),Type.STRING);
+        else if (typeof left.valor === "string" && typeof right.valor === "boolean") {
+            return new Retorno((left.valor + right.valor.toString()), Type.STRING);
         }
-        else if(left.tipo == Type.BOOLEAN && right.tipo == Type.STRING){
-            return new Retorno((left.valor.toString() + right.valor),Type.STRING);
+        else if (typeof left.valor === "boolean" && typeof right.valor === "string") {
+            return new Retorno((left.valor.toString() + right.valor), Type.STRING);
         }
-        else if(left.tipo == Type.STRING && right.tipo == Type.STRING){
-            return new Retorno((left.valor + right.valor),Type.STRING);
+        else if (typeof left.valor === "string" && typeof right.valor === "string") {
+            return new Retorno((left.valor + right.valor), Type.STRING);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la suma entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo),this.fila,this.columna));
@@ -86,8 +86,8 @@ export class Aritmetica extends Expresion{
     }
 
     resta(left:any ,right:any, er:ErrorManager) {
-        if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor - right.valor),Type.NUMBER);
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
+            return new Retorno((left.valor - right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la resta entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo),this.fila,this.columna));
@@ -96,8 +96,8 @@ export class Aritmetica extends Expresion{
     }
 
     multiplicacion(left:any ,right:any, er:ErrorManager) {
-        if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor * right.valor),Type.NUMBER);
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
+            return new Retorno((left.valor * right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la multiplicacion entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo),this.fila,this.columna));
@@ -105,12 +105,13 @@ export class Aritmetica extends Expresion{
     }
 
     division(left:any ,right:any, er:ErrorManager) {
-        if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            if (right.valor == 0){
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
+            if (right.valor == 0) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la division entre 0", this.fila, this.columna));
                 return null;
-            }else{
-                return new Retorno((left.valor / right.valor),Type.NUMBER);
+            }
+            else {
+                return new Retorno((left.valor / right.valor), Type.NUMBER);
             }
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
@@ -119,8 +120,8 @@ export class Aritmetica extends Expresion{
     }
 
     potencia(left:any ,right:any, er:ErrorManager) {
-        if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor ** right.valor),Type.NUMBER);
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
+            return new Retorno((Math.pow(left.valor, right.valor)), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la potencia entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo),this.fila,this.columna));
@@ -128,8 +129,8 @@ export class Aritmetica extends Expresion{
     }
 
     modulo(left:any ,right:any, er:ErrorManager) {
-        if(left.tipo == Type.NUMBER && right.tipo == Type.NUMBER){
-            return new Retorno((left.valor % right.valor),Type.NUMBER);
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
+            return new Retorno((left.valor % right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible el modulo entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo),this.fila,this.columna));
@@ -137,8 +138,8 @@ export class Aritmetica extends Expresion{
     }
 
     negacion(unario:any, er:ErrorManager) {
-        if(unario.tipo == Type.NUMBER ){
-            return new Retorno((unario.valor * -1),Type.NUMBER);
+        if (typeof unario.valor === "number") {
+            return new Retorno((unario.valor * -1), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la negacion de "+this.getTipoToString(unario.tipo),this.fila,this.columna));

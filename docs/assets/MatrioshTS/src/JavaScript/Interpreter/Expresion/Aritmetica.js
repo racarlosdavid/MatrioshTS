@@ -40,22 +40,22 @@ class Aritmetica extends Expresion {
         }
     }
     suma(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor + right.valor), Type.NUMBER);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.NUMBER) {
+        else if (typeof left.valor === "string" && typeof right.valor === "number") {
             return new Retorno((left.valor + right.valor.toString()), Type.STRING);
         }
-        else if (left.tipo == Type.NUMBER && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "number" && typeof right.valor === "string") {
             return new Retorno((left.valor.toString() + right.valor), Type.STRING);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.BOOLEAN) {
+        else if (typeof left.valor === "string" && typeof right.valor === "boolean") {
             return new Retorno((left.valor + right.valor.toString()), Type.STRING);
         }
-        else if (left.tipo == Type.BOOLEAN && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "boolean" && typeof right.valor === "string") {
             return new Retorno((left.valor.toString() + right.valor), Type.STRING);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor + right.valor), Type.STRING);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
@@ -63,7 +63,7 @@ class Aritmetica extends Expresion {
         return null;
     }
     resta(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor - right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
@@ -71,7 +71,7 @@ class Aritmetica extends Expresion {
         return null;
     }
     multiplicacion(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor * right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
@@ -79,7 +79,7 @@ class Aritmetica extends Expresion {
         return null;
     }
     division(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             if (right.valor == 0) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la division entre 0", this.fila, this.columna));
                 return null;
@@ -93,7 +93,7 @@ class Aritmetica extends Expresion {
         return null;
     }
     potencia(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((Math.pow(left.valor, right.valor)), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
@@ -101,7 +101,7 @@ class Aritmetica extends Expresion {
         return null;
     }
     modulo(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor % right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
@@ -109,7 +109,7 @@ class Aritmetica extends Expresion {
         return null;
     }
     negacion(unario, er) {
-        if (unario.tipo == Type.NUMBER) {
+        if (typeof unario.valor === "number") {
             return new Retorno((unario.valor * -1), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */

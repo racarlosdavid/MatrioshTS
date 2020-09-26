@@ -39,7 +39,19 @@ export class Asignacion extends Instruccion{
                 let new_val = this.valor.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre); 
       
                 
-                if (result.valor instanceof Arreglo) { 
+                if (result.valor instanceof Arreglo) {
+                    if(new_val.valor == undefined){
+                        er.addError(new NodoError(TipoError.SEMANTICO,"No se puede asignar un undefined al arreglo, se va a sustituir por 0 para que no se quede trabado", this.fila, this.columna));
+                        
+                        if (result.tipo == Type.NUMBER) { //Si es un arreglo de number intento recuperarme asignadole 0 al undefined
+                            new_val.valor = 0;
+                            new_val.tipo = Type.NUMBER;
+                        }
+                        if (result.tipo == Type.STRING) { //Si es un arreglo de number intento recuperarme asignadole "" al undefined
+                            new_val.valor = "";
+                            new_val.tipo = Type.STRING;
+                        }
+                    }
                     let r:Arreglo = result.valor; 
                     let pos = null;
                     for (let index = 0; index < this.accesos.length; index++) {

@@ -18,6 +18,27 @@ function limpiarConsola(){
     consola.setValue("\n\n\n\n\n\n\n\n\n\n");
 }
 
+function nativas(ent){
+    
+    let fGraficar_ts = new Graficar_ts("graficar_ts","",[],null,[],-1,-1);
+    ent.AddFunction("graficar_ts",fGraficar_ts);
+
+    let fpop_parametros = [];
+    let fpop_instrucciones = [];
+    fpop_parametros.push(new Declaracion(TipoDeclaracion.PARAM,"Nativa_Pop_Arg1",Type.STRING,0,null,-1,-1));
+    let fpop = new Pop("pop","",fpop_parametros,null,fpop_instrucciones,-1,-1);
+    ent.AddFunction("pop",fpop);
+
+    let fpush_parametros = [];
+    let fpush_instrucciones = [];
+    fpush_parametros.push(new Declaracion(TipoDeclaracion.PARAM,"Nativa_Push_Arg1",null,0,null,-1,-1));
+    fpush_parametros.push(new Declaracion(TipoDeclaracion.PARAM,"Nativa_Push_Arg2",Type.STRING,0,null,-1,-1));
+    let fpush = new Push("push","",fpush_parametros,null,fpush_instrucciones,-1,-1);
+    ent.AddFunction("push",fpush);
+
+}
+
+
 $(document).ready(function(){
 
     $("#interpretar").click(()=>{ 
@@ -76,6 +97,9 @@ $(document).ready(function(){
 
             //Agrego los errores lexicos al colector de errores 
             er.addLista(Manager.getManager().getColectorErrores());
+
+            //Seteo las nativas en la ts
+            nativas(ent);
 
             //Ejecuto el AST
             ast.ejecutar(ent,er,consola_data,tsCollector,reporte_ts,ambito,padre); 
@@ -185,6 +209,7 @@ $(document).ready(function(){
     });
 
 });
+
 
 
 /*

@@ -6,6 +6,9 @@ class While extends Instruccion {
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let rcondicion = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+        if (rcondicion == null) {
+            return null;
+        }
         if (rcondicion.tipo != Type.BOOLEAN) {
             er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
             return null;
@@ -13,12 +16,15 @@ class While extends Instruccion {
         while (rcondicion.valor == true) {
             let r = this.instrucciones.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             if (r != null || r != undefined) {
-                if (r instanceof Break)
+                if (r instanceof Break || r instanceof Return)
                     break;
                 else if (r instanceof Continue)
                     continue;
             }
             rcondicion = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+            if (rcondicion == null) {
+                return null;
+            }
             if (rcondicion.tipo != Type.BOOLEAN) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
                 return null;
@@ -48,9 +54,24 @@ class While extends Instruccion {
         */
     }
     getDot(builder, parent, cont) {
-        throw new Error("Method not implemented. WHILE");
+        let nodo = "nodo" + ++cont;
+        builder.append(nodo + " [label=\"While\"];\n");
+        builder.append(parent + " -> " + nodo + ";\n");
+        let nodoCondicion = "nodo" + ++cont;
+        builder.append(nodoCondicion + " [label=\"Condicion\"];\n");
+        builder.append(nodo + " -> " + nodoCondicion + ";\n");
+        cont = this.condicion.getDot(builder, nodoCondicion, cont);
+        let nodoInstrucciones = "nodo" + ++cont;
+        builder.append(nodoInstrucciones + " [label=\"Instrucciones\"];\n");
+        builder.append(nodo + " -> " + nodoInstrucciones + ";\n");
+        cont = this.instrucciones.getDot(builder, nodoInstrucciones, cont);
+        return cont;
     }
     traducir(builder, parent) {
-        throw new Error("Method not implemented. WHILE");
+        let trad = new StringBuilder();
+        trad.append("while (" + this.condicion.traducir(builder) + ") {\n");
+        trad.append(this.instrucciones.traducir(builder, parent));
+        trad.append("}\n");
+        return trad.toString();
     }
 }

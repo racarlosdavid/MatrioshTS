@@ -7,9 +7,10 @@ class Bloque extends Instruccion {
         let nuevo = new Entorno(ent);
         for (const instr of this.instrucciones) {
             try {
-                const element = instr.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
-                if (element != undefined || element != null)
+                let element = instr.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
+                if (element != undefined || element != null) {
                     return element;
+                }
             }
             catch (error) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "" + error + "", this.fila, this.columna));

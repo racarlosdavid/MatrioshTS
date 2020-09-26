@@ -35,10 +35,26 @@ class For extends Instruccion {
         return null;
     }
     getDot(builder, parent, cont) {
-        console.log("Method not implemented. FOR");
+        let nodo = "nodo" + ++cont;
+        builder.append(nodo + " [label=\"For\"];\n");
+        builder.append(parent + " -> " + nodo + ";\n");
+        let nodoCondicion = "nodo" + ++cont;
+        builder.append(nodoCondicion + " [label=\"Definicion\"];\n");
+        builder.append(nodo + " -> " + nodoCondicion + ";\n");
+        cont = this.inicio.getDot(builder, nodoCondicion, cont);
+        cont = this.condicion.getDot(builder, nodoCondicion, cont);
+        cont = this.actualizacion.getDot(builder, nodoCondicion, cont);
+        let nodoInstrucciones = "nodo" + ++cont;
+        builder.append(nodoInstrucciones + " [label=\"Instrucciones\"];\n");
+        builder.append(nodo + " -> " + nodoInstrucciones + ";\n");
+        cont = this.instrucciones.getDot(builder, nodoInstrucciones, cont);
         return cont;
     }
     traducir(builder, parent) {
-        console.log("Method not implemented.FOR ");
+        let trad = new StringBuilder();
+        trad.append("for (" + this.inicio.traducir(builder, parent) + " " + this.condicion.traducir(builder) + ";" + this.actualizacion.traducir(builder, parent) + ") {\n");
+        trad.append(this.instrucciones.traducir(builder, parent));
+        trad.append("}\n");
+        return trad.toString();
     }
 }

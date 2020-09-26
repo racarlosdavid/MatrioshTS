@@ -1,11 +1,17 @@
-let a = 5;
-let A = 53;
-console.log(a);
-console.log(A);
-
-graficar_ts();
 
 
-let delta:number[];
-delta.push(54);
-console.log(delta);
+
+function padre_nieto(x:number):string {
+console.log("hola_mundo");
+return "hola";
+}
+function abuelo_padre(x:number,y:number):string {
+console.log(padre_nieto(5));
+return 4 > 8 ? "hola" : "mundo";
+}
+function abuelo(x:number,y:number):boolean {
+abuelo_padre(x,y);
+return 5 > 4;
+}
+
+console.log(abuelo(7,9));

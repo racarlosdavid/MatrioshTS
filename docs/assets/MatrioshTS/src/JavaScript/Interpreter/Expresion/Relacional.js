@@ -26,66 +26,68 @@ class Relacional extends Expresion {
         }
     }
     igualQue(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor == right.valor), Type.BOOLEAN);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor == right.valor), Type.BOOLEAN);
         }
-        else if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
+        else if (typeof left.valor === "boolean" && typeof right.valor === "boolean") {
             return new Retorno((left.valor == right.valor), Type.BOOLEAN);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion == entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
         return null;
     }
     diferente(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor != right.valor), Type.BOOLEAN);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor != right.valor), Type.BOOLEAN);
         }
-        else if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
+        else if (typeof left.valor === "boolean" && typeof right.valor === "boolean") {
             return new Retorno((left.valor != right.valor), Type.BOOLEAN);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion != entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
         return null;
     }
     mayorQue(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        //console.log(left.valor + " " + right.valor)
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor > right.valor), Type.BOOLEAN);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor.length > left.valor.length), Type.BOOLEAN);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion > entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
         return null;
     }
     menorQue(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        //console.log(left.valor + " " + right.valor)
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor < right.valor), Type.BOOLEAN);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor.length < left.valor.length), Type.BOOLEAN);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion < entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
         return null;
     }
     mayorIgual(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor >= right.valor), Type.BOOLEAN);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor.length >= left.valor.length), Type.BOOLEAN);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion >= entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
         return null;
     }
     menorIgual(left, right, er) {
-        if (left.tipo == Type.NUMBER && right.tipo == Type.NUMBER) {
+        if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor <= right.valor), Type.BOOLEAN);
         }
-        else if (left.tipo == Type.STRING && right.tipo == Type.STRING) {
+        else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor.length <= left.valor.length), Type.BOOLEAN);
         }
         er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion <= entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));

@@ -8,7 +8,7 @@ class Id extends Expresion {
         //console.log("estas haciendo un acceso de tipo ID del id "+ this.identificador);
         if (obj != null) {
             //Primero compruebo que la variable tenga un valor sino hay que reportar error de acceso a variable sin haber asignado un valor
-            if (obj.valor == "null") {
+            if (obj.valor == "umdefined") {
                 er.addError(new NodoError(TipoError.SEMANTICO, "No se puede usar la variable " + this.identificador + " sin haber asignado un valor", this.fila, this.columna));
                 return "null";
             }

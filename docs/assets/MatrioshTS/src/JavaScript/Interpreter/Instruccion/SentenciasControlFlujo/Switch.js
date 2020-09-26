@@ -6,48 +6,85 @@ class Switch extends Instruccion {
         this._default = _default;
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
-        var _a;
-        let retorno = null;
-        let bandera = false; // me dice si hay coincidencia o no con los casos para ejecutar el default si existe
-        let continuar = false;
-        let eje_default = true;
-        let condicionCaso;
         let condicionBuscada = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
-        for (let inst of this._case) {
-            condicionCaso = inst.getCondicion().ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
-            if ((!bandera && condicionBuscada.valor == condicionCaso.valor) || continuar) {
-                bandera = true;
-                eje_default = false;
-                let r = inst.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+        var numeroCaso = -1;
+        var numeroDefault = -1;
+        for (let index = 0; index < this._case.length; index++) {
+            const casoActual = this._case[index];
+            let condicionCaso = casoActual.getCondicion().ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+            //console.log("condicion buscada "+condicionBuscada.valor+" condicion caso "+condicionCaso.valor)
+            if (condicionBuscada.valor == condicionCaso.valor) {
+                //Si una caso cumple, ya no sigo evaluando los demas y me salgo del for
+                numeroCaso = index;
+                break;
+            }
+        }
+        if (numeroCaso != -1) {
+            for (let i = numeroCaso; i < this._case.length; i++) {
+                let casoActual = this._case[i];
+                let r = casoActual.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 if (r != null) {
                     if (r instanceof Break) {
-                        continuar = false;
-                        retorno = null;
+                        break;
                     }
                     else {
                         return r;
                     }
                 }
-                else {
-                    continuar = true;
+            }
+        }
+        else if (numeroCaso == -1) {
+            if (this._default != null) {
+                let r = this._default.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+                if (r != null) {
+                    return r;
                 }
             }
-            //continuar = true; 
+        }
+        /*
+        let retorno = null;
+        let bandera:boolean = false; // me dice si hay coincidencia o no con los casos para ejecutar el default si existe
+        let continuar:boolean = false;
+        let eje_default:boolean = true;
+        let condicionCaso;
+        let condicionBuscada = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+    
+        for(let inst of this._case){
+            condicionCaso = inst.getCondicion().ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+
+            if ((!bandera && condicionBuscada.valor==condicionCaso.valor) || continuar) {
+                bandera = true;
+                eje_default = false;
+                let r = inst.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+                if(r!=null){
+                    if(r instanceof Break){
+                        continuar=false;
+                        retorno = null;
+                    } else{
+                        return r;
+                    }
+                }else{
+                    continuar=true;
+                }
+                
+            }
+            //continuar = true;
         }
         //Priguntar que se hace con el defaul si no hay breaks en el caso en el que entro -- si lo ejecuta o no lo ejecuta ;
-        if (eje_default == true && ((!bandera && this._default != null) || continuar)) { //Si no hay break en los casos ejecuta todo excepto el default ya que si entro a un case
-            /*if((!bandera && this._default!=null)||continuar){ //Si no hay break en los casos ejecuta hasta el default sin importar que ya alla entrado a un case */
-            let r = (_a = this._default) === null || _a === void 0 ? void 0 : _a.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
-            if (r != null) {
-                if (r instanceof Break) {
+        /*if(eje_default==true && ((!bandera && this._default!=null)||continuar)){ //Si no hay break en los casos ejecuta todo excepto el default ya que si entro a un case*/
+        /*
+            if((!bandera && this._default!=null)||continuar){ //Si no hay break en los casos ejecuta hasta el default sin importar que ya alla entrado a un case
+            let r = this._default?.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+            if(r!=null){
+                if(r instanceof Break){
                     retorno = null;
-                }
-                else {
-                    retorno = r;
+                }else{
+                    retorno =  r;
                 }
             }
         }
         return retorno;
+        */
     }
     getDot(builder, parent, cont) {
         let nodo = "nodo" + ++cont;

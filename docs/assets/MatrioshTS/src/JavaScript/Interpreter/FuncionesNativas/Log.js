@@ -4,20 +4,30 @@ class Log extends Instruccion {
         this.valor = valor;
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
-        let val = this.valor.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
-        if (val != "null") {
-            if (val.valor instanceof Arreglo) {
-                consola.append(" > " + val.valor.imprimirArreglo() + "\n");
-            }
-            else {
-                if (val.tipo == Type.STRING && val.valor.includes("${")) {
-                    let s = this.procesar(ent, val.valor);
-                    consola.append(" > " + s + "\n");
+        let salida = "";
+        for (let index = 0; index < this.valor.length; index++) {
+            const element = this.valor[index];
+            let val = element.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+            if (val != null) {
+                if (val.valor instanceof Arreglo) {
+                    salida += val.valor.imprimirArreglo();
+                }
+                else if (val.valor instanceof MiType) {
+                    salida += val.valor.imprimirType();
                 }
                 else {
-                    consola.append(" > " + val.valor + "\n");
+                    if (val.tipo == Type.STRING && val.valor.includes("${")) {
+                        let s = this.procesar(ent, val.valor);
+                        salida += s;
+                    }
+                    else {
+                        salida += val.valor;
+                    }
                 }
             }
+        }
+        if (salida != "") {
+            consola.append(" > " + salida + "\n");
         }
         return null;
     }
@@ -56,10 +66,21 @@ class Log extends Instruccion {
         return s;
     }
     getDot(builder, parent, cont) {
-        console.log("getDot de Log no esta implementado solo retorna el cont para que no de error");
+        let nodo = "nodo" + ++cont;
+        builder.append(nodo + " [label=\"Console.log\"];\n");
+        builder.append(parent + " -> " + nodo + ";\n");
+        for (let index = 0; index < this.valor.length; index++) {
+            const element = this.valor[index];
+            cont = element.getDot(builder, parent, cont);
+        }
         return cont;
     }
     traducir(builder, parent) {
-        return "console.log(" + this.valor.traducir(builder) + ");\n";
+        let salida = "";
+        for (let index = 0; index < this.valor.length; index++) {
+            const element = this.valor[index];
+            salida += element.traducir(builder);
+        }
+        return "console.log(" + salida + ");\n";
     }
 }

@@ -9,7 +9,8 @@ class Funcion extends Instruccion {
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         ent.AddFunction(this.identificador, this);
-        return null;
+        let r = null;
+        return r;
         //console.log("SOY UNA FUNCION "+this.identificador+" "+this.padre);
         /*
         let t = new StringBuilder();

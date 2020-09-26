@@ -16,11 +16,44 @@ export class Graficar_ts extends Funcion{
 
     ejecutar(ent: Entorno, er: ErrorManager, consola: StringBuilder, tsCollector: TSCollector, reporte_ts: R_TS, ambito: string, padre: string) {
         let r = ent.getReporte(ambito,padre);
-        let data = "";
+        let data = " > "+"Graficar TS :\n";
+        data +=" > "+"ID                        TIPO          AMBITO         PADRE        DESCRIPCION\n";
         for (const tempo of r) {
-            data += tempo.identificador+" "+tempo.tipo+" "+tempo.ambito+" "+tempo.descripcion+"\n"
+            
+            let tab = 25-tempo.identificador.length
+            let t = "";
+            for (let index = 0; index < tab; index++) {
+                t += " ";
+            }
+
+            let tab2 = 15-tempo.tipo.length
+            let t2 = "";
+            for (let index = 0; index < tab2; index++) {
+                t2 += " ";
+            }
+
+            let tab3 = 15-tempo.ambito.length
+            let t3 = "";
+            for (let index = 0; index < tab3; index++) {
+                t3 += " ";
+            }
+
+            let tab4 = 15-tempo.padre.length
+            let t4 = "";
+            for (let index = 0; index < tab4; index++) {
+                t4 += " ";
+            }
+
+            let tab5 = 15-tempo.descripcion.length
+            let t5 = "";
+            for (let index = 0; index < tab5; index++) {
+                t5 += " ";
+            }
+
+            data +=" > "+`${tempo.identificador+t}${tempo.tipo+t2}${tempo.ambito+t3}${tempo.padre+t4}${tempo.descripcion+t5}\n`;
         }
         consola.append(data);
+
         return null;
     }
 
@@ -29,7 +62,7 @@ export class Graficar_ts extends Funcion{
     }
 
     traducir(builder: StringBuilder, parent: string) {
-        return "";
+        return "graficar_ts();";
     }
 
 

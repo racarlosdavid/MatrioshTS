@@ -5,6 +5,8 @@ import { ErrorManager } from "../Reportes/ErrorManager";
 import { Type } from "../TablaSimbolos/Tipo";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { R_TS } from "../Reportes/R_TS";
+import { Arreglo } from "../Edd/Arreglo";
+import { MiType } from "../Edd/MiType";
 
 export abstract class Instruccion{
 
@@ -40,6 +42,22 @@ export abstract class Instruccion{
                 return "type";
             default:
                 return tipo+"";
+        }
+    }
+
+    getElTipo(val:any){
+        if(typeof val === "number"){ 
+            return Type.NUMBER;
+        }else if(typeof val === "string"){
+            return Type.STRING;
+        }else if(typeof val === "boolean"){
+            return Type.BOOLEAN;
+        }else if(val instanceof Arreglo){
+            return Type.ARRAY;
+        }else if(val instanceof MiType){
+            return Type.TYPE;
+        }else{
+            return val;
         }
     }
 }

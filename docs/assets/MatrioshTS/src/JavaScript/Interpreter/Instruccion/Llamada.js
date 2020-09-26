@@ -6,10 +6,16 @@ class Llamada extends Instruccion {
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let funcion = ent.GetFuncion(this.identificador);
-        let tiene_herencia = this.identificador.includes("_");
+    
         //console.log(tiene_herencia+" ddddddd");
         if (funcion != null && funcion.parametros.length == this.argumentos.length) {
-            let nuevo = new Entorno(ent);
+            let tiene_herencia = this.identificador.includes("_");
+            let nuevo;
+            if(tiene_herencia && this.identificador !="graficar_ts"){
+                 nuevo = new Entorno(ent);
+            }else{
+                 nuevo = new Entorno(ent.GetGlobal());
+            }
             //tsCollector.addTS(this.identificador,new Entorno(ent));
             if (funcion instanceof Graficar_ts) {
             }
@@ -17,11 +23,11 @@ class Llamada extends Instruccion {
                 for (let index = 0; index < this.argumentos.length; index++) {
                     const param = funcion.parametros[index];
                     let v = this.argumentos[index].ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
-                    if (v.tipo != param.tipo) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
+                    if (v.tipo != param.tipo && !(this.identificador == "pop" || this.identificador == "push")) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
                         er.addError(new NodoError(TipoError.SEMANTICO, "El tipo del parametro " + v.tipo + " no coinciden con el tipo " + param.tipo + " de la funcion", this.fila, this.columna));
                         return null;
                     }
-                    nuevo.Add(param.identificador, v.valor, param.tipo != null ? param.tipo : Type.INDEF, param.dimensiones, param.tipoDeclaracion);
+                    nuevo.Add(param.identificador, v.valor, param.tipo != null ? param.tipo : this.getElTipo(v.valor), param.dimensiones, param.tipoDeclaracion);
                 }
             }
             if (funcion instanceof Graficar_ts) {
@@ -33,20 +39,34 @@ class Llamada extends Instruccion {
                     return obj;
                 }
             }
+            else if (funcion instanceof Pop || funcion instanceof Push) {
+                funcion.fila = this.fila;
+                funcion.columna = this.columna;
+                let obj = funcion.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
+                if (obj != null) {
+                    return obj;
+                }
+            }
             else {
                 //Manager.getManager().addListaR_TS(nuevo.getReporte("global",""));
-                for (const inst of funcion.instrucciones) {
+                for (const inst of funcion.instrucciones) { 
                     let result = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
-                    if (result != null) {
+                    if(result !=null ){
                         //Compruebo que el tipo de retorno sea igual que el tipo de retorno de la funcion
-                        if (result.tipo == funcion.tipoRetorno || funcion.tipoRetorno == null) {
+                        if ((result.tipo == funcion.tipoRetorno &&  funcion.tipoRetorno != Type.VOID) || funcion.tipoRetorno == null ) {
                             return result;
-                        }
-                        else {
-                            er.addError(new NodoError(TipoError.SEMANTICO, "El tipo de retorno " + result.tipo + " no coinciden con el tipo de retorno" + funcion.tipoRetorno + " de la funcion", this.fila, this.columna));
+                        } else if(result instanceof Return){
                             return null;
+                        }else { 
+                            if(funcion.tipoRetorno == Type.VOID){
+                                er.addError(new NodoError(TipoError.SEMANTICO,"Una funcion tipo "+this.getTipoToString(funcion.tipoRetorno)+" no puede retornar algo. ", this.fila, this.columna));
+                                return null;
+                            }else if (!(inst instanceof Llamada)  ) {
+                                er.addError(new NodoError(TipoError.SEMANTICO,"El tipo de retorno "+this.getTipoToString(result.tipo)+" no coinciden con el tipo de retorno "+this.getTipoToString(funcion.tipoRetorno)+" de la funcion", this.fila, this.columna));
+                                return null;
+                            }
                         }
-                    }
+                    } 
                 }
             }
             reporte_ts.addLista(nuevo.getReporte("Local: " + this.identificador, padre));
@@ -55,6 +75,7 @@ class Llamada extends Instruccion {
             er.addError(new NodoError(TipoError.SEMANTICO, "Funcion " + this.identificador + " no encontrada en la tabla de simbolos", this.fila, this.columna));
             return null;
         }
+        return null;
     }
     getDot(builder, parent, cont) {
         let nodo = "nodo" + ++cont;
@@ -73,7 +94,12 @@ class Llamada extends Instruccion {
     }
     traducir(builder, parent) {
         let tempo = new StringBuilder();
-        tempo.append(this.identificador);
+        let nuevo_identificador = Manager.getManager().getFid(this.identificador)
+        if (nuevo_identificador != null) {
+            tempo.append(nuevo_identificador);
+        }else{
+            tempo.append(this.identificador);
+        }
         // Traduccion de los parametros
         let param = new StringBuilder();
         if (this.argumentos.length == 0) {

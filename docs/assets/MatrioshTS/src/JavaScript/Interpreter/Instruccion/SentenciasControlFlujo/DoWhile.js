@@ -25,9 +25,24 @@ class DoWhile extends Instruccion {
         return null;
     }
     getDot(builder, parent, cont) {
-        throw new Error("Method not implemented. DO WHILE");
+        let nodo = "nodo" + ++cont;
+        builder.append(nodo + " [label=\"Do While\"];\n");
+        builder.append(parent + " -> " + nodo + ";\n");
+        let nodoInstrucciones = "nodo" + ++cont;
+        builder.append(nodoInstrucciones + " [label=\"Instrucciones\"];\n");
+        builder.append(nodo + " -> " + nodoInstrucciones + ";\n");
+        cont = this.instrucciones.getDot(builder, nodoInstrucciones, cont);
+        let nodoCondicion = "nodo" + ++cont;
+        builder.append(nodoCondicion + " [label=\"Condicion\"];\n");
+        builder.append(nodo + " -> " + nodoCondicion + ";\n");
+        cont = this.condicion.getDot(builder, nodoCondicion, cont);
+        return cont;
     }
     traducir(builder, parent) {
-        throw new Error("Method not implemented. DO WHILE");
+        let trad = new StringBuilder();
+        trad.append("do {\n");
+        trad.append(this.instrucciones.traducir(builder, parent));
+        trad.append("}(" + this.condicion.traducir(builder) + ")\n");
+        return trad.toString();
     }
 }

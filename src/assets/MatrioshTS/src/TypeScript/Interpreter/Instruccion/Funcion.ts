@@ -153,7 +153,7 @@ export class Funcion extends Instruccion{
                     console.log(`Error en la funcion ${this.identificador}: ${error}`);
                 }
             }
-            tempo.append("}\n");
+            tempo.append("}\n"); 
         }
         
         return tempo.toString();

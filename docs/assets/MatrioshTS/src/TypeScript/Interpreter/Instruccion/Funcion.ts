@@ -27,7 +27,8 @@ export class Funcion extends Instruccion{
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         ent.AddFunction(this.identificador, this);
-        return null;
+        let r:any = null;
+        return r;
         //console.log("SOY UNA FUNCION "+this.identificador+" "+this.padre);
         /*
         let t = new StringBuilder();
@@ -152,7 +153,7 @@ export class Funcion extends Instruccion{
                     console.log(`Error en la funcion ${this.identificador}: ${error}`);
                 }
             }
-            tempo.append("}\n");
+            tempo.append("}\n"); 
         }
         
         return tempo.toString();

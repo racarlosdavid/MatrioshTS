@@ -16,6 +16,7 @@ function setear() {
 
 function limpiarConsola(){
     consola.setValue("\n\n\n\n\n\n\n\n\n\n");
+    document.getElementById("buttonConsola").click();
 }
 
 function nativas(ent){
@@ -142,6 +143,7 @@ $(document).ready(function(){
             
             //Imprimo los logs
             consola.setValue(consola_data.toString()); 
+            document.getElementById("buttonConsola").click();
            
             //Graficar el ast
             const reporte_AST = new Dot(ast.getInstrucciones());

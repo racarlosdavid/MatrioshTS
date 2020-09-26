@@ -1,4 +1,5 @@
 var counter = 1;
+var counter2 = 1;
 var tabActual;
 var textMap = new Map();
 
@@ -87,7 +88,7 @@ function nuevaPestaña() {
 function nuevaPestañaTraducido(code) { 
   var tabLinks = document.getElementById("tabslinks");
   var tabs = document.getElementById("tabs");
-  var tabName = "Codigo Traducido";
+  var tabName = "Codigo Traducido"+ counter2++;
   //Creacion del boton
   var btn = document.createElement("BUTTON");
   btn.innerHTML = tabName;

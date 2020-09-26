@@ -1,6 +1,6 @@
 import { Expresion } from "../Abstract/Expresion";
 import { Retorno } from "../Abstract/Retorno";
-import { Arreglo } from "../Edd/Arreglo";
+import { MiType } from "../Edd/MiType";
 import { StringBuilder } from "../Edd/StringBuilder";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { NodoError, TipoError } from "../Reportes/NodoError";
@@ -22,10 +22,10 @@ export class Id extends Expresion{
             //console.log("estas haciendo un acceso de tipo ID del id "+ this.identificador);
             if(obj!=null){ 
                 //Primero compruebo que la variable tenga un valor sino hay que reportar error de acceso a variable sin haber asignado un valor
-                if (obj.valor == "null") { 
+                if (obj.valor == "umdefined") { 
                     er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable "+this.identificador+" sin haber asignado un valor", this.fila, this.columna));
                     return "null";  
-                } else {
+                } else { 
                      return new Retorno(obj.valor,obj.tipo);
                 }
             }else{

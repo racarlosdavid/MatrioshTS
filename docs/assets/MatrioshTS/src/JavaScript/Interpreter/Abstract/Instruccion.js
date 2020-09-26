@@ -23,4 +23,24 @@ class Instruccion {
                 return tipo + "";
         }
     }
+    getElTipo(val) {
+        if (typeof val === "number") {
+            return Type.NUMBER;
+        }
+        else if (typeof val === "string") {
+            return Type.STRING;
+        }
+        else if (typeof val === "boolean") {
+            return Type.BOOLEAN;
+        }
+        else if (val instanceof Arreglo) {
+            return Type.ARRAY;
+        }
+        else if (val instanceof MiType) {
+            return Type.TYPE;
+        }
+        else {
+            return val;
+        }
+    }
 }

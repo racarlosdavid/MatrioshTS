@@ -4,7 +4,7 @@ class Entorno {
         this.anterior = anterior;
     }
     Add(id, value, tipo, dimensiones, tipodeclaracion) {
-        id = id.toLowerCase();
+        //id = id.toLowerCase();
         if (!this.ts.has(id)) {
             this.ts.set(id, new Simbolo(id, value, tipo, dimensiones, tipodeclaracion));
         }
@@ -13,7 +13,8 @@ class Entorno {
         }
     }
     AddFunction(id, funcion) {
-        id = "$" + id.toLowerCase();
+        //id = "$" + id.toLowerCase();
+        id = "$" + id;
         if (!this.ts.has(id)) {
             this.ts.set(id, funcion);
         }
@@ -23,7 +24,31 @@ class Entorno {
     }
     GetFuncion(id) {
         let temp = this;
-        id = "$" + id.toLowerCase();
+        //id = "$" + id.toLowerCase();
+        id = "$" + id;
+        while (temp != null) {
+            if (temp.ts.has(id)) {
+                return temp.ts.get(id);
+            }
+            temp = temp.anterior;
+        }
+        //("No existe la funcion: " + id);
+        return null;
+    }
+    AddType(id, type) {
+        //id = "#" + id.toLowerCase();
+        id = "#" + id;
+        if (!this.ts.has(id)) {
+            this.ts.set(id, type);
+        }
+        else {
+            //("Ya existe la funcion: " + id);
+        }
+    }
+    GetType(id) {
+        let temp = this;
+        //id = "#" + id.toLowerCase();
+        id = "#" + id;
         while (temp != null) {
             if (temp.ts.has(id)) {
                 return temp.ts.get(id);
@@ -35,11 +60,12 @@ class Entorno {
     }
     ChangeValue(id, value) {
         let temp = this;
-        id = id.toLowerCase();
+        //id = id.toLowerCase();
         while (temp != null) {
             if (temp.ts.has(id)) {
                 let s = temp.ts.get(id);
                 s.valor = value;
+                break;
             }
             temp = temp.anterior;
         }
@@ -47,7 +73,7 @@ class Entorno {
     }
     GetValue(id) {
         let temp = this;
-        id = id.toLowerCase();
+        //id = id.toLowerCase();
         while (temp != null) {
             if (temp.ts.has(id)) {
                 return temp.ts.get(id);
@@ -60,7 +86,7 @@ class Entorno {
     Existe(id) {
         let result = false;
         let temp = this;
-        id = id.toLowerCase();
+        //id = id.toLowerCase();
         if (temp.ts.has(id)) {
             result = true;
         }
@@ -113,14 +139,15 @@ class Entorno {
             });
         }
         else {
-            console.log("No hay nada para reportar la tabla de simbolos esta vacia");
+            //console.log("No hay nada para reportar la tabla de simbolos esta vacia");   
         }
         return tabla;
     }
     imprimir() {
         let tabla = [];
         if (this.ts.size != 0) {
-            console.log("ID", "TIPIO", "AMBITO", "PADRE", "DESCRIPCION", "\n");
+            //console.log("ID", "TIPIO", "AMBITO", "PADRE", "DESCRIPCION","\n")
+            console.log("ID          TIPO          AMBITO          PADRE          DESCRIPCION\n");
             this.ts.forEach(function (valor, clave) {
                 //console.log(clave + " = " + valor);
                 let nombre = clave + "";
@@ -141,7 +168,8 @@ class Entorno {
                     //}
                 }
                 let descripcion = valor.valor.toString();
-                console.log(nombre, tipo, "ambito", "padre", descripcion, "\n");
+                //console.log(nombre, tipo, "ambito", "padre", descripcion,"\n")
+                console.log(`${nombre}   ${tipo}       AMBITO          PADRE          ${descripcion}\n`);
             });
         }
         else {

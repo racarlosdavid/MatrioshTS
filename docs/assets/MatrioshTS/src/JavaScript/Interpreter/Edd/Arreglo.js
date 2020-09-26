@@ -6,6 +6,9 @@ class Arreglo {
     Add(valor) {
         this.valores.push(valor);
     }
+    popArreglo() {
+        return this.valores.pop();
+    }
     getValor(indice) {
         if (indice < this.getTamaño()) {
             return this.valores[indice];

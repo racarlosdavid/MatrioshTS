@@ -6,6 +6,11 @@ import { Dot } from "./TypeScript/Interpreter/Reportes/Dot";
 import { TSCollector } from "./TypeScript/Interpreter/TablaSimbolos/TSCollector";
 import { R_TS } from "./TypeScript/Interpreter/Reportes/R_TS";
 import { Graficar_ts } from "./TypeScript/Interpreter/FuncionesNativas/Graficar_ts";
+import { Declaracion, TipoDeclaracion } from "./TypeScript/Interpreter/Instruccion/Declaracion";
+import { Instruccion } from "./TypeScript/Interpreter/Abstract/Instruccion";
+import { Pop } from "./TypeScript/Interpreter/FuncionesNativas/Pop";
+import { Type } from "./TypeScript/Interpreter/TablaSimbolos/Tipo";
+import { Push } from "./TypeScript/Interpreter/FuncionesNativas/Push";
 
 const parser = require('./Gramatica/InterpreteGrammar');
 const fs = require('fs');
@@ -141,6 +146,19 @@ function nativas(ent:Entorno){
     
     let fGraficar_ts = new Graficar_ts("graficar_ts","",[],null,[],-1,-1);
     ent.AddFunction("graficar_ts",fGraficar_ts);
+
+    let fpop_parametros:Array<Declaracion> = [];
+    let fpop_instrucciones:Array<Instruccion> = [];
+    fpop_parametros.push(new Declaracion(TipoDeclaracion.PARAM,"Nativa_Pop_Arg1",Type.STRING,0,null,-1,-1));
+    let fpop = new Pop("pop","",fpop_parametros,null,fpop_instrucciones,-1,-1);
+    ent.AddFunction("pop",fpop);
+
+    let fpush_parametros:Array<Declaracion> = [];
+    let fpush_instrucciones:Array<Instruccion> = [];
+    fpush_parametros.push(new Declaracion(TipoDeclaracion.PARAM,"Nativa_Push_Arg1",null,0,null,-1,-1));
+    fpush_parametros.push(new Declaracion(TipoDeclaracion.PARAM,"Nativa_Push_Arg2",Type.STRING,0,null,-1,-1));
+    let fpush = new Push("push","",fpush_parametros,null,fpush_instrucciones,-1,-1);
+    ent.AddFunction("push",fpush);
 
 }
 

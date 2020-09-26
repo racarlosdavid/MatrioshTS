@@ -6,13 +6,17 @@ export class Arreglo {
     valores:Array<any>; 
     tipo:Type|string;
 
-    constructor(valores:Array<any>, tipo:Type|string) {
+    constructor(valores:Array<any>, tipo:Type|string) { 
         this.valores = valores; 
         this.tipo = tipo;
     }
     
     public Add(valor:any) {
         this.valores.push(valor);
+    }
+
+    popArreglo(){
+        return this.valores.pop();
     }
     
     getValor(indice:number){

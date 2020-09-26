@@ -2,6 +2,8 @@ import { Expresion } from "../Abstract/Expresion";
 import { Instruccion } from "../Abstract/Instruccion";
 import { StringBuilder } from "../Edd/StringBuilder";
 import { Graficar_ts } from "../FuncionesNativas/Graficar_ts";
+import { Pop } from "../FuncionesNativas/Pop";
+import { Push } from "../FuncionesNativas/Push";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { Manager } from "../Reportes/Manager";
 import { NodoError, TipoError } from "../Reportes/NodoError";
@@ -29,7 +31,6 @@ export class Llamada extends Instruccion {
     
         let tiene_herencia = this.identificador.includes("_");
         //console.log(tiene_herencia+" ddddddd");
-
         if (funcion!=null && funcion.parametros.length == this.argumentos.length) {
             let nuevo:Entorno = new Entorno(ent);
             //tsCollector.addTS(this.identificador,new Entorno(ent));
@@ -40,11 +41,11 @@ export class Llamada extends Instruccion {
                 for (let index = 0; index < this.argumentos.length; index++) {
                     const param:Declaracion = funcion.parametros[index];
                     let v = this.argumentos[index].ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
-                    if (v.tipo != param.tipo) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
+                    if (v.tipo != param.tipo && !(this.identificador == "pop" || this.identificador == "push")) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
                         er.addError(new NodoError(TipoError.SEMANTICO,"El tipo del parametro "+v.tipo+" no coinciden con el tipo "+param.tipo+" de la funcion", this.fila, this.columna));
                         return null; 
                     }
-                    nuevo.Add(param.identificador,v.valor,param.tipo!=null?param.tipo:Type.INDEF,param.dimensiones,param.tipoDeclaracion);
+                    nuevo.Add(param.identificador,v.valor,param.tipo!=null?param.tipo:this.getElTipo(v.valor),param.dimensiones,param.tipoDeclaracion);
                     
                 }
             }
@@ -57,7 +58,14 @@ export class Llamada extends Instruccion {
                     return obj;
                 } 
                 
-            } else {
+            } else if (funcion instanceof Pop || funcion instanceof Push) {
+                funcion.fila = this.fila;
+                funcion.columna = this.columna;
+                let obj = funcion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
+                if(obj !=null){
+                    return obj;
+                } 
+            }else {
                 //Manager.getManager().addListaR_TS(nuevo.getReporte("global",""));
                 for (const inst of funcion.instrucciones) {
                     let result = inst.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);

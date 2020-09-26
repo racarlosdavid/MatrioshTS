@@ -131,6 +131,18 @@ export class Declaracion extends Instruccion{
     }
     
     getDot(builder: StringBuilder, parent: string, cont: number): number {
+        let nodo = "nodo" + ++cont;
+        builder.append(nodo+" [label=\"Declaracion\"];\n");
+        builder.append(parent+" -> "+nodo+";\n");
+
+        let nodoVal = "nodo" + ++cont;
+        builder.append(nodoVal+" [label=\""+this.identificador+"\"];\n");
+        builder.append(nodo+" -> "+nodoVal+";\n");
+
+        if (this.valor!=null) {
+            cont = this.valor.getDot(builder, nodo, cont);
+        }
+        
         return cont;
     }
 

@@ -62,7 +62,7 @@ export class Graficar_ts extends Funcion{
     }
 
     traducir(builder: StringBuilder, parent: string) {
-        return "";
+        return "graficar_ts();";
     }
 
 

@@ -347,10 +347,12 @@ L_PARAMETROS : L_PARAMETROS coma PARAMETRO	{ $1.push($3); $$=$1; }
 PARAMETRO :	identificador dospuntos TIPO{ $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,0,null,@1.first_line,@1.first_column); }
 	| identificador dospuntos TIPO DIMENSIONES { $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,$4,null,@1.first_line,@1.first_column); } ;
 
-LLAMADA : identificador parizq parder ptcoma	{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
-	| identificador parizq parder 				{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
-	| identificador parizq L_E parder ptcoma 	{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
-	| identificador parizq L_E parder 			{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } ;
+LLAMADA : identificador parizq parder PTC	{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
+	| identificador parizq L_E parder PTC 	{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
+	| identificador punto identificador parizq parder PTC { $$ = new Llamada($3,[new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)],@1.first_line,@1.first_column); }
+	| identificador punto identificador parizq L_E parder PTC { $5.push(new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)); $$ = new Llamada($3,$5,@1.first_line,@1.first_column); } ;
+
+PTC : ptcoma | ;
 
 DECLARACION : pr_const identificador T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,0,$5,@1.first_line,@1.first_column); }
 	| pr_const identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,$4,$6,@1.first_line,@1.first_column); }
@@ -380,6 +382,8 @@ E : ARITMETICA      	{ $$ = $1; }
 	| identificador L_ACCESO { $$ = new Acceso($1,$2,@1.first_line,@1.first_column); }
 	| identificador parizq parder { $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
 	| identificador parizq L_E parder { $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
+	| identificador punto identificador parizq parder { $$ = new Llamada($3,[new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)],@1.first_line,@1.first_column); }
+	| identificador punto identificador parizq L_E parder { $5.push(new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)); $$ = new Llamada($3,$5,@1.first_line,@1.first_column); } 
 	| corizq L_E corder { $$ = new ArrayTS($2,@1.first_line,@1.first_column);}
 	| corizq corder 	{ $$ = new ArrayTS([],@1.first_line,@1.first_column);}
 	| llaveizq L_E_TYPE llaveder { $$ = new TypeTSDefinicion($2,@1.first_line,@1.first_column);}

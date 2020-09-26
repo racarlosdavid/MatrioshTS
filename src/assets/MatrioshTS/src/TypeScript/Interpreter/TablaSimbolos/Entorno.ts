@@ -18,7 +18,7 @@ export class Entorno {
     }
     
     public Add(id:string, value:any, tipo:Type|string, dimensiones : number, tipodeclaracion : TipoDeclaracion):void{
-        id = id.toLowerCase();
+        //id = id.toLowerCase();
         if (!this.ts.has(id)){
             this.ts.set(id, new Simbolo(id,value,tipo,dimensiones,tipodeclaracion));
         }else{
@@ -27,7 +27,8 @@ export class Entorno {
     }
 
     public  AddFunction(id:string, funcion:Funcion):void{
-        id = "$" + id.toLowerCase();
+        //id = "$" + id.toLowerCase();
+        id = "$" + id;
         if (!this.ts.has(id)){
             this.ts.set(id, funcion);
         }else{
@@ -37,7 +38,8 @@ export class Entorno {
 
     public GetFuncion(id:string):Funcion|null{
         let temp:Entorno|null = this;
-        id = "$" + id.toLowerCase();
+        //id = "$" + id.toLowerCase();
+        id = "$" + id;
         while (temp != null){
             if (temp.ts.has(id)){
                 return temp.ts.get(id);
@@ -49,7 +51,8 @@ export class Entorno {
     }
 
     public  AddType(id:string, type:TypeTS):void{
-        id = "#" + id.toLowerCase();
+        //id = "#" + id.toLowerCase();
+        id = "#" + id;
         if (!this.ts.has(id)){
             this.ts.set(id, type);
         }else{
@@ -59,7 +62,8 @@ export class Entorno {
 
     public GetType(id:string):TypeTS|null{
         let temp:Entorno|null = this;
-        id = "#" + id.toLowerCase();
+        //id = "#" + id.toLowerCase();
+        id = "#" + id;
         while (temp != null){
             if (temp.ts.has(id)){
                 return temp.ts.get(id);
@@ -72,7 +76,7 @@ export class Entorno {
      
     public ChangeValue(id:any, value:any):void{ 
         let temp:Entorno | null = this;
-        id = id.toLowerCase();
+        //id = id.toLowerCase();
         while(temp != null){
             if (temp.ts.has(id)){
                 let s:Simbolo = temp.ts.get(id);
@@ -86,7 +90,7 @@ export class Entorno {
 
     public GetValue(id:string):Simbolo|null{
         let temp:Entorno|null  = this;
-        id = id.toLowerCase();
+        //id = id.toLowerCase();
         while(temp != null){
             if (temp.ts.has(id)){
                 return temp.ts.get(id);
@@ -100,7 +104,7 @@ export class Entorno {
     public Existe(id:string):boolean{
         let result:boolean  = false;
         let temp:Entorno|null  = this;
-        id = id.toLowerCase();
+        //id = id.toLowerCase();
         if (temp.ts.has(id)){
             result = true;
         }

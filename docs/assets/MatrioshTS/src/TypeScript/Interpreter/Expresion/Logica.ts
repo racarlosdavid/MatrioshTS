@@ -30,7 +30,7 @@ export class Logica extends Expresion{
             let valorUnario = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             switch (this.tipoOperacion) {                
                 case TipoOperacionLogica.NOT:
-                    return this.notOperacion(valorUnario,ent,er);
+                    return this.notOperacion(valorUnario,er,ambito);
                 default:
                     return null;
                  
@@ -40,9 +40,9 @@ export class Logica extends Expresion{
             let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionLogica.AND:
-                    return this.and(left,right,ent,er);
+                    return this.and(left,right,er,ambito);
                 case TipoOperacionLogica.OR:
-                    return this.or(left,right,ent,er);
+                    return this.or(left,right,er,ambito);
                 default:
                     return null;
             }
@@ -50,30 +50,30 @@ export class Logica extends Expresion{
     }
 
 
-    and(left:any, right:any, ent:Entorno, er:ErrorManager):any { 
+    and(left:any, right:any, er:ErrorManager, padre:string):any { 
      
         //let tipoResultante = this.getTipoResultante(left.tipo,right.tipo);
         if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
             return new Retorno((left.valor && right.valor),left.tipo);
         } 
-        er.addError(new NodoError(TipoError.SEMANTICO,"No es posible el and entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO,"No es posible el and entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null; 
     }
 
-    or(left:any, right:any, ent:Entorno, er:ErrorManager):any { 
+    or(left:any, right:any, er:ErrorManager, padre:string):any { 
         //let tipoResultante = this.getTipoResultante(left.tipo,right.tipo);
         if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
             return new Retorno((left.valor || right.valor),left.tipo);
         } 
-        er.addError(new NodoError(TipoError.SEMANTICO,"No es posible el or entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO,"No es posible el or entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null; 
     }
 
-    notOperacion(unario:any, ent:Entorno, er:ErrorManager):any { 
+    notOperacion(unario:any, er:ErrorManager, padre:string):any { 
         if (unario.tipo == Type.BOOLEAN) {
             return new Retorno(!(unario.valor),unario.tipo);
         } 
-        er.addError(new NodoError(TipoError.SEMANTICO,"No es posible realizar not de "+this.getTipoToString(unario.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO,"No es posible realizar not de "+this.getTipoToString(unario.tipo), this.fila, this.columna,padre));
         return null; 
     }
 
@@ -97,16 +97,16 @@ export class Logica extends Expresion{
             }
         
         }
-        return cont;
+        return cont; 
 
     }
-
-    traducir(builder: StringBuilder) {
+   
+    traducir(builder: StringBuilder) { 
         let trad:string ;
         if (this.not) {
-            trad = "-"+this.operadorU?.traducir(builder);    
+            trad = "("+"!"+this.operadorU?.traducir(builder)+")";    
         } else {
-            trad = this.operadorIzq?.traducir(builder)+" "+this.getOperacionSimbolo(this.tipoOperacion)+" "+this.operadorDer?.traducir(builder);
+            trad = "("+this.operadorIzq?.traducir(builder)+" "+this.getOperacionSimbolo(this.tipoOperacion)+" "+this.operadorDer?.traducir(builder)+")";
         }
         return trad;
     }

@@ -8,15 +8,15 @@ class If extends Instruccion {
         let rcondicion = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         if (rcondicion instanceof Retorno) {
             if (rcondicion.tipo != Type.BOOLEAN) {
-                er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if " + rcondicion + " no es boolean", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if " + rcondicion + " no es boolean", this.fila, this.columna, ambito));
                 return null;
             }
             if (rcondicion.valor == true) {
-                return this.instrucciones.ejecutar(ent, er, consola, tsCollector, reporte_ts, "local: if", padre);
+                return this.instrucciones.ejecutar(ent, er, consola, tsCollector, reporte_ts, "local: if", ambito);
             }
         }
         else {
-            er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if " + rcondicion + " no es boolean", this.fila, this.columna));
+            er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en la instruccion if " + rcondicion + " no es boolean", this.fila, this.columna, ambito));
         }
         return null;
     }

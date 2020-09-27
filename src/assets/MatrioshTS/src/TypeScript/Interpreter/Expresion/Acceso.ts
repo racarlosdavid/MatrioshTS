@@ -27,9 +27,7 @@ export class Acceso extends Expresion{
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) { 
         let result:Simbolo|null = ent.GetValue(this.identificador);
         if (result !=null) {
-          
-           
-                let r = result.valor; 
+                let r = result.valor;  
                 let t = result.tipo;
                 let pos ;
                 try{
@@ -48,8 +46,8 @@ export class Acceso extends Expresion{
                                         t = Type.INDEF;
                                     }
                                 } else {
-                                    er.addError(new NodoError(TipoError.SEMANTICO,"Se esperaba un valor de tipo number ", this.fila, this.columna));
-                                    return null; 
+                                    er.addError(new NodoError(TipoError.SEMANTICO,"Se esperaba un valor de tipo number ", this.fila, this.columna,ambito));
+                                    return "null"; 
                                 }
                             }
 
@@ -62,8 +60,8 @@ export class Acceso extends Expresion{
                                     t = Type.INDEF;
                                 }
                             } else {
-                                er.addError(new NodoError(TipoError.SEMANTICO,"Se esperaba un valor de tipo number ", this.fila, this.columna));
-                                return null; 
+                                er.addError(new NodoError(TipoError.SEMANTICO,"Se esperaba un valor de tipo number ", this.fila, this.columna,ambito));
+                                return "null"; 
                             }
                         }
                         
@@ -84,31 +82,9 @@ export class Acceso extends Expresion{
         
             
         }else{
-            er.addError(new NodoError(TipoError.SEMANTICO,"La variable "+this.identificador+" no existe ", this.fila, this.columna));
-            return null; 
+            er.addError(new NodoError(TipoError.SEMANTICO,"La variable "+this.identificador+" no existe ", this.fila, this.columna,ambito));
+            return "null"; 
         }
-
-
-/*
-        if (this.tipoacceso == TipoAcceso.ID) { 
-            //console.log("estas haciendo un acceso de tipo ID del id "+ this.identificador);
-            if(obj!=null){ 
-                //Primero compruebo que la variable tenga un valor sino hay que reportar error de acceso a variable sin haber asignado un valor
-                if (obj.valor == "null") { 
-                    er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable "+this.identificador+" sin haber asignado un valor", this.fila, this.columna));
-                    return "null";  
-                } else {
-                    console.log(obj.valor+" "+obj.tipo)
-                    return new Retorno(obj.valor,obj.tipo); 
-                }
-                
-                    
-            }
-            
-        } 
-        */
-        
-        return "null";
     }
 
     esEntero(numero:number) {
@@ -124,8 +100,21 @@ export class Acceso extends Expresion{
     }
 
     traducir(builder: StringBuilder) {
-       
-        return ""; //falta implementar los otros tipos de acceso
+        let tempo = new StringBuilder (); 
+        tempo.append(this.identificador);
+        // Traduccion de los accesos
+        let v = new StringBuilder();
+            for (let index = 0; index < this.accesos.length; index++) {
+                let element = this.accesos[index];
+                if (index < this.accesos.length) {
+                    v.append(".");
+                }
+                v.append(element.traducir(builder));
+                
+            }
+            tempo.append(v.toString());
+       // Fin 
+       return tempo.toString();
     }
 }
 

@@ -61,7 +61,7 @@ class AST {
                     continue;
                 }
                 if (ins instanceof Return) {
-                    er.addError(new NodoError(TipoError.SEMANTICO, "Return fuera de funcion ", ins.fila, ins.columna));
+                    er.addError(new NodoError(TipoError.SEMANTICO, "Return fuera de funcion ", ins.fila, ins.columna, ambito));
                     continue;
                 }
                 else {

@@ -10,22 +10,22 @@ class Relacional extends Expresion {
         let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         switch (this.tipoOperacion) {
             case TipoOperacionRelacional.IGUALQUE:
-                return this.igualQue(left, right, er);
+                return this.igualQue(left, right, er, ambito);
             case TipoOperacionRelacional.DIFERENTE:
-                return this.diferente(left, right, er);
+                return this.diferente(left, right, er, ambito);
             case TipoOperacionRelacional.MAYORQUE:
-                return this.mayorQue(left, right, er);
+                return this.mayorQue(left, right, er, ambito);
             case TipoOperacionRelacional.MENORQUE:
-                return this.menorQue(left, right, er);
+                return this.menorQue(left, right, er, ambito);
             case TipoOperacionRelacional.MAYORIGUAL:
-                return this.mayorIgual(left, right, er);
+                return this.mayorIgual(left, right, er, ambito);
             case TipoOperacionRelacional.MENORIGUAL:
-                return this.menorIgual(left, right, er);
+                return this.menorIgual(left, right, er, ambito);
             default:
                 return null;
         }
     }
-    igualQue(left, right, er) {
+    igualQue(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor == right.valor), Type.BOOLEAN);
         }
@@ -35,10 +35,18 @@ class Relacional extends Expresion {
         else if (typeof left.valor === "boolean" && typeof right.valor === "boolean") {
             return new Retorno((left.valor == right.valor), Type.BOOLEAN);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion == entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        else if (left.tipo == this.getTipoToString(left.tipo) && (typeof right.valor === "string" || typeof right.valor === "number")) {
+            let alfa = right.valor == "null" ? null : right.valor;
+            return new Retorno((left.valor == alfa), Type.BOOLEAN);
+        }
+        else if ((typeof left.valor === "string" || typeof left.valor === "number") && right.tipo == this.getTipoToString(left.tipo)) {
+            let alfa = left.valor == "null" ? null : left.valor;
+            return new Retorno((alfa == right.valor), Type.BOOLEAN);
+        }
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion == entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    diferente(left, right, er) {
+    diferente(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor != right.valor), Type.BOOLEAN);
         }
@@ -48,10 +56,18 @@ class Relacional extends Expresion {
         else if (typeof left.valor === "boolean" && typeof right.valor === "boolean") {
             return new Retorno((left.valor != right.valor), Type.BOOLEAN);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion != entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        else if (left.tipo == this.getTipoToString(left.tipo) && (typeof right.valor === "string" || typeof right.valor === "number")) {
+            let alfa = right.valor == "null" ? null : right.valor;
+            return new Retorno((left.valor != alfa), Type.BOOLEAN);
+        }
+        else if ((typeof left.valor === "string" || typeof left.valor === "number") && right.tipo == this.getTipoToString(left.tipo)) {
+            let alfa = left.valor == "null" ? null : left.valor;
+            return new Retorno((alfa != right.valor), Type.BOOLEAN);
+        }
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion != entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    mayorQue(left, right, er) {
+    mayorQue(left, right, er, padre) {
         //console.log(left.valor + " " + right.valor)
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor > right.valor), Type.BOOLEAN);
@@ -59,10 +75,18 @@ class Relacional extends Expresion {
         else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor.length > left.valor.length), Type.BOOLEAN);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion > entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        else if (left.tipo == this.getTipoToString(left.tipo) && (typeof right.valor === "string" || typeof right.valor === "number")) {
+            let alfa = right.valor == "null" ? null : right.valor;
+            return new Retorno((left.valor > alfa), Type.BOOLEAN);
+        }
+        else if ((typeof left.valor === "string" || typeof left.valor === "number") && right.tipo == this.getTipoToString(left.tipo)) {
+            let alfa = left.valor == "null" ? null : left.valor;
+            return new Retorno((alfa > right.valor), Type.BOOLEAN);
+        }
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion > entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    menorQue(left, right, er) {
+    menorQue(left, right, er, padre) {
         //console.log(left.valor + " " + right.valor)
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor < right.valor), Type.BOOLEAN);
@@ -70,27 +94,35 @@ class Relacional extends Expresion {
         else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor.length < left.valor.length), Type.BOOLEAN);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion < entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        else if (left.tipo == this.getTipoToString(left.tipo) && (typeof right.valor === "string" || typeof right.valor === "number")) {
+            let alfa = right.valor == "null" ? null : right.valor;
+            return new Retorno((left.valor < alfa), Type.BOOLEAN);
+        }
+        else if ((typeof left.valor === "string" || typeof left.valor === "number") && right.tipo == this.getTipoToString(left.tipo)) {
+            let alfa = left.valor == "null" ? null : left.valor;
+            return new Retorno((alfa < right.valor), Type.BOOLEAN);
+        }
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion < entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    mayorIgual(left, right, er) {
+    mayorIgual(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor >= right.valor), Type.BOOLEAN);
         }
         else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor.length >= left.valor.length), Type.BOOLEAN);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion >= entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion >= entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    menorIgual(left, right, er) {
+    menorIgual(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor <= right.valor), Type.BOOLEAN);
         }
         else if (typeof left.valor === "string" && typeof right.valor === "string") {
             return new Retorno((left.valor.length <= left.valor.length), Type.BOOLEAN);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion <= entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la comparacion <= entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
     getDot(builder, parent, cont) {
@@ -103,7 +135,7 @@ class Relacional extends Expresion {
     }
     traducir(builder) {
         var _a, _b;
-        return ((_a = this.operadorIzq) === null || _a === void 0 ? void 0 : _a.traducir(builder)) + " " + this.getOperacionSimbolo(this.tipoOperacion) + " " + ((_b = this.operadorDer) === null || _b === void 0 ? void 0 : _b.traducir(builder));
+        return "(" + ((_a = this.operadorIzq) === null || _a === void 0 ? void 0 : _a.traducir(builder)) + " " + this.getOperacionSimbolo(this.tipoOperacion) + " " + ((_b = this.operadorDer) === null || _b === void 0 ? void 0 : _b.traducir(builder)) + ")";
     }
     getOperacionSimbolo(t) {
         switch (t) {

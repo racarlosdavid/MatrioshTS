@@ -30,34 +30,34 @@ export class For extends Instruccion {
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let nuevo = new Entorno(ent);
-        this.inicio.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
+        this.inicio.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,"Local: For",padre);
 
-        let condicionFor = this.condicion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
+        let condicionFor = this.condicion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,"Local: For",padre);
 
         if(condicionFor.tipo != Type.BOOLEAN){
-            er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
+            er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna,ambito));
             return null;
         }
 
         while(condicionFor.valor == true){ 
-            let r = this.instrucciones.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
+            let r = this.instrucciones.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,"Local: For",padre);
             if(r != null || r != undefined){
                 if(r instanceof Break){
                     break;
                 }else if(r instanceof Continue){
-                    this.actualizacion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
+                    this.actualizacion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,"Local: For",padre);
                     continue;
                 }
             }
 
-            this.actualizacion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
-            condicionFor = this.condicion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,ambito,padre);
+            this.actualizacion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,"Local: For",padre);
+            condicionFor = this.condicion.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,"Local: For",padre);
             if(condicionFor.tipo != Type.BOOLEAN){
-                er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna,ambito));
                 return null;
             } 
         }
-        
+        reporte_ts.addLista(nuevo.getReporte("Local: For",padre));
         return null;
     }
 

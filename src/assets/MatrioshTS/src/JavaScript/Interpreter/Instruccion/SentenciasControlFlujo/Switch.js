@@ -8,7 +8,6 @@ class Switch extends Instruccion {
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let condicionBuscada = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         var numeroCaso = -1;
-        var numeroDefault = -1;
         for (let index = 0; index < this._case.length; index++) {
             const casoActual = this._case[index];
             let condicionCaso = casoActual.getCondicion().ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);

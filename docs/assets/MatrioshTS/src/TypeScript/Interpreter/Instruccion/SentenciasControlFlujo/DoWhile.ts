@@ -24,7 +24,7 @@ export class DoWhile extends Instruccion{
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let rcondicion;
         do {    
-            let r = this.instrucciones.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+            let r = this.instrucciones.ejecutar(ent,er,consola,tsCollector,reporte_ts,"local: do while",ambito);
             
             if(r != null || r != undefined){
                 if(r instanceof Break){ 
@@ -33,9 +33,9 @@ export class DoWhile extends Instruccion{
                     continue;
                 } 
             }
-            rcondicion = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+            rcondicion = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,"local: do while",ambito);
             if(rcondicion.tipo != Type.BOOLEAN){ 
-                er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna,ambito));
                 return null;
             }
         } while (rcondicion.valor);
@@ -69,7 +69,7 @@ export class DoWhile extends Instruccion{
 
         trad.append(this.instrucciones.traducir(builder,parent));
         
-        trad.append("}("+this.condicion.traducir(builder)+")\n"); 
+        trad.append("}while("+this.condicion.traducir(builder)+")\n"); 
 
         return trad.toString();
     }

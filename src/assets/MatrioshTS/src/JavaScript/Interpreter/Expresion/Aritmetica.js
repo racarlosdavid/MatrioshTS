@@ -12,7 +12,7 @@ class Aritmetica extends Expresion {
             let valorUnario = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionAritmetica.NEGACION:
-                    return this.negacion(valorUnario, er);
+                    return this.negacion(valorUnario, er, ambito);
                 //mensajes.add(new NodoError("Semantico", "No es posible la multiplicacion (1) de una variable "+getTipoLegible(valorUnario),archivo, fila, columna));
                 default:
                     return null;
@@ -23,23 +23,23 @@ class Aritmetica extends Expresion {
             let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionAritmetica.SUMA:
-                    return this.suma(left, right, er);
+                    return this.suma(left, right, er, ambito);
                 case TipoOperacionAritmetica.RESTA:
-                    return this.resta(left, right, er);
+                    return this.resta(left, right, er, ambito);
                 case TipoOperacionAritmetica.MULTIPLICACION:
-                    return this.multiplicacion(left, right, er);
+                    return this.multiplicacion(left, right, er, ambito);
                 case TipoOperacionAritmetica.DIVISION:
-                    return this.division(left, right, er);
+                    return this.division(left, right, er, ambito);
                 case TipoOperacionAritmetica.POTENCIA:
-                    return this.potencia(left, right, er);
+                    return this.potencia(left, right, er, ambito);
                 case TipoOperacionAritmetica.MODULO:
-                    return this.modulo(left, right, er);
+                    return this.modulo(left, right, er, ambito);
                 default:
                     return null;
             }
         }
     }
-    suma(left, right, er) {
+    suma(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor + right.valor), Type.NUMBER);
         }
@@ -59,29 +59,29 @@ class Aritmetica extends Expresion {
             return new Retorno((left.valor + right.valor), Type.STRING);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la suma entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la suma entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    resta(left, right, er) {
+    resta(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor - right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la resta entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la resta entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    multiplicacion(left, right, er) {
+    multiplicacion(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor * right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la multiplicacion entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la multiplicacion entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    division(left, right, er) {
+    division(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             if (right.valor == 0) {
-                er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la division entre 0", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la division entre 0", this.fila, this.columna, padre));
                 return null;
             }
             else {
@@ -89,31 +89,31 @@ class Aritmetica extends Expresion {
             }
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la division entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la division entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    potencia(left, right, er) {
+    potencia(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((Math.pow(left.valor, right.valor)), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la potencia entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la potencia entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    modulo(left, right, er) {
+    modulo(left, right, er, padre) {
         if (typeof left.valor === "number" && typeof right.valor === "number") {
             return new Retorno((left.valor % right.valor), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el modulo entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el modulo entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    negacion(unario, er) {
+    negacion(unario, er, padre) {
         if (typeof unario.valor === "number") {
             return new Retorno((unario.valor * -1), Type.NUMBER);
         }
         /* Falta agregar las operaciones entre arreglos si es que se puede */
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la negacion de " + this.getTipoToString(unario.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible la negacion de " + this.getTipoToString(unario.tipo), this.fila, this.columna, padre));
         return null;
     }
     getDot(builder, parent, cont) {
@@ -141,10 +141,10 @@ class Aritmetica extends Expresion {
         var _a, _b, _c;
         let trad;
         if (this.unario) {
-            trad = "-" + ((_a = this.operadorU) === null || _a === void 0 ? void 0 : _a.traducir(builder));
+            trad = "(" + "-" + ((_a = this.operadorU) === null || _a === void 0 ? void 0 : _a.traducir(builder)) + ")";
         }
         else {
-            trad = ((_b = this.operadorIzq) === null || _b === void 0 ? void 0 : _b.traducir(builder)) + " " + this.getOperacionSimbolo(this.tipoOperacion) + " " + ((_c = this.operadorDer) === null || _c === void 0 ? void 0 : _c.traducir(builder));
+            trad = "(" + ((_b = this.operadorIzq) === null || _b === void 0 ? void 0 : _b.traducir(builder)) + " " + this.getOperacionSimbolo(this.tipoOperacion) + " " + ((_c = this.operadorDer) === null || _c === void 0 ? void 0 : _c.traducir(builder)) + ")";
         }
         return trad;
     }

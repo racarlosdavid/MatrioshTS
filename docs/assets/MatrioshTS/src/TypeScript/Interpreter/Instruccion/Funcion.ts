@@ -7,6 +7,7 @@ import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { Type } from "../TablaSimbolos/Tipo";
 import { Manager } from "../Reportes/Manager";
 import { R_TS } from "../Reportes/R_TS";
+import { NodoError, TipoError } from "../Reportes/NodoError";
 
 export class Funcion extends Instruccion{
     identificador:string;
@@ -26,32 +27,12 @@ export class Funcion extends Instruccion{
     }
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
-        ent.AddFunction(this.identificador, this);
+        let ok =ent.AddFunction(this.identificador, this);
+        if(ok == false){
+            er.addError(new NodoError(TipoError.SEMANTICO,"La funcion "+this.identificador+" ya existe. ", this.fila, this.columna,ambito));
+        }
         let r:any = null;
         return r;
-        //console.log("SOY UNA FUNCION "+this.identificador+" "+this.padre);
-        /*
-        let t = new StringBuilder();
-        if (this.padre!=null) {
-            let nuevo_id  = this.generarNombre(this.identificador,this.padre);
-            console.log( nuevo_id +"( ) {\n"+this.instrucciones.traducir(t)+"\n}\n" );
-        }
-        */
-        /*
-        var str = "Suma_Resta"; 
-        var splitted = str.split("_"); 
-        console.log("Yo soy "+splitted[1] +" y mi padre es "+splitted[0])
-        console.log(" El id de la funcion "+this.identificador);
-
-        for(const instr of this.instrucciones){
-            try {
-                instr.ejecutar(ent,er,consola,tsCollector);
-            } catch (error) {
-                console.log(`Error en la funcion ${this.identificador}: ${error}`);
-            }
-        }
-        */
-        
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {

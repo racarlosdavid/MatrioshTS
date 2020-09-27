@@ -13,13 +13,13 @@ class Push extends Funcion {
                         r.valor.Add(val.valor);
                     }
                     else {
-                        er.addError(new NodoError(TipoError.SEMANTICO, "El tipo del arreglo " + this.getTipoToString(r.tipo) + " no coinciden con el tipo " + this.getTipoToString(val.tipo) + " del valor que se quiere agregar", this.fila, this.columna));
+                        er.addError(new NodoError(TipoError.SEMANTICO, "El tipo del arreglo " + this.getTipoToString(r.tipo) + " no coinciden con el tipo " + this.getTipoToString(val.tipo) + " del valor que se quiere agregar", this.fila, this.columna, padre));
                         return null;
                     }
                 }
             }
             else {
-                er.addError(new NodoError(TipoError.SEMANTICO, "El arreglo " + id.valor + " no se ha inicializado", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "El arreglo " + id.valor + " no se ha inicializado", this.fila, this.columna, padre));
             }
         }
         return null;

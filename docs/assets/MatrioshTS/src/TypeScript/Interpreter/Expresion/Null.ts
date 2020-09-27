@@ -26,7 +26,7 @@ export class Null extends Expresion{
     }
 
     traducir(builder: StringBuilder) {
-        return "null"
+        return "null";
     }
 
 }

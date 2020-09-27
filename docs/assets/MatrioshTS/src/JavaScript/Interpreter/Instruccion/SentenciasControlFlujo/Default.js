@@ -6,10 +6,10 @@ class Default extends Instruccion {
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let nuevo = new Entorno(ent);
         for (let inst of this.instrucciones) {
-            let r = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
+            let r = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, "Local: Default", padre);
             if (r != null) {
                 if (r instanceof Continue) {
-                    er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna));
+                    er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna, padre));
                     continue;
                 }
                 else {
@@ -17,6 +17,7 @@ class Default extends Instruccion {
                 }
             }
         }
+        reporte_ts.addLista(nuevo.getReporte("Local: Default", padre));
         return null;
     }
     getDot(builder, parent, cont) {

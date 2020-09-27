@@ -10,7 +10,7 @@ class While extends Instruccion {
             return null;
         }
         if (rcondicion.tipo != Type.BOOLEAN) {
-            er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
+            er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna, ambito));
             return null;
         }
         while (rcondicion.valor == true) {
@@ -26,7 +26,7 @@ class While extends Instruccion {
                 return null;
             }
             if (rcondicion.tipo != Type.BOOLEAN) {
-                er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "La condicion no es booleana", this.fila, this.columna, ambito));
                 return null;
             }
         }

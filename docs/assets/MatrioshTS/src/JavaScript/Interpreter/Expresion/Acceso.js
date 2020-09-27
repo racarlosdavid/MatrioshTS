@@ -28,8 +28,8 @@ class Acceso extends Expresion {
                                     }
                                 }
                                 else {
-                                    er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba un valor de tipo number ", this.fila, this.columna));
-                                    return null;
+                                    er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba un valor de tipo number ", this.fila, this.columna, ambito));
+                                    return "null";
                                 }
                             }
                         }
@@ -43,8 +43,8 @@ class Acceso extends Expresion {
                                 }
                             }
                             else {
-                                er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba un valor de tipo number ", this.fila, this.columna));
-                                return null;
+                                er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba un valor de tipo number ", this.fila, this.columna, ambito));
+                                return "null";
                             }
                         }
                     }
@@ -64,28 +64,9 @@ class Acceso extends Expresion {
             return new Retorno(r, t);
         }
         else {
-            er.addError(new NodoError(TipoError.SEMANTICO, "La variable " + this.identificador + " no existe ", this.fila, this.columna));
-            return null;
+            er.addError(new NodoError(TipoError.SEMANTICO, "La variable " + this.identificador + " no existe ", this.fila, this.columna, ambito));
+            return "null";
         }
-        /*
-                if (this.tipoacceso == TipoAcceso.ID) {
-                    //console.log("estas haciendo un acceso de tipo ID del id "+ this.identificador);
-                    if(obj!=null){
-                        //Primero compruebo que la variable tenga un valor sino hay que reportar error de acceso a variable sin haber asignado un valor
-                        if (obj.valor == "null") {
-                            er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable "+this.identificador+" sin haber asignado un valor", this.fila, this.columna));
-                            return "null";
-                        } else {
-                            console.log(obj.valor+" "+obj.tipo)
-                            return new Retorno(obj.valor,obj.tipo);
-                        }
-                        
-                            
-                    }
-                    
-                }
-                */
-        return "null";
     }
     esEntero(numero) {
         if (numero - Math.floor(numero) == 0) {
@@ -99,6 +80,19 @@ class Acceso extends Expresion {
         return cont;
     }
     traducir(builder) {
-        return ""; //falta implementar los otros tipos de acceso
+        let tempo = new StringBuilder();
+        tempo.append(this.identificador);
+        // Traduccion de los accesos
+        let v = new StringBuilder();
+        for (let index = 0; index < this.accesos.length; index++) {
+            let element = this.accesos[index];
+            if (index < this.accesos.length) {
+                v.append(".");
+            }
+            v.append(element.traducir(builder));
+        }
+        tempo.append(v.toString());
+        // Fin 
+        return tempo.toString();
     }
 }

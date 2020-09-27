@@ -12,7 +12,7 @@ class Logica extends Expresion {
             let valorUnario = (this.operadorU == null) ? null : this.operadorU.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionLogica.NOT:
-                    return this.notOperacion(valorUnario, ent, er);
+                    return this.notOperacion(valorUnario, er, ambito);
                 default:
                     return null;
             }
@@ -22,35 +22,35 @@ class Logica extends Expresion {
             let right = (this.operadorDer == null) ? null : this.operadorDer.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
             switch (this.tipoOperacion) {
                 case TipoOperacionLogica.AND:
-                    return this.and(left, right, ent, er);
+                    return this.and(left, right, er, ambito);
                 case TipoOperacionLogica.OR:
-                    return this.or(left, right, ent, er);
+                    return this.or(left, right, er, ambito);
                 default:
                     return null;
             }
         }
     }
-    and(left, right, ent, er) {
+    and(left, right, er, padre) {
         //let tipoResultante = this.getTipoResultante(left.tipo,right.tipo);
         if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
             return new Retorno((left.valor && right.valor), left.tipo);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el and entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el and entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    or(left, right, ent, er) {
+    or(left, right, er, padre) {
         //let tipoResultante = this.getTipoResultante(left.tipo,right.tipo);
         if (left.tipo == Type.BOOLEAN && right.tipo == Type.BOOLEAN) {
             return new Retorno((left.valor || right.valor), left.tipo);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el or entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible el or entre " + this.getTipoToString(left.tipo) + " y " + this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;
     }
-    notOperacion(unario, ent, er) {
+    notOperacion(unario, er, padre) {
         if (unario.tipo == Type.BOOLEAN) {
             return new Retorno(!(unario.valor), unario.tipo);
         }
-        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible realizar not de " + this.getTipoToString(unario.tipo), this.fila, this.columna));
+        er.addError(new NodoError(TipoError.SEMANTICO, "No es posible realizar not de " + this.getTipoToString(unario.tipo), this.fila, this.columna, padre));
         return null;
     }
     getDot(builder, parent, cont) {
@@ -78,10 +78,10 @@ class Logica extends Expresion {
         var _a, _b, _c;
         let trad;
         if (this.not) {
-            trad = "-" + ((_a = this.operadorU) === null || _a === void 0 ? void 0 : _a.traducir(builder));
+            trad = "(" + "!" + ((_a = this.operadorU) === null || _a === void 0 ? void 0 : _a.traducir(builder)) + ")";
         }
         else {
-            trad = ((_b = this.operadorIzq) === null || _b === void 0 ? void 0 : _b.traducir(builder)) + " " + this.getOperacionSimbolo(this.tipoOperacion) + " " + ((_c = this.operadorDer) === null || _c === void 0 ? void 0 : _c.traducir(builder));
+            trad = "(" + ((_b = this.operadorIzq) === null || _b === void 0 ? void 0 : _b.traducir(builder)) + " " + this.getOperacionSimbolo(this.tipoOperacion) + " " + ((_c = this.operadorDer) === null || _c === void 0 ? void 0 : _c.traducir(builder)) + ")";
         }
         return trad;
     }

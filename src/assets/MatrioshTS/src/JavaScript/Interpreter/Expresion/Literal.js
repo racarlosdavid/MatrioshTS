@@ -6,7 +6,13 @@ class Literal extends Expresion {
         this.tipoString = tipoString;
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
-        return new Retorno(this.valor, this.tipo);
+        if (this.tipoString == TipoString.STRING3) {
+            let s = this.procesar(ent, this.valor);
+            return new Retorno(s, this.tipo);
+        }
+        else {
+            return new Retorno(this.valor, this.tipo);
+        }
     }
     getDot(builder, parent, cont) {
         let nodoOp = "nodo" + ++cont;
@@ -25,6 +31,40 @@ class Literal extends Expresion {
             return "\`" + this.valor.toString() + "\`";
         }
         return this.valor.toString();
+    }
+    procesar(ent, cadena) {
+        let id = "";
+        let variables = [];
+        let s = "";
+        let bandera = false;
+        let cont = 0;
+        for (let index = 0; index < cadena.length; index++) {
+            const element = cadena[index];
+            if (element == "$") {
+                s += "$" + cont;
+                cont++;
+            }
+            else if (element == "{") {
+                bandera = true;
+            }
+            else if (element == "}") {
+                bandera = false;
+                variables.push(id);
+                id = "";
+            }
+            if (bandera && element != "{") {
+                id += element;
+            }
+            if (!bandera && element != "$" && element != "}") {
+                s += element;
+            }
+        }
+        for (let index = 0; index < variables.length; index++) {
+            let element = ent.GetValue(variables[index]);
+            let valor = element === null || element === void 0 ? void 0 : element.valor;
+            s = s.replace("$" + index, valor);
+        }
+        return s;
     }
 }
 var TipoString;

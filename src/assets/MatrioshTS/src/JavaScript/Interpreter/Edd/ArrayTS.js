@@ -24,7 +24,7 @@ class ArrayTS extends Expresion {
                 }
             }
             if (!bandera) {
-                er.addError(new NodoError(TipoError.SEMANTICO, "Los valores del arreglo, son de diferente tipo de dato ", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "Los valores del arreglo, son de diferente tipo de dato ", this.fila, this.columna, padre));
                 return "null";
             }
             return new Retorno(new Arreglo(lista, lista_tipos[0]), lista_tipos[0]);
@@ -32,10 +32,29 @@ class ArrayTS extends Expresion {
         return new Retorno(new Arreglo(lista, Type.ARRAY), Type.ARRAY);
     }
     getDot(builder, parent, cont) {
-        console.log("Method not implemented. ARRAY TS");
+        console.log("Method not implemented. .dot de ARRAY TS");
         return cont;
     }
     traducir(builder) {
-        throw new Error("Method not implemented. ARRAY TS");
+        let tempo = new StringBuilder();
+        // Traduccion de los parametros
+        let v = new StringBuilder();
+        if (this.valores.length == 0) {
+            tempo.append("[]");
+        }
+        else {
+            tempo.append("[");
+            for (let index = 0; index < this.valores.length; index++) {
+                let element = this.valores[index];
+                v.append(element.traducir(builder));
+                if (index != this.valores.length - 1) {
+                    v.append(",");
+                }
+            }
+            tempo.append(v.toString());
+            tempo.append("]\n");
+        }
+        // Fin 
+        return tempo.toString();
     }
 }

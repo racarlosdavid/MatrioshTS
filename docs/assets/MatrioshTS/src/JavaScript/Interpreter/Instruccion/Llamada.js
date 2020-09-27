@@ -22,9 +22,9 @@ class Llamada extends Instruccion {
             else {
                 for (let index = 0; index < this.argumentos.length; index++) {
                     const param = funcion.parametros[index];
-                    let v = this.argumentos[index].ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+                    let v = this.argumentos[index].ejecutar(ent, er, consola, tsCollector, reporte_ts, this.identificador, padre);
                     if (v.tipo != param.tipo && !(this.identificador == "pop" || this.identificador == "push")) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
-                        er.addError(new NodoError(TipoError.SEMANTICO, "El tipo del parametro " + v.tipo + " no coinciden con el tipo " + param.tipo + " de la funcion", this.fila, this.columna));
+                        er.addError(new NodoError(TipoError.SEMANTICO, "El tipo del parametro " + v.tipo + " no coinciden con el tipo " + param.tipo + " de la funcion", this.fila, this.columna, this.identificador));
                         return null;
                     }
                     nuevo.Add(param.identificador, v.valor, param.tipo != null ? param.tipo : this.getElTipo(v.valor), param.dimensiones, param.tipoDeclaracion);
@@ -42,7 +42,7 @@ class Llamada extends Instruccion {
             else if (funcion instanceof Pop || funcion instanceof Push) {
                 funcion.fila = this.fila;
                 funcion.columna = this.columna;
-                let obj = funcion.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
+                let obj = funcion.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, this.identificador, padre);
                 if (obj != null) {
                     return obj;
                 }
@@ -50,7 +50,7 @@ class Llamada extends Instruccion {
             else {
                 //Manager.getManager().addListaR_TS(nuevo.getReporte("global",""));
                 for (const inst of funcion.instrucciones) {
-                    let result = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
+                    let result = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, this.identificador, padre);
                     if (result != null) {
                         //Compruebo que el tipo de retorno sea igual que el tipo de retorno de la funcion
                         if (inst instanceof Llamada) {
@@ -60,28 +60,28 @@ class Llamada extends Instruccion {
                             return null;
                         }
                         else if (result instanceof Break) {
-                            er.addError(new NodoError(TipoError.SEMANTICO, "Break fuera de ciclo ", this.fila, this.columna));
+                            er.addError(new NodoError(TipoError.SEMANTICO, "Break fuera de ciclo ", this.fila, this.columna, this.identificador));
                         }
                         else if ((result.tipo == funcion.tipoRetorno && funcion.tipoRetorno != Type.VOID) || funcion.tipoRetorno == null) {
                             return result;
                         }
                         else {
                             if (funcion.tipoRetorno == Type.VOID) {
-                                er.addError(new NodoError(TipoError.SEMANTICO, "Una funcion tipo " + this.getTipoToString(funcion.tipoRetorno) + " no puede retornar algo. ", this.fila, this.columna));
+                                er.addError(new NodoError(TipoError.SEMANTICO, "Una funcion tipo " + this.getTipoToString(funcion.tipoRetorno) + " no puede retornar algo. ", this.fila, this.columna, this.identificador));
                                 return null;
                             }
                             else {
-                                er.addError(new NodoError(TipoError.SEMANTICO, "El tipo de retorno " + this.getTipoToString(result.tipo) + " no coinciden con el tipo de retorno " + this.getTipoToString(funcion.tipoRetorno) + " de la funcion", this.fila, this.columna));
+                                er.addError(new NodoError(TipoError.SEMANTICO, "El tipo de retorno " + this.getTipoToString(result.tipo) + " no coinciden con el tipo de retorno " + this.getTipoToString(funcion.tipoRetorno) + " de la funcion", this.fila, this.columna, this.identificador));
                                 return null;
                             }
                         }
                     }
                 }
             }
-            reporte_ts.addLista(nuevo.getReporte("Local: " + this.identificador, padre));
+            reporte_ts.addLista(nuevo.getReporte(this.identificador, padre));
         }
         else {
-            er.addError(new NodoError(TipoError.SEMANTICO, "Funcion " + this.identificador + " no encontrada en la tabla de simbolos", this.fila, this.columna));
+            er.addError(new NodoError(TipoError.SEMANTICO, "Funcion " + this.identificador + " no encontrada en la tabla de simbolos", this.fila, this.columna, this.identificador));
             return null;
         }
         return null;

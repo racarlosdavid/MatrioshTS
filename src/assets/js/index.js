@@ -86,6 +86,7 @@ $(document).ready(function(){
                                 <th scope="col">${element.descripcion}</th>
                                 <th scope="col">${element.fila}</th>
                                 <th scope="col">${element.columna}</th>
+                                <th scope="col">${element.ambito}</th>
                                 </tr>`;
                 }
                 $("#contenido_tablaErrores").html(colector);
@@ -101,7 +102,7 @@ $(document).ready(function(){
             const tsCollector = new TSCollector();
             const reporte_ts = new R_TS();
             const ambito = "global";
-            const padre = "null";
+            const padre = "";
 
             //Agrego los errores lexicos al colector de errores 
             er.addLista(Manager.getManager().getColectorErrores());
@@ -130,20 +131,28 @@ $(document).ready(function(){
                              <th scope="col">${element.descripcion}</th>
                              <th scope="col">${element.fila}</th>
                              <th scope="col">${element.columna}</th>
+                             <th scope="col">${element.ambito}</th>
                              </tr>`;
             }
             $("#contenido_tablaErrores").html(colector);
+
+            //Creo una nueva lista de reporte de tabla de simbolos para que los simbolos globales quede de primero
+            const reporte_ts_final = new R_TS();
+            reporte_ts_final.addLista(ent.getReporte("Global", ""));
+            //le agrego la coleccion de las otras tablas
+            reporte_ts_final.addLista(reporte_ts.getListaR_TS());
             
-            let result_ts = reporte_ts.getListaR_TS();
+            //Ahora ya grafico la tabla en la pagina
+            let result_ts = reporte_ts_final.getListaR_TS();
             var colector_ts = '';
             for (let index = 0; index < result_ts.length; index++) {
                 const element = result_ts[index];
                 colector_ts += `<tr>
                                 <th scope="col">${element.identificador}</th>
                                 <th scope="col">${element.tipo}</th>
+                                <th scope="col">${element.valor}</th>
                                 <th scope="col">${element.ambito}</th>
                                 <th scope="col">${element.padre}</th>
-                                <th scope="col">${element.descripcion}</th>
                                 </tr>`;
             }
             $("#contenido_tablaSimbolos").html(colector_ts);
@@ -151,6 +160,8 @@ $(document).ready(function(){
             //Imprimo los logs
             consola.setValue(consola_data.toString()); 
             document.getElementById("buttonConsola").click();
+
+            
            
             //Graficar el ast
             const reporte_AST = new Dot(ast.getInstrucciones());
@@ -199,6 +210,7 @@ $(document).ready(function(){
                 <th scope="col">${element.descripcion}</th>
                 <th scope="col">${element.fila}</th>
                 <th scope="col">${element.columna}</th>
+                <th scope="col">${element.ambito}</th>
                 </tr>`;
             }
             $("#contenido_tablaErrores").html(colector);

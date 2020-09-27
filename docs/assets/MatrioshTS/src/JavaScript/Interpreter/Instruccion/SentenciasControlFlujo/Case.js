@@ -7,10 +7,10 @@ class Case extends Instruccion {
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let nuevo = new Entorno(ent);
         for (let inst of this.instrucciones) {
-            let r = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
+            let r = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, "Local: case", padre);
             if (r != null) {
                 if (r instanceof Continue) {
-                    er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna));
+                    er.addError(new NodoError(TipoError.SEMANTICO, " Continue no es valido en switch", inst.fila, inst.columna, padre));
                     continue;
                 }
                 else {
@@ -18,6 +18,7 @@ class Case extends Instruccion {
                 }
             }
         }
+        reporte_ts.addLista(nuevo.getReporte("Local: case", padre));
         return null;
     }
     getDot(builder, parent, cont) {

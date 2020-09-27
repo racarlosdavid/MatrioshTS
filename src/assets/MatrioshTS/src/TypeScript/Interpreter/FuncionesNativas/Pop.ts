@@ -27,8 +27,6 @@ export class Pop extends Funcion{
                 return new Retorno(val,r.tipo);
             }
         }
-       
-
         return null;
     }
 

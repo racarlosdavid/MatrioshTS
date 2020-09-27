@@ -26,7 +26,7 @@ export class Declaracion extends Instruccion{
         this.identificador = identificador;
         this.tipo = tipo;
         this.dimensiones = dimensiones;
-        this.valor = valor;
+        this.valor = valor; 
     }
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
@@ -35,6 +35,16 @@ export class Declaracion extends Instruccion{
         //if (this.tipoDeclaracion == TipoDeclaracion.LET) {
             if (this.valor!=null) { // Si la variable esta inicializada entra a este if, 
                 let val = this.valor?.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre); 
+                if(val == null){
+                    er.addError(new NodoError(TipoError.SEMANTICO,"Error al calcular el valor de"+this.identificador+" se guardara la variable con null ", this.fila, this.columna,ambito));
+           
+                    if (this.tipo!=null) {
+                        ent.Add(this.identificador,"null",this.tipo,this.dimensiones,this.tipoDeclaracion);
+                    } else {
+                        ent.Add(this.identificador,"null",Type.INDEF,this.dimensiones,this.tipoDeclaracion); 
+                    } 
+                    return null;
+                }
                 if (this.tipo!=null) { // Si se declaron con un tipo hay que comprobar que el valor sea del mismo tipo
                     if (this.tipo == val.tipo || val.tipo == Type.ARRAY || val.tipo == Type.TYPE || val.tipo == Type.NULL) { // Ok. se guarda en la TS
                         if (val.valor instanceof Arreglo) {    
@@ -45,7 +55,7 @@ export class Declaracion extends Instruccion{
                         } else if(val.valor instanceof TypeTSDefinicion){
                             if (typeof this.tipo == "string" ) {
                                 let bandera:boolean = true;
-                                let type_estructura:TypeTS|null = ent.GetType(this.tipo);
+                                let type_estructura:TypeTS|null = ent.GetType(this.tipo);  
                                 let type_guardar:TypeTSDefinicion = val.valor;
                                 let datos_estructura:Map<String, any> = new Map();
                                 let datos_guardar:Map<String, any> = new Map();
@@ -73,7 +83,7 @@ export class Declaracion extends Instruccion{
                                             }
                                         });
                                     }else{ 
-                                        er.addError(new NodoError(TipoError.SEMANTICO,"Los valores a asignar no coinciden con los valores del type ", this.fila, this.columna));
+                                        er.addError(new NodoError(TipoError.SEMANTICO,"Los valores a asignar no coinciden con los valores del type ", this.fila, this.columna,ambito));
                                         return null;   
                                     }
 
@@ -92,7 +102,7 @@ export class Declaracion extends Instruccion{
                                             if (va.tipo == tipo || va.tipo  == Type.NULL) {
                                                 mi_type.set(ide,va.valor);
                                             }else {// Error no son del mismo tipo
-                                                er.addError(new NodoError(TipoError.SEMANTICO,"El tipo declarado "+this.getTipoToString(va.tipo)+" no coincide con el tipo del valor "+this.getTipoToString(tipo), this.fila, this.columna));
+                                                er.addError(new NodoError(TipoError.SEMANTICO,"El tipo declarado "+this.getTipoToString(va.tipo)+" no coincide con el tipo del valor "+this.getTipoToString(tipo), this.fila, this.columna,ambito));
                                                 return null;  
                                             }
                                         }//Todo ok. guardo la variable
@@ -106,7 +116,7 @@ export class Declaracion extends Instruccion{
                         }
                         
                     } else {// Error no son del mismo tipo
-                        er.addError(new NodoError(TipoError.SEMANTICO,"El tipo declarado "+this.getTipoToString(this.tipo)+" no coincide con el tipo del valor "+this.getTipoToString(val.tipo), this.fila, this.columna));
+                        er.addError(new NodoError(TipoError.SEMANTICO,"El tipo declarado "+this.getTipoToString(this.tipo)+" no coincide con el tipo del valor "+this.getTipoToString(val.tipo), this.fila, this.columna,ambito));
                         return null;  
                     }
                 } else { // No se declaro con tipo
@@ -120,14 +130,11 @@ export class Declaracion extends Instruccion{
                 } 
             }
         }else{
-            er.addError(new NodoError(TipoError.SEMANTICO,"La variable "+this.identificador+" ya exite en este entorno", this.fila, this.columna));
+            er.addError(new NodoError(TipoError.SEMANTICO,"La variable "+this.identificador+" ya exite en este entorno", this.fila, this.columna,ambito));
             return null;  
         }
-   
-     
-    
         return null; 
-    }catch(er){console.log("error aqui en declaracion")}
+    }catch(er){console.log("error aqui en declaracion "+er)}
     }
     
     getDot(builder: StringBuilder, parent: string, cont: number): number {
@@ -148,8 +155,13 @@ export class Declaracion extends Instruccion{
 
     traducir(builder: StringBuilder, parent: string) {
         let trad :string = "";
-        if (this.tipoDeclaracion == TipoDeclaracion.PARAM) {
+        if (this.tipoDeclaracion == TipoDeclaracion.PARAM) { 
             trad += this.identificador+":"+this.getTipoToString(this.tipo);
+            if (this.dimensiones!=0) {
+                for (let index = 0; index < this.dimensiones; index++) {
+                    trad += "[]";
+                }
+            }
         } else if (this.tipoDeclaracion == TipoDeclaracion.LET)  {
             trad += "let "+this.identificador;
             if (this.tipo!= null) {
@@ -178,6 +190,10 @@ export class Declaracion extends Instruccion{
                 trad += " = "+this.valor.traducir(builder);
             }
             trad += ";\n";
+        }else if (this.tipoDeclaracion == TipoDeclaracion.TYPEVAL)  {
+            if (this.valor!=null) {
+                trad += this.identificador+":"+this.valor.traducir(builder);
+            }
         }
         return trad;
     }

@@ -14,6 +14,16 @@ class Declaracion extends Instruccion {
                 //if (this.tipoDeclaracion == TipoDeclaracion.LET) {
                 if (this.valor != null) { // Si la variable esta inicializada entra a este if, 
                     let val = (_a = this.valor) === null || _a === void 0 ? void 0 : _a.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+                    if (val == null) {
+                        er.addError(new NodoError(TipoError.SEMANTICO, "Error al calcular el valor de" + this.identificador + " se guardara la variable con null ", this.fila, this.columna, ambito));
+                        if (this.tipo != null) {
+                            ent.Add(this.identificador, "null", this.tipo, this.dimensiones, this.tipoDeclaracion);
+                        }
+                        else {
+                            ent.Add(this.identificador, "null", Type.INDEF, this.dimensiones, this.tipoDeclaracion);
+                        }
+                        return null;
+                    }
                     if (this.tipo != null) { // Si se declaron con un tipo hay que comprobar que el valor sea del mismo tipo
                         if (this.tipo == val.tipo || val.tipo == Type.ARRAY || val.tipo == Type.TYPE || val.tipo == Type.NULL) { // Ok. se guarda en la TS
                             if (val.valor instanceof Arreglo) {
@@ -52,7 +62,7 @@ class Declaracion extends Instruccion {
                                             });
                                         }
                                         else {
-                                            er.addError(new NodoError(TipoError.SEMANTICO, "Los valores a asignar no coinciden con los valores del type ", this.fila, this.columna));
+                                            er.addError(new NodoError(TipoError.SEMANTICO, "Los valores a asignar no coinciden con los valores del type ", this.fila, this.columna, ambito));
                                             return null;
                                         }
                                         //Si bandera es true en este momento puedo guardar los valores
@@ -67,7 +77,7 @@ class Declaracion extends Instruccion {
                                                     mi_type.set(ide, va.valor);
                                                 }
                                                 else { // Error no son del mismo tipo
-                                                    er.addError(new NodoError(TipoError.SEMANTICO, "El tipo declarado " + this.getTipoToString(va.tipo) + " no coincide con el tipo del valor " + this.getTipoToString(tipo), this.fila, this.columna));
+                                                    er.addError(new NodoError(TipoError.SEMANTICO, "El tipo declarado " + this.getTipoToString(va.tipo) + " no coincide con el tipo del valor " + this.getTipoToString(tipo), this.fila, this.columna, ambito));
                                                     return null;
                                                 }
                                             } //Todo ok. guardo la variable
@@ -81,7 +91,7 @@ class Declaracion extends Instruccion {
                             }
                         }
                         else { // Error no son del mismo tipo
-                            er.addError(new NodoError(TipoError.SEMANTICO, "El tipo declarado " + this.getTipoToString(this.tipo) + " no coincide con el tipo del valor " + this.getTipoToString(val.tipo), this.fila, this.columna));
+                            er.addError(new NodoError(TipoError.SEMANTICO, "El tipo declarado " + this.getTipoToString(this.tipo) + " no coincide con el tipo del valor " + this.getTipoToString(val.tipo), this.fila, this.columna, ambito));
                             return null;
                         }
                     }
@@ -99,13 +109,13 @@ class Declaracion extends Instruccion {
                 }
             }
             else {
-                er.addError(new NodoError(TipoError.SEMANTICO, "La variable " + this.identificador + " ya exite en este entorno", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "La variable " + this.identificador + " ya exite en este entorno", this.fila, this.columna, ambito));
                 return null;
             }
             return null;
         }
         catch (er) {
-            console.log("error aqui en declaracion");
+            console.log("error aqui en declaracion " + er);
         }
     }
     getDot(builder, parent, cont) {
@@ -124,6 +134,11 @@ class Declaracion extends Instruccion {
         let trad = "";
         if (this.tipoDeclaracion == TipoDeclaracion.PARAM) {
             trad += this.identificador + ":" + this.getTipoToString(this.tipo);
+            if (this.dimensiones != 0) {
+                for (let index = 0; index < this.dimensiones; index++) {
+                    trad += "[]";
+                }
+            }
         }
         else if (this.tipoDeclaracion == TipoDeclaracion.LET) {
             trad += "let " + this.identificador;
@@ -154,6 +169,11 @@ class Declaracion extends Instruccion {
                 trad += " = " + this.valor.traducir(builder);
             }
             trad += ";\n";
+        }
+        else if (this.tipoDeclaracion == TipoDeclaracion.TYPEVAL) {
+            if (this.valor != null) {
+                trad += this.identificador + ":" + this.valor.traducir(builder);
+            }
         }
         return trad;
     }

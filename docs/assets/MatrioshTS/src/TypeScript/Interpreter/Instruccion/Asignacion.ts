@@ -33,7 +33,7 @@ export class Asignacion extends Instruccion{
         let result:Simbolo|null = ent.GetValue(this.identificador);
         if (result !=null) {
             if (result.tipodeclaracion==TipoDeclaracion.CONST && !(result.valor instanceof Arreglo)) {
-                er.addError(new NodoError(TipoError.SEMANTICO,"Asignacion no permitida la variable "+this.identificador+" es const ", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO,"Asignacion no permitida la variable "+this.identificador+" es const ", this.fila, this.columna,ambito));
                 return null; 
             } else {
                 let new_val = this.valor.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre); 
@@ -41,7 +41,7 @@ export class Asignacion extends Instruccion{
                 
                 if (result.valor instanceof Arreglo) {
                     if(new_val.valor == undefined){
-                        er.addError(new NodoError(TipoError.SEMANTICO,"No se puede asignar un undefined al arreglo, se va a sustituir por 0 para que no se quede trabado", this.fila, this.columna));
+                        er.addError(new NodoError(TipoError.SEMANTICO,"No se puede asignar un undefined al arreglo, se va a sustituir por 0 para que no se quede trabado", this.fila, this.columna,ambito));
                         
                         if (result.tipo == Type.NUMBER) { //Si es un arreglo de number intento recuperarme asignadole 0 al undefined
                             new_val.valor = 0;
@@ -62,7 +62,7 @@ export class Asignacion extends Instruccion{
                                 r = r.getValor(pos);
                             } 
                         } else {
-                            er.addError(new NodoError(TipoError.SEMANTICO,"Se esperaba un valor de tipo number ", this.fila, this.columna));
+                            er.addError(new NodoError(TipoError.SEMANTICO,"Se esperaba un valor de tipo number ", this.fila, this.columna,ambito));
                             return null; 
                         }
                     }
@@ -73,86 +73,168 @@ export class Asignacion extends Instruccion{
                         } else { 
                             r.setValores(new_val.valor.valores);
                         }
-                         
-                    } else {
-                        er.addError(new NodoError(TipoError.SEMANTICO,"La variable \""+this.identificador+"\" es de tipo "+this.getTipoToString(r.tipo)+" y el nuevo valor \""+new_val.valor+"\" es de tipo "+this.getTipoToString(new_val.tipo), this.fila, this.columna));
+                          
+                    } else { 
+                        er.addError(new NodoError(TipoError.SEMANTICO,"La variable \""+this.identificador+"\" es de tipo "+this.getTipoToString(r.tipo)+" y el nuevo valor \""+new_val.valor+"\" es de tipo "+this.getTipoToString(new_val.tipo), this.fila, this.columna,ambito));
                         return null; 
                     }
               
-                }else if(result.valor instanceof MiType || new_val .valor instanceof TypeTSDefinicion){ 
+                }else if(result.valor instanceof MiType || new_val.valor instanceof TypeTSDefinicion){ 
+                   
                     if (typeof result.tipo == "string") {
-                        let bandera:boolean = true;
-                        let type_estructura:TypeTS|null = ent.GetType(result.tipo);
-                        let type_guardar:TypeTSDefinicion = new_val.valor;
-                        let datos_estructura:Map<String, any> = new Map();
-                        let datos_guardar:Map<String, any> = new Map();
-                        //Si el esqueleton del type exite puedo seguir
-                        if (type_estructura != null) {
-                            for (let index = 0; index < type_estructura.variables.length; index++) {
-                                const element = type_estructura.variables[index];
-                                let identificador = element.identificador;
-                                let tipo = element.tipo;
-                                datos_estructura.set(identificador,tipo);
-                            }
-
-                            for (let index = 0; index < type_guardar.valores.length; index++) {
-                                const element = type_guardar.valores[index];
-                                let identificador = element.identificador;
-                                let valo =element.valor?.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
-                                datos_guardar.set(identificador,valo);
-                            }
-
-                            // verifico que los los dos contengas los mismos ids
-                            if (datos_estructura.size == datos_guardar.size) {
-                                datos_estructura.forEach(function(v, clave) {
-                                    if (!datos_guardar.has(clave) ) {
-                                        bandera = false;
-                                    }
-                                });
-                            }else{ 
-                                er.addError(new NodoError(TipoError.SEMANTICO,"Los valores a asignar no coinciden con los valores del type ", this.fila, this.columna));
-                                return null;   
-                            }
-
-                            //Si bandera es true en este momento puedo guardar los valores
-                            try{
-                            if (bandera == true && this.accesos.length==0) { 
-                                let mi_type:Map<String, any> = new Map();
+                        if (this.accesos.length == 0) {//Estoy asignado todo el type
+                            let bandera:boolean = true;
+                            let type_estructura:TypeTS|null = ent.GetType(result.tipo);
+                            let type_guardar:TypeTSDefinicion = new_val.valor;
+                            let datos_estructura:Map<String, any> = new Map();
+                            let datos_guardar:Map<String, any> = new Map();
+                            //Si el esqueleton del type exite puedo seguir
+                            if (type_estructura != null) {
                                 for (let index = 0; index < type_estructura.variables.length; index++) {
                                     const element = type_estructura.variables[index];
-                                    let ide = element.identificador;
+                                    let identificador = element.identificador;
+                                    let tipo = element.tipo;
+                                    datos_estructura.set(identificador,tipo);
+                                }
 
-                                    let va = datos_guardar.get(ide);
+                                for (let index = 0; index < type_guardar.valores.length; index++) { 
+                                    const element = type_guardar.valores[index];
+                                    let identificador = element.identificador;
+                                    let valo =element.valor?.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+                                    datos_guardar.set(identificador,valo);
+                                }
 
-                                    let tipo = datos_estructura.get(ide);
+                                // verifico que los los dos contengas los mismos ids
+                                if (datos_estructura.size == datos_guardar.size) {
+                                    datos_estructura.forEach(function(v, clave) {
+                                        if (!datos_guardar.has(clave) ) {
+                                            bandera = false;
+                                        }
+                                    });
+                                }else{ 
+                                    er.addError(new NodoError(TipoError.SEMANTICO,"Los valores a asignar no coinciden con los valores del type ", this.fila, this.columna,ambito));
+                                    return null;   
+                                }
 
-                                    if (va.tipo == tipo || va.tipo == Type.NULL) {
-                                        mi_type.set(ide,va.valor);
-                                    } else {// Error no son del mismo tipo
-                                        er.addError(new NodoError(TipoError.SEMANTICO,"El tipo declarado "+this.getTipoToString(va.tipo)+" no coincide con el tipo del valor "+this.getTipoToString(tipo), this.fila, this.columna));
-                                        return null;  
-                                    }
-                                }//Todo ok. guardo la variable
-                                ent.ChangeValue(this.identificador,new MiType(mi_type,datos_estructura));
-                            }else if(this.accesos.length != 0){
-                                let r:MiType = result.valor; 
-                              
-                                for (let index = 0; index < this.accesos.length; index++) {
-                                    const tempo = this.accesos[index];
-                                    if (tempo instanceof Id){
-                                        r = r.getValor(tempo.identificador);
+                                //Si bandera es true en este momento puedo guardar los valores
+                                
+                                if (bandera == true && this.accesos.length==0) { 
+                                    let mi_type:Map<String, any> = new Map();
+                                    for (let index = 0; index < type_estructura.variables.length; index++) {
+                                        const element = type_estructura.variables[index];
+                                        let ide = element.identificador;
+
+                                        let va = datos_guardar.get(ide);
+
+                                        let tipo = datos_estructura.get(ide);
+
+                                        if (va.tipo == tipo || va.tipo == Type.NULL) {
+                                            mi_type.set(ide,va.valor);
+                                        } else {// Error no son del mismo tipo
+                                            er.addError(new NodoError(TipoError.SEMANTICO,"El tipo declarado "+this.getTipoToString(va.tipo)+" no coincide con el tipo del valor "+this.getTipoToString(tipo), this.fila, this.columna,ambito));
+                                            return null;  
+                                        }
+                                    }//Todo ok. guardo la variable
+                                    ent.ChangeValue(this.identificador,new MiType(mi_type,datos_estructura));
+                                }else if(this.accesos.length != 0){
+                                    let r:MiType = result.valor; 
+                                
+                                    for (let index = 0; index < this.accesos.length; index++) {
+                                        const tempo = this.accesos[index];
+                                        if (tempo instanceof Id){
+                                            r = r.getValor(tempo.identificador);
+                                        }
                                     }
                                 }
                             }
-                        }catch(er){console.log("error aqui en asignacion")}
-                        }
+                        }else{// Estoy asignado solo un valor de type
+                          
+                            let type_estructura:TypeTS|null = ent.GetType(result.tipo);
+                            let datos_estructura:Map<String, any> = new Map();
+                            //Si el esqueleton del type exite puedo seguir
+                            if (type_estructura != null) {
+                                for (let index = 0; index < type_estructura.variables.length; index++) {
+                                    const element = type_estructura.variables[index];
+                                    let identificador = element.identificador;
+                                    let tipo = element.tipo;
+                                    datos_estructura.set(identificador,tipo);
+                                }
+
+                                let r = result.valor; 
+                                let t = result.tipo;
+                                for (let index = 0; index < this.accesos.length; index++) {
+                                    const tempo = this.accesos[index];
+                                    let tempo2:MiType = r;
+                                    if (tempo instanceof Id){
+                                        r = tempo2.getValor(tempo.identificador);
+                                        t = tempo2.getTipo(tempo.identificador);
+                                        if (datos_estructura.has(tempo.identificador)){
+                                            if(new_val.tipo == t){
+                                                tempo2.setValor(tempo.identificador,new_val.valor);
+                                            }else{
+                                                er.addError(new NodoError(TipoError.SEMANTICO,"La variable \""+tempo.identificador+"\" es de tipo "+this.getTipoToString(t)+" y el nuevo valor \""+new_val.valor+"\" es de tipo "+this.getTipoToString(new_val.tipo), this.fila, this.columna,ambito));
+                                                return null; 
+                                            }
+                                        }else{
+                                            er.addError(new NodoError(TipoError.SEMANTICO," \""+tempo.identificador+"\" no existe en el type "+type_estructura.identificador, this.fila, this.columna,ambito));
+                                            return null; 
+                                        }
+                                    }
+                                
+                                }
+                                /*
+                                // verifico que el id que quiero guarda exista en la estructura del type
+                                if (datos_estructura.size == datos_guardar.size) {
+                                    datos_estructura.forEach(function(v, clave) {
+                                        if (!datos_guardar.has(clave) ) {
+                                            bandera = false;
+                                        }
+                                    });
+                                }else{ 
+                                    er.addError(new NodoError(TipoError.SEMANTICO,"Los valores a asignar no coinciden con los valores del type ", this.fila, this.columna));
+                                    return null;   
+                                }
+
+                                //Si bandera es true en este momento puedo guardar los valores
+                                
+                                if (bandera == true && this.accesos.length==0) { 
+                                    let mi_type:Map<String, any> = new Map();
+                                    for (let index = 0; index < type_estructura.variables.length; index++) {
+                                        const element = type_estructura.variables[index];
+                                        let ide = element.identificador;
+
+                                        let va = datos_guardar.get(ide);
+
+                                        let tipo = datos_estructura.get(ide);
+
+                                        if (va.tipo == tipo || va.tipo == Type.NULL) {
+                                            mi_type.set(ide,va.valor);
+                                        } else {// Error no son del mismo tipo
+                                            er.addError(new NodoError(TipoError.SEMANTICO,"El tipo declarado "+this.getTipoToString(va.tipo)+" no coincide con el tipo del valor "+this.getTipoToString(tipo), this.fila, this.columna));
+                                            return null;  
+                                        }
+                                    }//Todo ok. guardo la variable
+                                    ent.ChangeValue(this.identificador,new MiType(mi_type,datos_estructura));
+                                }else if(this.accesos.length != 0){
+                                    let r:MiType = result.valor; 
+                                
+                                    for (let index = 0; index < this.accesos.length; index++) {
+                                        const tempo = this.accesos[index];
+                                        if (tempo instanceof Id){
+                                            r = r.getValor(tempo.identificador);
+                                        }
+                                    }
+                                }*/
+                            }
+                        
+                        }  //
                     }
                     
                 }else{
                     if (new_val.tipo == result.tipo) {
                         ent.ChangeValue(this.identificador,new_val.valor);
                     } else {
-                        er.addError(new NodoError(TipoError.SEMANTICO,"La variable \""+this.identificador+"\" es de tipo "+this.getTipoToString(result.tipo)+" y el nuevo valor \""+new_val.valor+"\" es de tipo "+this.getTipoToString(new_val.tipo), this.fila, this.columna));
+                        er.addError(new NodoError(TipoError.SEMANTICO,"La variable \""+this.identificador+"\" es de tipo "+this.getTipoToString(result.tipo)+" y el nuevo valor \""+new_val.valor+"\" es de tipo "+this.getTipoToString(new_val.tipo), this.fila, this.columna,ambito));
                         return null; 
                     }
                     
@@ -161,7 +243,7 @@ export class Asignacion extends Instruccion{
             }
             
         } else {
-            er.addError(new NodoError(TipoError.SEMANTICO,"La variable "+this.identificador+" no existe ", this.fila, this.columna));
+            er.addError(new NodoError(TipoError.SEMANTICO,"La variable "+this.identificador+" no existe ", this.fila, this.columna,ambito));
             return null; 
         }
        

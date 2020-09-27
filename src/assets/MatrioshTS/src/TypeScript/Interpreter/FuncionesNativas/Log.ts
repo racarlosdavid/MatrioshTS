@@ -32,61 +32,19 @@ export class Log extends Instruccion{
                 } else if (val.valor instanceof MiType) {
                     salida += val.valor.imprimirType();
                 } else {
-                    if (val.tipo == Type.STRING && val.valor.includes("${")) {
-                        let s = this.procesar(ent,val.valor);
-                        salida += s;
-                    }else{
-                        salida += val.valor;
-                    }
-                    
+                    salida += val.valor;
                 }
             }
         }
         if (salida!="") {
-            consola.append(" > "+salida+"\n");
+            consola.append(" > "+salida+"\n"); 
         }
-        
-        
-        
         return null;
-    }
-
-    procesar(ent:Entorno,cadena:string){
-        let id:string = "";
-        let variables = [];
-        let s:string = "";
-        let bandera:boolean = false;
-        let cont = 0;
-        for (let index = 0; index < cadena.length; index++) {
-                const element = cadena[index];
-                if (element == "$") {
-                    s += "$"+cont;
-                    cont++;
-                } else if (element == "{"){
-                    bandera = true;
-                } else if (element == "}"){
-                    bandera = false;
-                    variables.push(id);
-                    id = "";
-                }
-                if(bandera && element != "{"){
-                    id += element;
-                }
-                if(!bandera && element != "$" && element != "}"){
-                    s += element;
-                }
-        }
-        for (let index = 0; index < variables.length; index++) {
-            let element = ent.GetValue(variables[index]);
-            let valor = element?.valor;
-            s = s.replace("$"+index,valor);
-        }
-        return s;
     }
     
     getDot(builder: StringBuilder, parent: string, cont: number): number {
         let nodo:string = "nodo" + ++cont;
-        builder.append(nodo+" [label=\"Console.log\"];\n");
+        builder.append(nodo+" [label=\"Console.log\"];\n"); 
         builder.append(parent+" -> "+nodo+";\n");
         
         for (let index = 0; index < this.valor.length; index++) {
@@ -98,17 +56,17 @@ export class Log extends Instruccion{
         return cont;
     }
 
-    traducir(builder: StringBuilder, parent: string) {
+    traducir(builder: StringBuilder, parent: string) { 
         let salida = "";
         for (let index = 0; index < this.valor.length; index++) {
             const element = this.valor[index];
             salida += element.traducir(builder);
+            if (index < this.valor.length-1) {
+                salida +=","; 
+            }
             
         }
         return "console.log("+salida+");\n";
     }
    
-
-   
-
 }

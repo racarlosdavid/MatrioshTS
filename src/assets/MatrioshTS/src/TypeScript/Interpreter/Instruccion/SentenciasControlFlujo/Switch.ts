@@ -28,7 +28,6 @@ export class Switch extends Instruccion{
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let condicionBuscada = this.condicion.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
         var numeroCaso = -1;
-        var numeroDefault = -1;
         
         for (let index = 0; index < this._case.length; index++) {
             const casoActual = this._case[index];

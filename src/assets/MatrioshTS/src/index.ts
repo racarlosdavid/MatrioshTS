@@ -81,7 +81,7 @@ function interpretar() {
                 const tsCollector = new TSCollector();
                 const reporte_ts = new R_TS();
                 const ambito = "global";
-                const padre = "null";
+                const padre = "";
 
                 //Agrego los errores lexicos al colector de errores 
                 er.addLista(Manager.getManager().getColectorErrores());

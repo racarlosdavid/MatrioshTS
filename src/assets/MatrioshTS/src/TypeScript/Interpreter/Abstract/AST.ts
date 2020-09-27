@@ -77,7 +77,7 @@ export class AST {
                 if (ins instanceof Funcion) {
                     continue;
                 }if (ins instanceof Return){
-                    er.addError(new NodoError(TipoError.SEMANTICO,"Return fuera de funcion ", ins.fila, ins.columna));
+                    er.addError(new NodoError(TipoError.SEMANTICO,"Return fuera de funcion ", ins.fila, ins.columna,ambito));
                     continue;
                 }else{
                     ins.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);

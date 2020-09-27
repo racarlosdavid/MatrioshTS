@@ -8,7 +8,7 @@ class Ternario extends Expresion {
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let condicional = this.condicion.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
         if (condicional.tipo != Type.BOOLEAN) {
-            er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en el operador ternario", this.fila, this.columna));
+            er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba una condicional booleana en el operador ternario", this.fila, this.columna, ambito));
         }
         else {
             if (condicional.valor == true) {

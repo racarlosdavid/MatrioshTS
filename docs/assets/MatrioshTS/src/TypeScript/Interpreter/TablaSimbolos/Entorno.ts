@@ -6,6 +6,8 @@ import { Funcion } from "../Instruccion/Funcion";
 import { NTS } from "../Reportes/NTS";
 import { ArrayTS } from "../Edd/ArrayTS";
 import { TypeTS } from "../Edd/TypeTS";
+import { MiType } from "../Edd/MiType";
+import { Arreglo } from "../Edd/Arreglo";
 
 export class Entorno {
     
@@ -26,13 +28,15 @@ export class Entorno {
         }
     }
 
-    public  AddFunction(id:string, funcion:Funcion):void{
+    public  AddFunction(id:string, funcion:Funcion):boolean{
         //id = "$" + id.toLowerCase();
         id = "$" + id;
         if (!this.ts.has(id)){
             this.ts.set(id, funcion);
+            return true;
         }else{
             //("Ya existe la funcion: " + id);
+            return false;
         }
     }
 
@@ -140,29 +144,25 @@ export class Entorno {
         let tabla:Array<NTS>  = []; 
         if (this.ts.size != 0){
             this.ts.forEach(function(valor, clave) {
-                //console.log(clave + " = " + valor);
+                //console.log(clave + " = " + valor); 
                 let nombre = clave+"";
                 let tipo = "null";
                 let sim = valor;
                 let val = "";
                 if (sim instanceof Funcion) {
-                    let f:Funcion = sim;
                     tipo = "Funcion";
-                    
-                    
+                }else if (sim instanceof MiType) {
+                    tipo = "Type";
                 }else if(sim instanceof Simbolo){
-                    let simbol:Simbolo = sim;
-                    val = simbol.valor;
-                 
-                    //if (val instanceof ArrayTS) {
-                        //Arreglo ar = (Arreglo)val;
-                        //tipo = "Arreglo: "+ar.getTipo();
-                    //}else{
+                    if (sim.valor instanceof Arreglo) {
+                        tipo = "Arreglo: "+sim.getTipoToString();
+                        val = sim.valor.imprimirArreglo(); 
+                    }else{
                         tipo = sim.getTipoToString();
-                    //}
+                        val = sim.valor;
+                    }
                 
                 }
-                
                 //console.log(nombre, tipo, ambito, padre, descripcion)
                 tabla.push(new NTS(nombre, tipo, ambito, padre, val));
              

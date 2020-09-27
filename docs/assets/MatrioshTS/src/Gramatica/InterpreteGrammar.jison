@@ -38,6 +38,8 @@
 "continue"		        return 'pr_continue';
 
 "for"			        return 'pr_for';
+"in"			        return 'pr_in';
+"of"			        return 'pr_of';
 "while"			        return 'pr_while';
 "do"			        return 'pr_do';
 "return"		        return 'pr_return'; 
@@ -113,7 +115,7 @@
 ([a-zA-Z])[a-zA-Z0-9_]* return 'identificador';
 
 <<EOF>>				    return 'EOF'; 
-.					    { 	Manager.getManager().addError(new NodoError(TipoError.LEXICO, `El caracter ${yytext} no pertenece al lenguaje`, yylloc.first_line, yylloc.first_column));
+.					    { 	Manager.getManager().addError(new NodoError(TipoError.LEXICO, `El caracter ${yytext} no pertenece al lenguaje`, yylloc.first_line, yylloc.first_column,"global"));
 							//er.addError(new NodoError.NodoError(NodoError.TipoError.LEXICO, `El caracter ${yytext} no pertenece al lenguaje`, yylloc.first_line, yylloc.first_column, "this.archivo"));
     						//console.error('Este es un error léxico: ' + yytext + ', en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column); 
 						}
@@ -137,7 +139,6 @@
 	const {Bloque} = require('../TypeScript/Interpreter/Instruccion/Bloque');
 	const {Funcion} = require('../TypeScript/Interpreter/Instruccion/Funcion');
 	const {Llamada} = require('../TypeScript/Interpreter/Instruccion/Llamada');
-	//const {If_Old,TipoIf} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/If_Old');
 	const {If} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/If');
 	const {IfElse} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/IfElse');
 	const {Else} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Else');
@@ -236,10 +237,14 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
 	| INC				{ $$ = $1; } 
 	| DEC				{ $$ = $1; } 
 	| LLAMADA           { $$ = $1; } 
-	| error ptcoma {	Console.log(` Error Sintactico se recupero con ${yytext} en la posicion`,@1.last_line,@1.last_column); 
+	| error ptcoma {	Console.log(` Error Sintactico se recupero con ${yytext} en la posicion`,@1.last_line,@1.last_column,"global"); 
 					//Para reportar el error compilar el archivo jison y en el .js buscar -> if (!recovering) { y pegar el codigo hasta de ultimo de ese if
-					//Manager.getManager().addError(new NodoError(TipoError.SINTACTICO, `El caracter ${(this.terminals_[symbol] || symbol)} no se esperaba en esta posicion`, yyloc.last_line, yyloc.last_column));
+					//Manager.getManager().addError(new NodoError(TipoError.SINTACTICO, `El caracter ${(this.terminals_[symbol] || symbol)} no se esperaba en esta posicion`, yyloc.last_line, yyloc.last_column,"global"));
                 } ;
+
+//FOR_IN : pr_for parizq identificador:a pr_in E:b parder  BLOQUE:c   {: RESULT = new For(new Declaracion(a,aleft,aright+2),b,c,aleft,aright+2); :} ;
+
+//FOR_OF : pr_for parizq identificador:a pr_of E:b parder  BLOQUE:c   {: RESULT = new For(new Declaracion(a,aleft,aright+2),b,c,aleft,aright+2); :} ;
 
 
 TYPES : pr_type identificador igual llaveizq TYPE_L_PARAM llaveder ptcoma { $$ = new TypeTS($2,$5,@1.first_line,@1.first_column); } 
@@ -296,7 +301,7 @@ BREAK : pr_break ptcoma   { $$ = new Break(@1.first_line,@1.first_column); } ;
 
 CONTINUE : pr_continue ptcoma { $$ = new Continue(@1.first_line,@1.first_column); };
 
-CONSOLELOG : pr_consolelog parizq L_E parder ptcoma	{ $$ = new Log($3,@1.first_line,@1.first_column); } ;
+CONSOLELOG : pr_consolelog parizq L_E parder PTC { $$ = new Log($3,@1.first_line,@1.first_column); } ;
 
 /*
 FUNCION :  pr_function identificador parizq L_PARAMETROS parder dospuntos TIPO BLOQUE  { $$ = new Funcion($1,$2,$4,$6,@1.first_line,@1.first_column); } 

@@ -17,9 +17,11 @@ class Entorno {
         id = "$" + id;
         if (!this.ts.has(id)) {
             this.ts.set(id, funcion);
+            return true;
         }
         else {
             //("Ya existe la funcion: " + id);
+            return false;
         }
     }
     GetFuncion(id) {
@@ -115,24 +117,26 @@ class Entorno {
         let tabla = [];
         if (this.ts.size != 0) {
             this.ts.forEach(function (valor, clave) {
-                //console.log(clave + " = " + valor);
+                //console.log(clave + " = " + valor); 
                 let nombre = clave + "";
                 let tipo = "null";
                 let sim = valor;
                 let val = "";
                 if (sim instanceof Funcion) {
-                    let f = sim;
                     tipo = "Funcion";
                 }
+                else if (sim instanceof MiType) {
+                    tipo = "Type";
+                }
                 else if (sim instanceof Simbolo) {
-                    let simbol = sim;
-                    val = simbol.valor;
-                    //if (val instanceof ArrayTS) {
-                    //Arreglo ar = (Arreglo)val;
-                    //tipo = "Arreglo: "+ar.getTipo();
-                    //}else{
-                    tipo = sim.getTipoToString();
-                    //}
+                    if (sim.valor instanceof Arreglo) {
+                        tipo = "Arreglo: " + sim.getTipoToString();
+                        val = sim.valor.imprimirArreglo();
+                    }
+                    else {
+                        tipo = sim.getTipoToString();
+                        val = sim.valor;
+                    }
                 }
                 //console.log(nombre, tipo, ambito, padre, descripcion)
                 tabla.push(new NTS(nombre, tipo, ambito, padre, val));

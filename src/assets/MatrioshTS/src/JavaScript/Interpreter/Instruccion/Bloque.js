@@ -13,7 +13,7 @@ class Bloque extends Instruccion {
                 }
             }
             catch (error) {
-                er.addError(new NodoError(TipoError.SEMANTICO, "" + error + "", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO, "" + error + "", this.fila, this.columna, ambito));
             }
         }
         reporte_ts.addLista(nuevo.getReporte(ambito, padre));

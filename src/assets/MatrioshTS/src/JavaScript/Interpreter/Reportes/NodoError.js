@@ -1,9 +1,10 @@
 class NodoError {
-    constructor(tipo, descripcion, fila, columna) {
+    constructor(tipo, descripcion, fila, columna, ambito) {
         this.tipo = tipo;
         this.descripcion = descripcion;
         this.fila = fila;
         this.columna = columna;
+        this.ambito = ambito;
     }
     getTipo() {
         return this.tipo;
@@ -28,6 +29,12 @@ class NodoError {
     }
     setColumna(columna) {
         this.columna = this.columna;
+    }
+    getAmbito() {
+        return this.ambito;
+    }
+    setAmbito(ambito) {
+        this.ambito = ambito;
     }
     getTipoErrorToString() {
         switch (this.tipo) {

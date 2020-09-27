@@ -14,7 +14,7 @@ export class Else extends Instruccion{
     }
 
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
-        return this.instrucciones.ejecutar(ent,er,consola,tsCollector,reporte_ts,"local: else",padre);
+        return this.instrucciones.ejecutar(ent,er,consola,tsCollector,reporte_ts,"local: else",ambito);
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {

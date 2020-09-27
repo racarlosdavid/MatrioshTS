@@ -1,17 +1,32 @@
+let a = 43;
+let b = 24;
 
 
+let res = a+b;
 
-function padre_nieto(x:number):string {
-console.log("hola_mundo");
-return "hola";
+console.log("la suma de a + b "+res);
+g()
+
+function  g(){
+    let numero1 = 0;
+    do{
+    switch(numero1){
+        case 0:
+            let a = 4;
+            let b = 5;
+            let c = 43;
+            graficar_ts()
+            break;
+        case 1:
+            
+            break;
+        case 2:
+           
+            break;
+        default:
+            console.log("Esto se va a console.log 2 veces :3");
+            
+    }
+    numero1 = numero1 + 1;
+    }while(numero1 <5);
 }
-function abuelo_padre(x:number,y:number):string {
-console.log(padre_nieto(5));
-return 4 > 8 ? "hola" : "mundo";
-}
-function abuelo(x:number,y:number):boolean {
-abuelo_padre(x,y);
-return 5 > 4;
-}
-
-console.log(abuelo(7,9));

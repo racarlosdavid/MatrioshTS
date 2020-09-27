@@ -23,13 +23,13 @@ export class Id extends Expresion{
             if(obj!=null){ 
                 //Primero compruebo que la variable tenga un valor sino hay que reportar error de acceso a variable sin haber asignado un valor
                 if (obj.valor == "umdefined") { 
-                    er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable "+this.identificador+" sin haber asignado un valor", this.fila, this.columna));
+                    er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable "+this.identificador+" sin haber asignado un valor", this.fila, this.columna,ambito));
                     return "null";  
                 } else { 
                      return new Retorno(obj.valor,obj.tipo);
                 }
             }else{
-                er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable \""+this.identificador+"\" si no ha sido declarada", this.fila, this.columna));
+                er.addError(new NodoError(TipoError.SEMANTICO,"No se puede usar la variable \""+this.identificador+"\" si no ha sido declarada", this.fila, this.columna,ambito));
                 return "null";  
             }
     }

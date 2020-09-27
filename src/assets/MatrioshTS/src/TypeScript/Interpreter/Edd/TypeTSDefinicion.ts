@@ -28,7 +28,25 @@ export class TypeTSDefinicion extends Expresion{
     }
 
     traducir(builder: StringBuilder) {
-        console.log("Method not implemented. TYPETS DEFINITION");
+        let tempo = new StringBuilder (); 
+        // Traduccion de los parametros
+        let v = new StringBuilder();
+        if (this.valores.length == 0) {
+            tempo.append("{ }");
+        } else {
+            tempo.append("{");
+            for (let index = 0; index < this.valores.length; index++) {
+                let element = this.valores[index];
+                v.append(element.traducir(builder,""));
+                if (index != this.valores.length-1) {
+                    v.append(",");
+                }
+            }
+            tempo.append(v.toString());
+            tempo.append("}\n");
+        }
+       // Fin 
+       return tempo.toString();
     } 
 
     

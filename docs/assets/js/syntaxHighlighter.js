@@ -4,7 +4,7 @@ CodeMirror.defineSimpleMode("modo", {
       {regex: /"(?:[^\\]|\\.)*?(?:"|$)/, token: "string"},
       {regex: /'(?:[^\\]|\\.)*?(?:'|$)/, token: "string"},
   
-      {regex: /(?:null|number|string|boolean|console|log|let|const|true|false|if|else|switch|case|default|break|continue|return|void|for|while|do|function)\b/gi,token: "keyword"},      
+      {regex: /(?:null|number|string|boolean|console|log|let|const|true|false|if|else|switch|case|default|break|continue|return|void|for|while|do|function|in|of)\b/gi,token: "keyword"},      
 
       {regex: /true|false|nil|undefined/gi, token: "atom"},
     

@@ -147,6 +147,8 @@
 	const {Declaracion,TipoDeclaracion} = require('../TypeScript/Interpreter/Instruccion/Declaracion');
 	const {Asignacion} = require('../TypeScript/Interpreter/Instruccion/Asignacion');
 	const {For} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/For');
+	const {ForIn} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/ForIn');
+	const {ForOf} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/ForOf');
 
 	const {Switch} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Switch');
 	const {Case} = require('../TypeScript/Interpreter/Instruccion/SentenciasControlFlujo/Case');
@@ -228,6 +230,8 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
 	| IF 				{ $$ = $1; } 
 	| TYPES 			{ $$ = $1; }
 	| FOR  				{ $$ = $1; }
+	| FOR_IN			{ $$ = $1; }
+	| FOR_OF			{ $$ = $1; }
 	| WHILE 			{ $$ = $1; } 
 	| DOWHILE 			{ $$ = $1; } 
 	| SWITCH 			{ $$ = $1; } 
@@ -241,11 +245,6 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
 					//Para reportar el error compilar el archivo jison y en el .js buscar -> if (!recovering) { y pegar el codigo hasta de ultimo de ese if
 					//Manager.getManager().addError(new NodoError(TipoError.SINTACTICO, `El caracter ${(this.terminals_[symbol] || symbol)} no se esperaba en esta posicion`, yyloc.last_line, yyloc.last_column,"global"));
                 } ;
-
-//FOR_IN : pr_for parizq identificador:a pr_in E:b parder  BLOQUE:c   {: RESULT = new For(new Declaracion(a,aleft,aright+2),b,c,aleft,aright+2); :} ;
-
-//FOR_OF : pr_for parizq identificador:a pr_of E:b parder  BLOQUE:c   {: RESULT = new For(new Declaracion(a,aleft,aright+2),b,c,aleft,aright+2); :} ;
-
 
 TYPES : pr_type identificador igual llaveizq TYPE_L_PARAM llaveder ptcoma { $$ = new TypeTS($2,$5,@1.first_line,@1.first_column); } 
 	| pr_type identificador igual llaveizq TYPE_L_PARAM llaveder  { $$ = new TypeTS($2,$5,@1.first_line,@1.first_column); } ;
@@ -265,6 +264,13 @@ IF : pr_if parizq E parder BLOQUE	{ $$ = new If($3,$5,@1.first_line,@1.first_col
 
 ELSE : pr_else BLOQUE { $$ = new Else($2,@1.first_line,@1.first_column); }
     | pr_else IF { $$ = $2; } ;
+
+FOR_IN : pr_for parizq pr_let identificador pr_in E parder  BLOQUE  { $$ = new ForIn(TipoDeclaracion.LET,$4,$6,$8,@1.first_line,@1.first_column); }
+	| pr_for parizq pr_const identificador pr_in E parder  BLOQUE   { $$ = new ForIn(TipoDeclaracion.CONST,$4,$6,$8,@1.first_line,@1.first_column); } ; 
+
+FOR_OF: pr_for parizq pr_let identificador pr_of E parder  BLOQUE   { $$ = new ForOf(TipoDeclaracion.LET,$4,$6,$8,@1.first_line,@1.first_column); } 
+	| pr_for parizq pr_const identificador pr_of E parder  BLOQUE   { $$ = new ForOf(TipoDeclaracion.CONST,$4,$6,$8,@1.first_line,@1.first_column); } ;
+
 
 FOR : pr_for parizq FOR_D E ptcoma FOR_A parder BLOQUE { $$ = new For($3,$4,$6,$8,@1.first_line,@1.first_column); } ;
 

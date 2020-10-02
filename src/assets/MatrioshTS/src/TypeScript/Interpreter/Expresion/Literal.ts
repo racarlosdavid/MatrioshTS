@@ -6,6 +6,7 @@ import { Type } from "../TablaSimbolos/Tipo";
 import { Retorno } from "../Abstract/Retorno";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { R_TS } from "../Reportes/R_TS";
+const parser2 = require('../../../Gramatica/Auxiliar');
 
 export class Literal extends Expresion{
     valor:any;
@@ -21,7 +22,7 @@ export class Literal extends Expresion{
     
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         if (this.tipoString == TipoString.STRING3) {
-            let s = this.procesar(ent,this.valor);
+            let s = this.procesar(ent,er,consola,tsCollector,reporte_ts,ambito,padre,this.valor);
             return new Retorno(s,this.tipo);
         }else{
             return new Retorno(this.valor,this.tipo);
@@ -47,7 +48,7 @@ export class Literal extends Expresion{
         return this.valor.toString();
     }
 
-    procesar(ent:Entorno,cadena:string){
+    procesar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string,cadena:string){
         let id:string = "";
         let variables = [];
         let s:string = "";
@@ -72,10 +73,11 @@ export class Literal extends Expresion{
                     s += element;
                 }
         }
+        
         for (let index = 0; index < variables.length; index++) {
-            let element = ent.GetValue(variables[index]);
-            let valor = element?.valor;
-            s = s.replace("$"+index,valor);
+            let exp:Expresion = parser2.parse(variables[index]);
+            let valor = exp.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre)
+            s = s.replace("$"+index,valor.valor);
         }
         return s;
     }

@@ -8,7 +8,7 @@
 /bazel-out
 
 # Mis archivos a ignorar
-/src/assets/MatrioshTS/node_modules
+src/assets/MatrioshTS/node_modules
 
 # dependencies
 /node_modules

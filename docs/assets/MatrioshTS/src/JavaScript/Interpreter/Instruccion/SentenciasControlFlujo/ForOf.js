@@ -32,6 +32,32 @@ class ForOf extends Instruccion {
                 }
             }
         }
+        else if (typeof vari.valor == "string") {
+            for (let index = 0; index < vari.valor.length; index++) {
+                if (index == 0) {
+                    nuevo.Add(this.variable, vari.valor.charAt(index), vari.tipo, 0, this.tipoDeclaracion);
+                }
+                else {
+                    nuevo.ChangeValue(this.variable, vari.valor.charAt(index));
+                }
+                let r = this.instrucciones.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, "Local: ForOf", ambito);
+                if (r != null || r != undefined) {
+                    if (r instanceof Break) {
+                        break;
+                    }
+                    else if (r instanceof Continue) {
+                        continue;
+                    }
+                    else {
+                        return r;
+                    }
+                }
+            }
+        }
+        else {
+            er.addError(new NodoError(TipoError.SEMANTICO, "La variable " + this.variable + " no es de tipo arreglo ni tipo string", this.fila, this.columna, ambito));
+            return null;
+        }
         reporte_ts.addLista(nuevo.getReporte("Local: ForOf", padre));
         return null;
     }

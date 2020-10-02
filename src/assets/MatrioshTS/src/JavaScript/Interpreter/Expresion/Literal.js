@@ -7,7 +7,7 @@ class Literal extends Expresion {
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         if (this.tipoString == TipoString.STRING3) {
-            let s = this.procesar(ent, this.valor);
+            let s = this.procesar(ent, er, consola, tsCollector, reporte_ts, ambito, padre, this.valor);
             return new Retorno(s, this.tipo);
         }
         else {
@@ -32,7 +32,7 @@ class Literal extends Expresion {
         }
         return this.valor.toString();
     }
-    procesar(ent, cadena) {
+    procesar(ent, er, consola, tsCollector, reporte_ts, ambito, padre, cadena) {
         let id = "";
         let variables = [];
         let s = "";
@@ -60,9 +60,9 @@ class Literal extends Expresion {
             }
         }
         for (let index = 0; index < variables.length; index++) {
-            let element = ent.GetValue(variables[index]);
-            let valor = element === null || element === void 0 ? void 0 : element.valor;
-            s = s.replace("$" + index, valor);
+            let exp = Auxiliar.parse(variables[index]);
+            let val = exp.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+            s = s.replace("$" + index, val.valor);
         }
         return s;
     }

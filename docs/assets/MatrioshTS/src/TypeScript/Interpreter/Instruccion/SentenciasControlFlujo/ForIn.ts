@@ -4,8 +4,10 @@ import { Arreglo } from "../../Edd/Arreglo";
 import { MiType } from "../../Edd/MiType";
 import { StringBuilder } from "../../Edd/StringBuilder";
 import { ErrorManager } from "../../Reportes/ErrorManager";
+import { NodoError, TipoError } from "../../Reportes/NodoError";
 import { R_TS } from "../../Reportes/R_TS";
 import { Entorno } from "../../TablaSimbolos/Entorno";
+import { Type } from "../../TablaSimbolos/Tipo";
 import { TSCollector } from "../../TablaSimbolos/TSCollector";
 import { TipoDeclaracion } from "../Declaracion";
 import { Break } from "../SentenciasTransferencia/Break";
@@ -30,12 +32,32 @@ import { Continue } from "../SentenciasTransferencia/Continue";
         let nuevo = new Entorno(ent);
         let vari = this.expresion.ejecutar(ent,er,consola,tsCollector,reporte_ts,"Local: ForIn",ambito);
       
-        if (vari.valor instanceof MiType) {     
+        if (vari.valor instanceof Arreglo) { 
+            for (let index = 0; index < vari.valor.getTamaño(); index++) {
+                const element = vari.valor.getValor(index);
+                if (index==0) {
+                    nuevo.Add(this.variable,index,Type.NUMBER,0,this.tipoDeclaracion); 
+                }else{
+                    nuevo.ChangeValue(this.variable,index);
+                }
+                let r = this.instrucciones.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,"Local: ForOf",ambito);
+                if(r != null || r != undefined){
+                    if(r instanceof Break){
+                        break;
+                    }else if(r instanceof Continue){
+                        continue;
+                    }else{
+                        return r;
+                    }
+                }
+            }    
+            
+        }else if (vari.valor instanceof MiType) {     
 
             let datos_estructura:Map<String, any> = vari.valor.getValores();
             let claves:any[] = [];
             datos_estructura.forEach(function(v, clave) {
-                claves.push(v);
+                claves.push(clave);
             });
 
             
@@ -60,6 +82,9 @@ import { Continue } from "../SentenciasTransferencia/Continue";
                 
 
             }
+        }else{
+            er.addError(new NodoError(TipoError.SEMANTICO, "La variable "+this.variable+" no es un type o de tipo arreglo", this.fila, this.columna,ambito));
+            return null;
         }
         reporte_ts.addLista(nuevo.getReporte("Local: ForIn",padre));
         return null;

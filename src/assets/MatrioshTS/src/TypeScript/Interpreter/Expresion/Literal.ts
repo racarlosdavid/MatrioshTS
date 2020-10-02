@@ -6,7 +6,8 @@ import { Type } from "../TablaSimbolos/Tipo";
 import { Retorno } from "../Abstract/Retorno";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { R_TS } from "../Reportes/R_TS";
-const parser2 = require('../../../Gramatica/Auxiliar');
+import { NodoError, TipoError } from "../Reportes/NodoError";
+const Auxiliar = require('../../../Gramatica/Auxiliar');
 
 export class Literal extends Expresion{
     valor:any;
@@ -75,9 +76,14 @@ export class Literal extends Expresion{
         }
         
         for (let index = 0; index < variables.length; index++) {
-            let exp:Expresion = parser2.parse(variables[index]);
-            let valor = exp.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre)
-            s = s.replace("$"+index,valor.valor);
+            let exp:Expresion = Auxiliar.parse(variables[index]);
+            try {
+                let val = exp.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+                s = s.replace("$"+index,val.valor);
+            } catch (error) {
+                er.addError(new NodoError(TipoError.SEMANTICO,"No fue posible calcular el valor de ${ } ", this.fila, this.columna,ambito));
+                s = s.replace("$"+index,"");
+            }
         }
         return s;
     }

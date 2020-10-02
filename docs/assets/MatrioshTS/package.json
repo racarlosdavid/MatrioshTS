@@ -8,7 +8,8 @@
     "tsc": "tsc",
     "dev": "nodemon",
     "build": "node ./build/",
-    "magia": "jison ./src/Gramatica/InterpreteGrammar.jison && mv InterpreteGrammar.js ./src/Gramatica/  && nodemon"
+    "gramaticas": "jison ./src/Gramatica/InterpreteGrammar.jison && mv InterpreteGrammar.js ./src/Gramatica/  && jison ./src/Gramatica/Auxiliar.jison && mv Auxiliar.js ./src/Gramatica/  ",
+    "magia": "nodemon"
   },
   "keywords": [],
   "author": "",

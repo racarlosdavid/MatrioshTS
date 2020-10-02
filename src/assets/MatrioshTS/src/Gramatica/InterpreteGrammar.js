@@ -703,9 +703,7 @@ _handle_error:
 	const {Return} = require('../TypeScript/Interpreter/Instruccion/SentenciasTransferencia/Return');
 	const {Break} = require('../TypeScript/Interpreter/Instruccion/SentenciasTransferencia/Break');
 	const {Continue} = require('../TypeScript/Interpreter/Instruccion/SentenciasTransferencia/Continue');
-
     */
-
 	//Manager.Manager.getManager().reiniciar(); 
 	//Manager.Manager.getManager().agregarC3D("hola mundo");
 	//const ErrorManager = require('../JavaScript/Reportes/ErrorManager');

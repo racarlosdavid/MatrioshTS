@@ -22,9 +22,6 @@ export class Dimension extends Expresion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        let nodoId:string = "nodo" + ++cont;
-        builder.append(nodoId+" [label=\""+this.expresion+"\"];\n");
-        builder.append(parent+" -> "+nodoId+"[color=\"red:black;0.50:red\"];\n");
         return cont;
     }
 

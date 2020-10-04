@@ -10,8 +10,8 @@ import { TSCollector } from "../TablaSimbolos/TSCollector";
 
 export class Graficar_ts extends Funcion{
 
-    constructor(identificador:string, padre:string|null, parametros:Array<Declaracion>, tipoRetorno:Type|string|null, instrucciones:Array<Instruccion>, fila:number, columna:number){
-        super(identificador,padre,parametros,tipoRetorno,instrucciones,fila,columna);
+    constructor(identificador:string, padre:string|null, parametros:Array<Declaracion>, tipoRetorno:Type|string|null, dimensiones:number,instrucciones:Array<Instruccion>, fila:number, columna:number){
+        super(identificador,padre,parametros,tipoRetorno,dimensiones,instrucciones,fila,columna);
     }
 
     ejecutar(ent: Entorno, er: ErrorManager, consola: StringBuilder, tsCollector: TSCollector, reporte_ts: R_TS, ambito: string, padre: string) {

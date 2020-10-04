@@ -1,5 +1,7 @@
+
 import { Expresion } from "../Abstract/Expresion";
 import { Instruccion } from "../Abstract/Instruccion";
+import { Arreglo } from "../Edd/Arreglo";
 import { StringBuilder } from "../Edd/StringBuilder";
 import { Graficar_ts } from "../FuncionesNativas/Graficar_ts";
 import { Pop } from "../FuncionesNativas/Pop";
@@ -47,7 +49,9 @@ export class Llamada extends Instruccion {
                 for (let index = 0; index < this.argumentos.length; index++) {
                     const param:Declaracion = funcion.parametros[index];
                     let v = this.argumentos[index].ejecutar(ent,er,consola,tsCollector,reporte_ts,this.identificador,padre);
-                    if (v.tipo != param.tipo && !(this.identificador == "pop" || this.identificador == "push")) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
+                    if (param.tipo == Type.ARRAY || v.tipo == Type.ARRAY || param.dimensiones!=0) {
+                        
+                    }else if (v.tipo != param.tipo ) { //Si tipo del valor del parametro es igual al tipo de la variable de la funcion todo ok.
                         er.addError(new NodoError(TipoError.SEMANTICO,"El tipo del parametro "+v.tipo+" no coinciden con el tipo "+param.tipo+" de la funcion", this.fila, this.columna,this.identificador));
                         return null; 
                     }
@@ -83,6 +87,8 @@ export class Llamada extends Instruccion {
                             return null;
                         }else if(result instanceof Break){
                             er.addError(new NodoError(TipoError.SEMANTICO,"Break fuera de ciclo ", this.fila, this.columna,this.identificador));
+                        }else if(result.tipo == Type.ARRAY || funcion.dimensiones!=0){
+                            return result;
                         }else if ((result.tipo == funcion.tipoRetorno && funcion.tipoRetorno != Type.VOID) || funcion.tipoRetorno == null ) {
                             return result;
                         }else { 

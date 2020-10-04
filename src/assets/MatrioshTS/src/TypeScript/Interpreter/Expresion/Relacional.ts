@@ -7,6 +7,8 @@ import { NodoError, TipoError } from "../Reportes/NodoError";
 import { Retorno } from "../Abstract/Retorno";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { R_TS } from "../Reportes/R_TS";
+import { Arreglo } from "../Edd/Arreglo";
+import { MiType } from "../Edd/MiType";
 
 export class Relacional extends Expresion{
     tipoOperacion:TipoOperacionRelacional;
@@ -60,6 +62,13 @@ export class Relacional extends Expresion{
             let alfa = left.valor == "null"?null:left.valor;
             return new Retorno((alfa == right.valor),Type.BOOLEAN);
         }
+        else if(left.valor instanceof Arreglo || right.valor instanceof Arreglo ){ 
+            return new Retorno((left.valor == right.valor),Type.BOOLEAN);
+        }
+        else if(left.valor instanceof MiType || right.valor instanceof MiType ){ 
+            return new Retorno((left.valor == right.valor),Type.BOOLEAN);
+        }
+        console.log(left.valor + " estoy comparando "+right.valor);
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la comparacion == entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo), this.fila, this.columna,padre));
         return null;
     }
@@ -81,6 +90,12 @@ export class Relacional extends Expresion{
         else if((typeof left.valor === "string" || typeof left.valor === "number")  && right.tipo == this.getTipoToString(left.tipo) ){ 
             let alfa = left.valor == "null"?null:left.valor;
             return new Retorno((alfa != right.valor),Type.BOOLEAN);
+        }
+        else if(left.valor instanceof Arreglo || right.valor instanceof Arreglo ){ 
+            return new Retorno((left.valor != right.valor),Type.BOOLEAN);
+        }
+        else if(left.valor instanceof MiType || right.valor instanceof MiType ){ 
+            return new Retorno((left.valor != right.valor),Type.BOOLEAN);
         }
         er.addError(new NodoError(TipoError.SEMANTICO,"No es posible la comparacion != entre "+this.getTipoToString(left.tipo)+" y "+this.getTipoToString(right.tipo), this.fila, this.columna, padre));
         return null;

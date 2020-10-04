@@ -1,11 +1,8 @@
+import { Expresion } from "../Abstract/Expresion";
 import { Instruccion } from "../Abstract/Instruccion";
-import { Retorno } from "../Abstract/Retorno";
 import { Arreglo } from "../Edd/Arreglo";
-import { MiType } from "../Edd/MiType";
 import { StringBuilder } from "../Edd/StringBuilder";
-import { Declaracion } from "../Instruccion/Declaracion";
-import { Funcion } from "../Instruccion/Funcion";
-import { Else } from "../Instruccion/SentenciasControlFlujo/Else";
+import { Acceso } from "../Expresion/Acceso";
 import { ErrorManager } from "../Reportes/ErrorManager";
 import { NodoError, TipoError } from "../Reportes/NodoError";
 import { R_TS } from "../Reportes/R_TS";
@@ -14,21 +11,26 @@ import { Simbolo } from "../TablaSimbolos/Simbolo";
 import { Type } from "../TablaSimbolos/Tipo";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 
-export class Push extends Funcion{
+export class Push extends Instruccion{
+    identificador:string;
+    valor:Expresion;
 
-    constructor(identificador:string, padre:string|null, parametros:Array<Declaracion>, tipoRetorno:Type|string|null, instrucciones:Array<Instruccion>, fila:number, columna:number){
-        super(identificador,padre,parametros,tipoRetorno,instrucciones,fila,columna);
+    constructor(identificador:string, valor:Expresion, fila:number, columna:number){
+        super(fila,columna);
+        this.identificador = identificador;
+        this.valor = valor; 
     }
 
     ejecutar(ent: Entorno, er: ErrorManager, consola: StringBuilder, tsCollector: TSCollector, reporte_ts: R_TS, ambito: string, padre: string) {
- 
-        let val:Simbolo|null = ent.GetValue("Nativa_Push_Arg1");
-        let id:Simbolo|null = ent.GetValue("Nativa_Push_Arg2");
-        if (id !=null) { 
-            let r:Simbolo|null = ent.GetValue(id.valor);
+        let r:Simbolo|null = ent.GetValue(this.identificador); 
             if (r!=null && r.valor instanceof Arreglo) { 
+                
+                let val = this.valor.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
+                if (r.valor.getTamaño() == 0) {
+                    r.valor.setTipo(val.tipo);
+                }
                 if (val !=null) {
-                    if ((r.tipo == val.tipo || val.valor instanceof Arreglo) && r.valor != null) {
+                    if ((r.tipo == val.tipo || val.valor instanceof Arreglo || r.tipo == Type.ARRAY) && r.valor != null) {
                         r.valor.Add(val.valor);
                     }else{
                         er.addError(new NodoError(TipoError.SEMANTICO,"El tipo del arreglo "+this.getTipoToString(r.tipo)+" no coinciden con el tipo "+this.getTipoToString(val.tipo)+" del valor que se quiere agregar", this.fila, this.columna,padre));
@@ -36,20 +38,22 @@ export class Push extends Funcion{
                     }
                 }
             }else {
-                er.addError(new NodoError(TipoError.SEMANTICO,"El arreglo "+id.valor+" no se ha inicializado", this.fila, this.columna,padre));
+                er.addError(new NodoError(TipoError.SEMANTICO,"El arreglo "+this.identificador+" no se ha inicializado", this.fila, this.columna,padre));
             }
-        }
-        return null;
     }
-
-    
-
     getDot(builder: StringBuilder, parent: string, cont: number): number {
+        //console.log("Method not implemented. PUSH 2");
         return cont;
     }
 
     traducir(builder: StringBuilder, parent: string) {
-        return "";
+        let tempo = new StringBuilder (); 
+        tempo.append(this.identificador+".push(");
+        tempo.append(this.valor.traducir(builder));
+        tempo.append(")");
+        return tempo.toString();
     }
+  
+    
 
 }

@@ -12,6 +12,8 @@ import { TSCollector } from "../TablaSimbolos/TSCollector";
 import { R_TS } from "../Reportes/R_TS";
 import { MiType } from "../Edd/MiType";
 import { Id } from "./Id";
+import { Llamada } from "../Instruccion/Llamada";
+import { Dimension } from "./Dimension";
 
 export class Acceso extends Expresion{
   
@@ -106,10 +108,22 @@ export class Acceso extends Expresion{
         let v = new StringBuilder();
             for (let index = 0; index < this.accesos.length; index++) {
                 let element = this.accesos[index];
-                if (index < this.accesos.length) {
-                    v.append(".");
+                
+                if (element instanceof Dimension) {
+                    v.append("[");
+                    v.append(element.traducir(builder));
+                    v.append("]");
+                }else if (element instanceof Id) {
+                    if (index < this.accesos.length) {
+                        v.append(".");
+                    }
+                    v.append(element.traducir(builder));
+                }else if(element instanceof Llamada){
+                    if (index < this.accesos.length) {
+                        v.append(".");
+                    }
+                    v.append(element.traducir(builder));
                 }
-                v.append(element.traducir(builder));
                 
             }
             tempo.append(v.toString());

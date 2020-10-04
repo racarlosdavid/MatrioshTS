@@ -9,55 +9,72 @@ class Asignacion extends Instruccion {
         var _a;
         let result = ent.GetValue(this.identificador);
         if (result != null) {
-            if (result.tipodeclaracion == TipoDeclaracion.CONST && !(result.valor instanceof Arreglo)) {
+            let bandera_es_arreglo_const = result.valor instanceof Arreglo ? true : false;
+            let bandera_es_type_const = result.valor instanceof MiType ? true : false;
+            if (result.tipodeclaracion == TipoDeclaracion.CONST && !bandera_es_arreglo_const && !bandera_es_type_const) {
                 er.addError(new NodoError(TipoError.SEMANTICO, "Asignacion no permitida la variable " + this.identificador + " es const ", this.fila, this.columna, ambito));
                 return null;
             }
             else {
                 let new_val = this.valor.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 if (result.valor instanceof Arreglo) {
-                    if (new_val.valor == undefined) {
-                        er.addError(new NodoError(TipoError.SEMANTICO, "No se puede asignar un undefined al arreglo, se va a sustituir por 0 para que no se quede trabado", this.fila, this.columna, ambito));
-                        if (result.tipo == Type.NUMBER) { //Si es un arreglo de number intento recuperarme asignadole 0 al undefined
-                            new_val.valor = 0;
-                            new_val.tipo = Type.NUMBER;
-                        }
-                        if (result.tipo == Type.STRING) { //Si es un arreglo de number intento recuperarme asignadole "" al undefined
-                            new_val.valor = "";
-                            new_val.tipo = Type.STRING;
-                        }
-                    }
-                    let r = result.valor;
-                    let pos = null;
-                    for (let index = 0; index < this.accesos.length; index++) {
-                        const tempo = this.accesos[index].ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
-                        pos = tempo.valor;
-                        if (tempo.tipo == Type.NUMBER) {
-                            if (index < this.accesos.length - 1) {
-                                r = r.getValor(pos);
-                            }
+                    if (this.accesos.length == 0 && result.tipodeclaracion == TipoDeclaracion.LET) { //Estoy asignado todo el type
+                        if (new_val.tipo == result.tipo) {
+                            ent.ChangeValue(this.identificador, new_val.valor);
                         }
                         else {
-                            er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba un valor de tipo number ", this.fila, this.columna, ambito));
+                            er.addError(new NodoError(TipoError.SEMANTICO, "La variable \"" + this.identificador + "\" es de tipo " + this.getTipoToString(result.tipo) + " y el nuevo valor \"" + new_val.valor + "\" es de tipo " + this.getTipoToString(new_val.tipo), this.fila, this.columna, ambito));
                             return null;
                         }
                     }
-                    if (new_val.tipo == r.tipo || new_val.tipo == Type.ARRAY || r.tipo == Type.ARRAY) {
-                        if (pos != null) {
-                            r.setValor(pos, new_val.valor);
-                        }
-                        else {
-                            r.setValores(new_val.valor.valores);
-                        }
+                    else if (this.accesos.length == 0 && result.tipodeclaracion == TipoDeclaracion.CONST) { //Estoy asignado todo el type
+                        er.addError(new NodoError(TipoError.SEMANTICO, "La variable \"" + this.identificador + "\" es const por lo que no puede asignarse " + this.getTipoToString(new_val.tipo), this.fila, this.columna, ambito));
+                        return null;
                     }
                     else {
-                        er.addError(new NodoError(TipoError.SEMANTICO, "La variable \"" + this.identificador + "\" es de tipo " + this.getTipoToString(r.tipo) + " y el nuevo valor \"" + new_val.valor + "\" es de tipo " + this.getTipoToString(new_val.tipo), this.fila, this.columna, ambito));
-                        return null;
+                        if (new_val.valor == undefined) {
+                            er.addError(new NodoError(TipoError.SEMANTICO, "No se puede asignar un undefined al arreglo, se va a sustituir por 0 para que no se quede trabado", this.fila, this.columna, ambito));
+                            if (result.tipo == Type.NUMBER) { //Si es un arreglo de number intento recuperarme asignadole 0 al undefined
+                                new_val.valor = 0;
+                                new_val.tipo = Type.NUMBER;
+                            }
+                            if (result.tipo == Type.STRING) { //Si es un arreglo de number intento recuperarme asignadole "" al undefined
+                                new_val.valor = "";
+                                new_val.tipo = Type.STRING;
+                            }
+                        }
+                        let r = result.valor;
+                        let pos = null;
+                        for (let index = 0; index < this.accesos.length; index++) {
+                            const tempo = this.accesos[index].ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+                            pos = tempo.valor;
+                            if (tempo.tipo == Type.NUMBER) {
+                                if (index < this.accesos.length - 1) {
+                                    r = r.getValor(pos);
+                                }
+                            }
+                            else {
+                                er.addError(new NodoError(TipoError.SEMANTICO, "Se esperaba un valor de tipo number ", this.fila, this.columna, ambito));
+                                return null;
+                            }
+                        }
+                        if (new_val.tipo == r.tipo || new_val.tipo == Type.ARRAY || r.tipo == Type.ARRAY) {
+                            if (pos != null) {
+                                r.setValor(pos, new_val.valor);
+                            }
+                            else {
+                                r.setValores(new_val.valor.valores);
+                            }
+                        }
+                        else {
+                            er.addError(new NodoError(TipoError.SEMANTICO, "La variable \"" + this.identificador + "\" es de tipo " + this.getTipoToString(r.tipo) + " y el nuevo valor \"" + new_val.valor + "\" es de tipo " + this.getTipoToString(new_val.tipo), this.fila, this.columna, ambito));
+                            return null;
+                        }
                     }
                 }
                 else if (result.valor instanceof MiType || new_val.valor instanceof TypeTSDefinicion) {
                     if (typeof result.tipo == "string") {
-                        if (this.accesos.length == 0) { //Estoy asignado todo el type
+                        if (this.accesos.length == 0 && result.tipodeclaracion != TipoDeclaracion.CONST) { //Estoy asignado todo el type
                             let bandera = true;
                             let type_estructura = ent.GetType(result.tipo);
                             let type_guardar = new_val.valor;

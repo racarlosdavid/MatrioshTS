@@ -691,7 +691,7 @@ _handle_error:
 }};
 
 	
-	
+	/*
 	const {AST} = require('../TypeScript/Interpreter/Abstract/AST');
 
 	const {Acceso,TipoAcceso} = require('../TypeScript/Interpreter/Expresion/Acceso');
@@ -741,11 +741,6 @@ _handle_error:
 	const {Break} = require('../TypeScript/Interpreter/Instruccion/SentenciasTransferencia/Break');
 	const {Continue} = require('../TypeScript/Interpreter/Instruccion/SentenciasTransferencia/Continue');
 
-    /*	
-	const LlamadaE = require('../JavaScript/Expresion/LlamadaE');
-	const Acceso = require('../JavaScript/Expresion/Acceso');
-	
-	const LlamadaI = require('../JavaScript/Instruccion/LlamadaI');
     */
 
 	//Manager.Manager.getManager().reiniciar(); 

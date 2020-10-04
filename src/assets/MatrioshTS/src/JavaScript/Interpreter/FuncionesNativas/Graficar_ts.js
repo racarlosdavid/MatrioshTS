@@ -1,6 +1,6 @@
 class Graficar_ts extends Funcion {
-    constructor(identificador, padre, parametros, tipoRetorno, instrucciones, fila, columna) {
-        super(identificador, padre, parametros, tipoRetorno, instrucciones, fila, columna);
+    constructor(identificador, padre, parametros, tipoRetorno, dimensiones, instrucciones, fila, columna) {
+        super(identificador, padre, parametros, tipoRetorno, dimensiones, instrucciones, fila, columna);
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let r = ent.getReporte(ambito, padre);

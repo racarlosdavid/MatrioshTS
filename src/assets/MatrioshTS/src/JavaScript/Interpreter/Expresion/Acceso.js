@@ -86,10 +86,23 @@ class Acceso extends Expresion {
         let v = new StringBuilder();
         for (let index = 0; index < this.accesos.length; index++) {
             let element = this.accesos[index];
-            if (index < this.accesos.length) {
-                v.append(".");
+            if (element instanceof Dimension) {
+                v.append("[");
+                v.append(element.traducir(builder));
+                v.append("]");
             }
-            v.append(element.traducir(builder));
+            else if (element instanceof Id) {
+                if (index < this.accesos.length) {
+                    v.append(".");
+                }
+                v.append(element.traducir(builder));
+            }
+            else if (element instanceof Llamada) {
+                if (index < this.accesos.length) {
+                    v.append(".");
+                }
+                v.append(element.traducir(builder));
+            }
         }
         tempo.append(v.toString());
         // Fin 

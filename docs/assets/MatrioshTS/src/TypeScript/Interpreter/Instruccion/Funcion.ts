@@ -14,15 +14,17 @@ export class Funcion extends Instruccion{
     padre:string|null;
     parametros:Array<Declaracion>;
     tipoRetorno:Type|string|null;
+    dimensiones:number;
     instrucciones:Array<Instruccion>; 
     
 
-    constructor(identificador:string, padre:string|null, parametros:Array<Declaracion>, tipoRetorno:Type|string|null, instrucciones:Array<Instruccion>, fila:number, columna:number){
+    constructor(identificador:string, padre:string|null, parametros:Array<Declaracion>, tipoRetorno:Type|string|null, dimensiones:number, instrucciones:Array<Instruccion>, fila:number, columna:number){
         super(fila,columna);
         this.identificador = identificador;
         this.padre = padre;
         this.parametros = parametros;
         this.tipoRetorno = tipoRetorno;
+        this.dimensiones = dimensiones;
         this.instrucciones = instrucciones; 
     }
 
@@ -122,6 +124,11 @@ export class Funcion extends Instruccion{
             }
            // Fin
             this.tipoRetorno!=null ? tempo.append(":"+this.getTipoToString(this.tipoRetorno)) : console.log("") ;
+            if (this.dimensiones!=0) {
+                for (let i = 0; i < this.dimensiones; i++) {
+                    tempo.append(" [] ");
+                }
+            }
             tempo.append(" {\n");
             for(const instr of this.instrucciones){
                 try {

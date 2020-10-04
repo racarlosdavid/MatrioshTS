@@ -61,8 +61,14 @@ class Literal extends Expresion {
         }
         for (let index = 0; index < variables.length; index++) {
             let exp = Auxiliar.parse(variables[index]);
-            let val = exp.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
-            s = s.replace("$" + index, val.valor);
+            try {
+                let val = exp.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+                s = s.replace("$" + index, val.valor);
+            }
+            catch (error) {
+                er.addError(new NodoError(TipoError.SEMANTICO, "No fue posible calcular el valor de ${ } ", this.fila, this.columna, ambito));
+                s = s.replace("$" + index, "");
+            }
         }
         return s;
     }

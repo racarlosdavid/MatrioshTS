@@ -43,10 +43,10 @@ class AST {
             }
         }
         */
-        //Primera pasada guarda las funciones en la tabla de simbolos
+        //Primera pasada guarda los types en la tabla de simbolos
         for (const ins of this.instrucciones) {
             try {
-                if (ins instanceof Funcion) {
+                if (ins instanceof TypeTS) {
                     ins.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 }
             }
@@ -54,10 +54,21 @@ class AST {
                 console.log("Error en la interpretacion: Primera Pasada" + error);
             }
         }
-        //Segunda pasada 
+        //Segunda pasada guarda las funciones en la tabla de simbolos
         for (const ins of this.instrucciones) {
             try {
                 if (ins instanceof Funcion) {
+                    ins.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
+                }
+            }
+            catch (error) {
+                console.log("Error en la interpretacion: Segunda Segunda" + error);
+            }
+        }
+        //Tercera pasada ejecuto todo lo demas
+        for (const ins of this.instrucciones) {
+            try {
+                if (ins instanceof TypeTS || ins instanceof Funcion) {
                     continue;
                 }
                 if (ins instanceof Return) {

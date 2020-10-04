@@ -19,6 +19,18 @@ class Arreglo {
         if (indice <= this.getTamaño()) {
             this.valores[indice] = valor;
         }
+        else {
+            for (let index = 0; index <= indice; index++) {
+                if (index < this.getTamaño()) {
+                }
+                else if (index >= this.getTamaño() && index < indice) {
+                    this.valores.push("null");
+                }
+                else if (index == indice) {
+                    this.valores.push(valor);
+                }
+            }
+        }
     }
     getTamaño() {
         return this.valores.length;

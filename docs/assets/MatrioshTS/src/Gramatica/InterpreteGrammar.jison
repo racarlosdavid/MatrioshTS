@@ -44,7 +44,8 @@
 "do"			        return 'pr_do';
 "return"		        return 'pr_return'; 
 "type"		        	return 'pr_type';
-
+"push"		        	return 'pr_push';
+"pop"		        	return 'pr_pop';
 
 //-----> Simbolos Aritmeticos
 "++"                    return 'inc';
@@ -133,6 +134,7 @@
 	const {Logica,TipoOperacionLogica} = require('../TypeScript/Interpreter/Expresion/Logica');
 	const {Literal,TipoString} = require('../TypeScript/Interpreter/Expresion/Literal');
 	const {Id} = require('../TypeScript/Interpreter/Expresion/Id');
+	const {Dimension} = require('../TypeScript/Interpreter/Expresion/Dimension');
 	const {Ternario} = require('../TypeScript/Interpreter/Expresion/Ternario');
 	const {Null} = require('../TypeScript/Interpreter/Expresion/Null');
 
@@ -159,6 +161,8 @@
 	const {TypeTSDefinicion} = require('../TypeScript/Interpreter/Edd/TypeTSDefinicion');
 	
 	const {Log} = require('../TypeScript/Interpreter/FuncionesNativas/Log');
+	const {Push} = require('../TypeScript/Interpreter/FuncionesNativas/Push');
+	const {Pop} = require('../TypeScript/Interpreter/FuncionesNativas/Pop');
 	const {Incremento} = require('../TypeScript/Interpreter/FuncionesNativas/Incremento');
 	const {Decremento} = require('../TypeScript/Interpreter/FuncionesNativas/Decremento');
 
@@ -241,6 +245,8 @@ INSTRUCCION : FUNCION	{ $$ = $1; }
 	| INC				{ $$ = $1; } 
 	| DEC				{ $$ = $1; } 
 	| LLAMADA           { $$ = $1; } 
+	| PUSH           	{ $$ = $1; } 
+	| POP           	{ $$ = $1; } 
 	| error ptcoma {	Console.log(` Error Sintactico se recupero con ${yytext} en la posicion`,@1.last_line,@1.last_column,"global"); 
 					//Para reportar el error compilar el archivo jison y en el .js buscar -> if (!recovering) { y pegar el codigo hasta de ultimo de ese if
 					//Manager.getManager().addError(new NodoError(TipoError.SINTACTICO, `El caracter ${(this.terminals_[symbol] || symbol)} no se esperaba en esta posicion`, yyloc.last_line, yyloc.last_column,"global"));
@@ -328,7 +334,21 @@ F : L_PARAMETROS parder T llaveizq LISTA_INSTRUCCIONES llaveder  {
 				console.log("Error al pasar el id del padre al hijo"+e);
 			}
 		}
-		$$ = new Funcion(identificador,null,$1,$3,$5,@1.first_line,@1.first_column); } 
+		$$ = new Funcion(identificador,null,$1,$3,0,$5,@1.first_line,@1.first_column); } 
+	| L_PARAMETROS parder T DIMENSIONES llaveizq LISTA_INSTRUCCIONES llaveder  { 
+		var s =  eval('$$');
+		var identificador = s[s.length - 9]; /*s[s.length - 7];*/
+		for(instr of $6){/*for(instr of $5.instrucciones){*/
+			try{
+				if(instr instanceof Funcion){
+					instr.padre = identificador; //Le paso el id del padre al hijo
+				}
+			}catch(e){
+				console.log("Error al pasar el id del padre al hijo"+e);
+			}
+		}
+		$$ = new Funcion(identificador,null,$1,$3,$4,$6,@1.first_line,@1.first_column); } 
+	
 	| parder T llaveizq LISTA_INSTRUCCIONES llaveder { 
 		var s =  eval('$$');
 		var identificador = s[s.length - 7]; /*s[s.length - 6];*/
@@ -341,7 +361,21 @@ F : L_PARAMETROS parder T llaveizq LISTA_INSTRUCCIONES llaveder  {
 				console.log("Error al pasar el id del padre al hijo"+e);
 			}
 		}
-		$$ = new Funcion(identificador,null,[],$2,$4,@1.first_line,@1.first_column);  
+		$$ = new Funcion(identificador,null,[],$2,0,$4,@1.first_line,@1.first_column);  
+	} 
+	| parder T DIMENSIONES llaveizq LISTA_INSTRUCCIONES llaveder { 
+		var s =  eval('$$');
+		var identificador = s[s.length - 8]; /*s[s.length - 6];*/
+		for(instr of $5){/*for(instr of $4.instrucciones){*/
+			try{
+				if(instr instanceof Funcion){
+					instr.padre = identificador; //Le paso el id del padre al hijo
+				}
+			}catch(e){
+				console.log("Error al pasar el id del padre al hijo"+e);
+			}
+		}
+		$$ = new Funcion(identificador,null,[],$2,$3,$5,@1.first_line,@1.first_column);  
 	} ;
 
 T : dospuntos TIPO { $$ = $2; } 
@@ -359,11 +393,16 @@ PARAMETRO :	identificador dospuntos TIPO{ $$ = new Declaracion(TipoDeclaracion.P
 	| identificador dospuntos TIPO DIMENSIONES { $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,$4,null,@1.first_line,@1.first_column); } ;
 
 LLAMADA : identificador parizq parder PTC	{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
-	| identificador parizq L_E parder PTC 	{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
-	| identificador punto identificador parizq parder PTC { $$ = new Llamada($3,[new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)],@1.first_line,@1.first_column); }
-	| identificador punto identificador parizq L_E parder PTC { $5.push(new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)); $$ = new Llamada($3,$5,@1.first_line,@1.first_column); } ;
+	| identificador parizq L_E parder PTC 	{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } ;
+	//| identificador punto identificador parizq parder PTC { $$ = new Llamada($3,[new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)],@1.first_line,@1.first_column); }
+	//| identificador punto identificador parizq L_E parder PTC { $5.push(new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)); $$ = new Llamada($3,$5,@1.first_line,@1.first_column); } ;
 
 PTC : ptcoma | ;
+
+POP : identificador punto pr_pop parizq parder PTC { $$ = new Pop($1,@1.first_line,@1.first_column); };
+
+PUSH : identificador punto pr_push parizq E parder PTC { $$ = new Push($1,$5,@1.first_line,@1.first_column); } ;
+
 
 DECLARACION : pr_const identificador T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,0,$5,@1.first_line,@1.first_column); }
 	| pr_const identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,$4,$6,@1.first_line,@1.first_column); }
@@ -393,8 +432,10 @@ E : ARITMETICA      	{ $$ = $1; }
 	| identificador L_ACCESO { $$ = new Acceso($1,$2,@1.first_line,@1.first_column); }
 	| identificador parizq parder { $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
 	| identificador parizq L_E parder { $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
-	| identificador punto identificador parizq parder { $$ = new Llamada($3,[new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)],@1.first_line,@1.first_column); }
-	| identificador punto identificador parizq L_E parder { $5.push(new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)); $$ = new Llamada($3,$5,@1.first_line,@1.first_column); } 
+	| identificador punto pr_pop parizq parder { $$ = new Pop($1,@1.first_line,@1.first_column); }
+    | identificador punto pr_push parizq E parder  { $$ = new Push($1,$5,@1.first_line,@1.first_column); } 
+	//| identificador punto identificador parizq parder { $$ = new Llamada($3,[new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)],@1.first_line,@1.first_column); }
+	//| identificador punto identificador parizq L_E parder { $5.push(new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)); $$ = new Llamada($3,$5,@1.first_line,@1.first_column); } 
 	| corizq L_E corder { $$ = new ArrayTS($2,@1.first_line,@1.first_column);}
 	| corizq corder 	{ $$ = new ArrayTS([],@1.first_line,@1.first_column);}
 	| llaveizq L_E_TYPE llaveder { $$ = new TypeTSDefinicion($2,@1.first_line,@1.first_column);}
@@ -442,5 +483,5 @@ L_ACCESO : L_ACCESO ACCESO	{ $1.push($2); $$=$1 }
 ACCESO : identificador parizq parder { $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
 	| identificador parizq L_E parder { $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
 	| punto identificador  { $$ = new Id($2,@1.first_line,@1.first_column); }
-	| corizq E corder   { $$ = $2; }
+	| corizq E corder   { $$ = new Dimension($2,@1.first_line,@1.first_column); }
 	;

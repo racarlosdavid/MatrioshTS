@@ -1,10 +1,11 @@
 class Funcion extends Instruccion {
-    constructor(identificador, padre, parametros, tipoRetorno, instrucciones, fila, columna) {
+    constructor(identificador, padre, parametros, tipoRetorno, dimensiones, instrucciones, fila, columna) {
         super(fila, columna);
         this.identificador = identificador;
         this.padre = padre;
         this.parametros = parametros;
         this.tipoRetorno = tipoRetorno;
+        this.dimensiones = dimensiones;
         this.instrucciones = instrucciones;
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
@@ -96,6 +97,11 @@ class Funcion extends Instruccion {
             }
             // Fin
             this.tipoRetorno != null ? tempo.append(":" + this.getTipoToString(this.tipoRetorno)) : console.log("");
+            if (this.dimensiones != 0) {
+                for (let i = 0; i < this.dimensiones; i++) {
+                    tempo.append(" [] ");
+                }
+            }
             tempo.append(" {\n");
             for (const instr of this.instrucciones) {
                 try {

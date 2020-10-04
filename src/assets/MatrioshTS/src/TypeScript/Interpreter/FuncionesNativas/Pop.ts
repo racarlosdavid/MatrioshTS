@@ -11,31 +11,32 @@ import { Simbolo } from "../TablaSimbolos/Simbolo";
 import { Type } from "../TablaSimbolos/Tipo";
 import { TSCollector } from "../TablaSimbolos/TSCollector";
 
-export class Pop extends Funcion{
 
-    constructor(identificador:string, padre:string|null, parametros:Array<Declaracion>, tipoRetorno:Type|string|null, instrucciones:Array<Instruccion>, fila:number, columna:number){
-        super(identificador,padre,parametros,tipoRetorno,instrucciones,fila,columna);
+
+export class Pop extends Instruccion{
+    identificador:string;
+
+    constructor(identificador:string, fila:number, columna:number){
+        super(fila,columna);
+        this.identificador = identificador;
     }
-
+    
     ejecutar(ent: Entorno, er: ErrorManager, consola: StringBuilder, tsCollector: TSCollector, reporte_ts: R_TS, ambito: string, padre: string) {
-        
-        let result:Simbolo|null = ent.GetValue("Nativa_Pop_Arg1");
-        if (result !=null) {
-            let r:Simbolo|null = ent.GetValue(result.valor);
-            if (r!=null && r.valor instanceof Arreglo) {
-                let val = r.valor.popArreglo();
-                return new Retorno(val,r.tipo);
-            }
+        let r:Simbolo|null = ent.GetValue(this.identificador); 
+        if (r!=null && r.valor instanceof Arreglo) { 
+            let val = r.valor.popArreglo();
+            return new Retorno(val,r.tipo);
         }
         return null;
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
+        //throw new Error("Method not implemented.");
         return cont;
     }
 
     traducir(builder: StringBuilder, parent: string) {
-        return "";
+        return this.identificador+".pop()";
     }
 
 }

@@ -109,14 +109,14 @@ export class Asignacion extends Instruccion{
                             if (type_estructura != null) {
                                 for (let index = 0; index < type_estructura.variables.length; index++) {
                                     const element = type_estructura.variables[index];
-                                    let identificador = element.identificador;
+                                    let identificador = element.lista_identificador[0];
                                     let tipo = element.tipo;
                                     datos_estructura.set(identificador,tipo);
                                 }
 
                                 for (let index = 0; index < type_guardar.valores.length; index++) { 
                                     const element = type_guardar.valores[index];
-                                    let identificador = element.identificador;
+                                    let identificador = element.lista_identificador[0];
                                     let valo =element.valor?.ejecutar(ent,er,consola,tsCollector,reporte_ts,ambito,padre);
                                     datos_guardar.set(identificador,valo);
                                 }
@@ -139,7 +139,7 @@ export class Asignacion extends Instruccion{
                                     let mi_type:Map<String, any> = new Map();
                                     for (let index = 0; index < type_estructura.variables.length; index++) {
                                         const element = type_estructura.variables[index];
-                                        let ide = element.identificador;
+                                        let ide = element.lista_identificador[0];
 
                                         let va = datos_guardar.get(ide);
 
@@ -172,7 +172,7 @@ export class Asignacion extends Instruccion{
                             if (type_estructura != null) {
                                 for (let index = 0; index < type_estructura.variables.length; index++) {
                                     const element = type_estructura.variables[index];
-                                    let identificador = element.identificador;
+                                    let identificador = element.lista_identificador[0];
                                     let tipo = element.tipo;
                                     datos_estructura.set(identificador,tipo);
                                 }
@@ -197,56 +197,10 @@ export class Asignacion extends Instruccion{
                                             return null; 
                                         }
                                     }
-                                
                                 }
-                                /*
-                                // verifico que el id que quiero guarda exista en la estructura del type
-                                if (datos_estructura.size == datos_guardar.size) {
-                                    datos_estructura.forEach(function(v, clave) {
-                                        if (!datos_guardar.has(clave) ) {
-                                            bandera = false;
-                                        }
-                                    });
-                                }else{ 
-                                    er.addError(new NodoError(TipoError.SEMANTICO,"Los valores a asignar no coinciden con los valores del type ", this.fila, this.columna));
-                                    return null;   
-                                }
-
-                                //Si bandera es true en este momento puedo guardar los valores
-                                
-                                if (bandera == true && this.accesos.length==0) { 
-                                    let mi_type:Map<String, any> = new Map();
-                                    for (let index = 0; index < type_estructura.variables.length; index++) {
-                                        const element = type_estructura.variables[index];
-                                        let ide = element.identificador;
-
-                                        let va = datos_guardar.get(ide);
-
-                                        let tipo = datos_estructura.get(ide);
-
-                                        if (va.tipo == tipo || va.tipo == Type.NULL) {
-                                            mi_type.set(ide,va.valor);
-                                        } else {// Error no son del mismo tipo
-                                            er.addError(new NodoError(TipoError.SEMANTICO,"El tipo declarado "+this.getTipoToString(va.tipo)+" no coincide con el tipo del valor "+this.getTipoToString(tipo), this.fila, this.columna));
-                                            return null;  
-                                        }
-                                    }//Todo ok. guardo la variable
-                                    ent.ChangeValue(this.identificador,new MiType(mi_type,datos_estructura));
-                                }else if(this.accesos.length != 0){
-                                    let r:MiType = result.valor; 
-                                
-                                    for (let index = 0; index < this.accesos.length; index++) {
-                                        const tempo = this.accesos[index];
-                                        if (tempo instanceof Id){
-                                            r = r.getValor(tempo.identificador);
-                                        }
-                                    }
-                                }*/
                             }
-                        
-                        }  //
+                        } 
                     }
-                    
                 }else{
                     if (new_val.tipo == result.tipo) { 
                         ent.ChangeValue(this.identificador,new_val.valor);
@@ -254,16 +208,12 @@ export class Asignacion extends Instruccion{
                         er.addError(new NodoError(TipoError.SEMANTICO,"La variable \""+this.identificador+"\" es de tipo "+this.getTipoToString(result.tipo)+" y el nuevo valor \""+new_val.valor+"\" es de tipo "+this.getTipoToString(new_val.tipo), this.fila, this.columna,ambito));
                         return null; 
                     }
-                    
                 }
-                
             }
-            
         } else {
             er.addError(new NodoError(TipoError.SEMANTICO,"La variable "+this.identificador+" no existe ", this.fila, this.columna,ambito));
             return null; 
         }
-       
         return null;
     }
 
@@ -273,13 +223,11 @@ export class Asignacion extends Instruccion{
     }
 
     traducir(builder: StringBuilder, parent: string) {
-       
         let trad = new StringBuilder();
         if (this.accesos.length == 0) {
             trad.append(this.identificador+" = "+this.valor.traducir(builder)+";\n");
         } else {
             trad.append(this.identificador);
-
             for (let index = 0; index < this.accesos.length; index++) {
                 const element = this.accesos[index];
                 if (element instanceof Llamada) {
@@ -290,14 +238,8 @@ export class Asignacion extends Instruccion{
                     trad.append("["+element.traducir(builder)+"]");
                 }
             }
-            
             trad.append(" = "+this.valor.traducir(builder)+";\n");
-
         }
-        
-        
-        
-
         return trad.toString();
     }
 

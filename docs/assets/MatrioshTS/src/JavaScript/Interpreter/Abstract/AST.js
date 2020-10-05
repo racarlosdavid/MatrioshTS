@@ -9,7 +9,7 @@ class AST {
         console.log("Ok. Vamos a traducir la cadena de entrada");
         //Primera pasada para obtener los nuevos ids los almaceno en la variable traductor de Manager.ts
         let builder_inservible = new StringBuilder();
-        /*Para esta pasade le mando un stringbuilder solo para cumplir con el parametro y que no me genere doble salida
+        /*Para esta pasada le mando un stringbuilder solo para cumplir con el parametro y que no me genere doble salida
         ya que en la siguiente pasada le mando el builder que va a recolectar el codigo traducido */
         for (const instr of this.instrucciones) {
             try {
@@ -34,15 +34,6 @@ class AST {
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         console.log("Ok. Vamos a interpretar la cadena de entrada");
-        /*
-        for(const instr of this.instrucciones){
-            try {
-                instr.ejecutar(ent,er,consola,tsCollector);
-            } catch (error) {
-                console.log("Error en la interpretacion: "+error);
-            }
-        }
-        */
         //Primera pasada guarda los types en la tabla de simbolos
         for (const ins of this.instrucciones) {
             try {

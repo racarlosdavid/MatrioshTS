@@ -55,7 +55,7 @@ export class Llamada extends Instruccion {
                         er.addError(new NodoError(TipoError.SEMANTICO,"El tipo del parametro "+v.tipo+" no coinciden con el tipo "+param.tipo+" de la funcion", this.fila, this.columna,this.identificador));
                         return null; 
                     }
-                    nuevo.Add(param.identificador,v.valor,param.tipo!=null?param.tipo:this.getElTipo(v.valor),param.dimensiones,param.tipoDeclaracion);
+                    nuevo.Add(param.lista_identificador[0],v.valor,param.tipo!=null?param.tipo:this.getElTipo(v.valor),param.dimensiones,param.tipoDeclaracion);
                     
                 }
             }

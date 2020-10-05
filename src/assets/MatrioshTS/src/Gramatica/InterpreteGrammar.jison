@@ -277,7 +277,6 @@ FOR_IN : pr_for parizq pr_let identificador pr_in E parder  BLOQUE  { $$ = new F
 FOR_OF: pr_for parizq pr_let identificador pr_of E parder  BLOQUE   { $$ = new ForOf(TipoDeclaracion.LET,$4,$6,$8,@1.first_line,@1.first_column); } 
 	| pr_for parizq pr_const identificador pr_of E parder  BLOQUE   { $$ = new ForOf(TipoDeclaracion.CONST,$4,$6,$8,@1.first_line,@1.first_column); } ;
 
-
 FOR : pr_for parizq FOR_D E ptcoma FOR_A parder BLOQUE { $$ = new For($3,$4,$6,$8,@1.first_line,@1.first_column); } ;
 
 FOR_D : DECLARACION { $$ = $1; }
@@ -286,13 +285,6 @@ FOR_D : DECLARACION { $$ = $1; }
 FOR_A : INC  { $$ = $1; }
 	| DEC { $$ = $1; }
 	| ASIGNACION { $$ = $1; };
-/*
-IF : pr_if parizq E parder BLOQUE ELSE	{ $$ = new If_Old($3,$5,$6.valor,$6.tipo,@1.first_line,@1.first_column); };
-
-ELSE : pr_else BLOQUE	{ $$ = {tipo:TipoIf.IFELSE, valor:$2}; } 
-	| pr_else IF   	{ $$ = {tipo:TipoIf.IFELSEIF, valor:$2}; } 
-	| { $$ = {tipo:TipoIf.IF, valor:null}; } ;
-*/
 
 WHILE : pr_while parizq E parder BLOQUE	{ $$ = new While($3,$5,@1.first_line,@1.first_column); } ;
 
@@ -314,11 +306,6 @@ BREAK : pr_break ptcoma   { $$ = new Break(@1.first_line,@1.first_column); } ;
 CONTINUE : pr_continue ptcoma { $$ = new Continue(@1.first_line,@1.first_column); };
 
 CONSOLELOG : pr_consolelog parizq L_E parder PTC { $$ = new Log($3,@1.first_line,@1.first_column); } ;
-
-/*
-FUNCION :  pr_function identificador parizq L_PARAMETROS parder dospuntos TIPO BLOQUE  { $$ = new Funcion($1,$2,$4,$6,@1.first_line,@1.first_column); } 
-		|  pr_function identificador parizq parder dospuntos TIPO BLOQUE { $$ = new Funcion($1,$2,[],$5,@1.first_line,@1.first_column); } ;
-*/
 
 FUNCION :  pr_function identificador parizq F { $$ = $4; } ;
 		
@@ -389,13 +376,11 @@ SEPARADOR : coma | ptcoma | ;
 L_PARAMETROS : L_PARAMETROS coma PARAMETRO	{ $1.push($3); $$=$1; }
     | PARAMETRO                             { $$ = [$1]; } ;
 
-PARAMETRO :	identificador dospuntos TIPO{ $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,0,null,@1.first_line,@1.first_column); }
-	| identificador dospuntos TIPO DIMENSIONES { $$ = new Declaracion(TipoDeclaracion.PARAM,$1,$3,$4,null,@1.first_line,@1.first_column); } ;
+PARAMETRO :	identificador dospuntos TIPO{ $$ = new Declaracion(TipoDeclaracion.PARAM,[$1],$3,0,null,@1.first_line,@1.first_column); }
+	| identificador dospuntos TIPO DIMENSIONES { $$ = new Declaracion(TipoDeclaracion.PARAM,[$1],$3,$4,null,@1.first_line,@1.first_column); } ;
 
 LLAMADA : identificador parizq parder PTC	{ $$ = new Llamada($1,[],@1.first_line,@1.first_column); }
 	| identificador parizq L_E parder PTC 	{ $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } ;
-	//| identificador punto identificador parizq parder PTC { $$ = new Llamada($3,[new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)],@1.first_line,@1.first_column); }
-	//| identificador punto identificador parizq L_E parder PTC { $5.push(new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)); $$ = new Llamada($3,$5,@1.first_line,@1.first_column); } ;
 
 PTC : ptcoma | ;
 
@@ -403,13 +388,15 @@ POP : identificador punto pr_pop parizq parder PTC { $$ = new Pop($1,@1.first_li
 
 PUSH : identificador punto pr_push parizq E parder PTC { $$ = new Push($1,$5,@1.first_line,@1.first_column); } ;
 
+DECLARACION : pr_const L_ID T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,0,$5,@1.first_line,@1.first_column); }
+	| pr_const L_ID T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,$4,$6,@1.first_line,@1.first_column); }
+    | pr_let L_ID T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,0,$5,@1.first_line,@1.first_column); }
+   	| pr_let L_ID T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,$6,@1.first_line,@1.first_column); }
+    | pr_let L_ID T ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,0,null,@1.first_line,@1.first_column); }
+	| pr_let L_ID T DIMENSIONES ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,null,@1.first_line,@1.first_column); } ;
 
-DECLARACION : pr_const identificador T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,0,$5,@1.first_line,@1.first_column); }
-	| pr_const identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.CONST,$2,$3,$4,$6,@1.first_line,@1.first_column); }
-    | pr_let identificador T igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,0,$5,@1.first_line,@1.first_column); }
-   	| pr_let identificador T DIMENSIONES igual E ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,$6,@1.first_line,@1.first_column); }
-    | pr_let identificador T ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,0,null,@1.first_line,@1.first_column); }
-	| pr_let identificador T DIMENSIONES ptcoma { $$ = new Declaracion(TipoDeclaracion.LET,$2,$3,$4,null,@1.first_line,@1.first_column); } ;
+L_ID : L_ID coma identificador  { $1.push($3); $$=$1; }
+	| identificador           { $$ = [$1]; } ;
 
 ASIGNACION : identificador L_ACCESO igual E ptcoma { $$ = new Asignacion($1,$2,$4,@1.first_line,@1.first_column); } 
     |  identificador igual E ptcoma   { $$ = new Asignacion($1,[],$3,@1.first_line,@1.first_column); } ;
@@ -434,8 +421,6 @@ E : ARITMETICA      	{ $$ = $1; }
 	| identificador parizq L_E parder { $$ = new Llamada($1,$3,@1.first_line,@1.first_column); } 
 	| identificador punto pr_pop parizq parder { $$ = new Pop($1,@1.first_line,@1.first_column); }
     | identificador punto pr_push parizq E parder  { $$ = new Push($1,$5,@1.first_line,@1.first_column); } 
-	//| identificador punto identificador parizq parder { $$ = new Llamada($3,[new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)],@1.first_line,@1.first_column); }
-	//| identificador punto identificador parizq L_E parder { $5.push(new Literal(String($1),Type.STRING,TipoString.STRING1,@1.first_line,@1.first_column)); $$ = new Llamada($3,$5,@1.first_line,@1.first_column); } 
 	| corizq L_E corder { $$ = new ArrayTS($2,@1.first_line,@1.first_column);}
 	| corizq corder 	{ $$ = new ArrayTS([],@1.first_line,@1.first_column);}
 	| llaveizq L_E_TYPE llaveder { $$ = new TypeTSDefinicion($2,@1.first_line,@1.first_column);}
@@ -474,7 +459,7 @@ L_E : L_E coma E  { $1.push($3); $$=$1; }
 L_E_TYPE : L_E_TYPE coma E_TYPE  { $1.push($3); $$=$1; }
 	|  E_TYPE               { $$ = [$1]; } ;
 
-E_TYPE : identificador dospuntos E { $$ = new Declaracion(TipoDeclaracion.TYPEVAL,$1,null,0,$3,@1.first_line,@1.first_column); } ;
+E_TYPE : identificador dospuntos E { $$ = new Declaracion(TipoDeclaracion.TYPEVAL,[$1],null,0,$3,@1.first_line,@1.first_column); } ;
 
 
 L_ACCESO : L_ACCESO ACCESO	{ $1.push($2); $$=$1 }

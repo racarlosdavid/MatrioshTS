@@ -16,6 +16,7 @@ class Llamada extends Instruccion {
             else {
                 nuevo = new Entorno(ent.GetGlobal());
             }
+            reporte_ts.addEntorno(nuevo);
             //tsCollector.addTS(this.identificador,new Entorno(ent));
             if (funcion instanceof Graficar_ts) {
             }
@@ -65,9 +66,19 @@ class Llamada extends Instruccion {
                             er.addError(new NodoError(TipoError.SEMANTICO, "Break fuera de ciclo ", this.fila, this.columna, this.identificador));
                         }
                         else if (result.tipo == Type.ARRAY || funcion.dimensiones != 0) {
+                            /*Si no hay recursividad agrego la tabla del entorno al colector para el reporte de todos los entorno
+                            Si hay recursividad no agrego nada porque se encicla ya que son muchos valores */
+                            if (Manager.getManager().getBanderaRecursividad() == false) {
+                                reporte_ts.addLista(nuevo.getReporte(this.identificador, padre));
+                            }
                             return result;
                         }
                         else if ((result.tipo == funcion.tipoRetorno && funcion.tipoRetorno != Type.VOID) || funcion.tipoRetorno == null) {
+                            /*Si no hay recursividad agrego la tabla del entorno al colector para el reporte de todos los entorno
+                            Si hay recursividad no agrego nada porque se encicla ya que son muchos valores */
+                            if (Manager.getManager().getBanderaRecursividad() == false) {
+                                reporte_ts.addLista(nuevo.getReporte(this.identificador, padre));
+                            }
                             return result;
                         }
                         else {

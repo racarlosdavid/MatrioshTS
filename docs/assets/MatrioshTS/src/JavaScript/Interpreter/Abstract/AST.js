@@ -49,6 +49,14 @@ class AST {
         for (const ins of this.instrucciones) {
             try {
                 if (ins instanceof Funcion) {
+                    let f = ins;
+                    for (let index = 0; index < f.instrucciones.length; index++) {
+                        const element = f.instrucciones[index];
+                        if (element instanceof Funcion) {
+                            consola.append(" > Las funciones anidadas no estan permitidas en la interpretacion \n");
+                            return null;
+                        }
+                    }
                     ins.ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre);
                 }
             }

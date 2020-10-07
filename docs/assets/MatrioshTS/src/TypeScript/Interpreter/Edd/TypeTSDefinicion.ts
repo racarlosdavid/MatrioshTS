@@ -23,7 +23,13 @@ export class TypeTSDefinicion extends Expresion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        console.log("Method not implemented. TYPETS DEFINITION");
+        let nodoValores:string = "nodo" + ++cont;
+        builder.append(nodoValores+" [label=\"Valores\"];\n");
+        builder.append(parent+" -> "+nodoValores+";\n");
+
+        for (let instr of this.valores) {
+            cont = instr.getDot(builder, nodoValores, cont);
+        }
         return cont;
     }
 

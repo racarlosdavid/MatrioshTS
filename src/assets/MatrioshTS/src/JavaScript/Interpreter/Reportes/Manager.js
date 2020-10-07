@@ -4,6 +4,7 @@ class Manager {
         this.traductor = new Map();
         this.lista_reporte_ts = [];
         this.sizeActual = [];
+        this.bandera_reporte_ts_recursividad = true;
         if (Manager._instance) {
             throw new Error("Error: Instantiation failed: Use SingletonDemo.getInstance() instead of new.");
         }
@@ -16,6 +17,7 @@ class Manager {
         this.error_colector = [];
         this.traductor = new Map();
         this.lista_reporte_ts = [];
+        this.bandera_reporte_ts_recursividad = true;
     }
     getColectorErrores() {
         return this.error_colector;
@@ -43,6 +45,12 @@ class Manager {
     }
     addNTS(simbolo) {
         this.lista_reporte_ts.push(simbolo);
+    }
+    setBanderaRecursividad(estado) {
+        this.bandera_reporte_ts_recursividad = estado;
+    }
+    getBanderaRecursividad() {
+        return this.bandera_reporte_ts_recursividad;
     }
 }
 Manager._instance = new Manager();

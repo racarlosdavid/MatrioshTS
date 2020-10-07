@@ -23,6 +23,7 @@ export class Case extends Instruccion{
     
     ejecutar(ent:Entorno, er:ErrorManager, consola:StringBuilder, tsCollector:TSCollector, reporte_ts:R_TS, ambito:string, padre:string) {
         let nuevo=new Entorno(ent);
+        reporte_ts.addEntorno(nuevo);
         for(let inst of this.instrucciones){ 
             let r = inst.ejecutar(nuevo,er,consola,tsCollector,reporte_ts,"Local: case", padre);
             if(r!=null){

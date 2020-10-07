@@ -49,7 +49,13 @@ export class ArrayTS extends Expresion{
     }
 
     getDot(builder: StringBuilder, parent: string, cont: number): number {
-        console.log("Method not implemented. .dot de ARRAY TS");
+        let nodoValores:string = "nodo" + ++cont;
+        builder.append(nodoValores+" [label=\"Valores\"];\n");
+        builder.append(parent+" -> "+nodoValores+";\n");
+
+        for (let instr of this.valores) {
+            cont = instr.getDot(builder, nodoValores, cont);
+        }
         return cont;
     }
 

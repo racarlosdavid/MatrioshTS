@@ -5,10 +5,16 @@ class Bloque extends Instruccion {
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let nuevo = new Entorno(ent);
+        reporte_ts.addEntorno(nuevo);
         for (const instr of this.instrucciones) {
             try {
                 let element = instr.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, ambito, padre);
                 if (element != undefined || element != null) {
+                    /*Si no hay recursividad agrego la tabla del entorno al colector para el reporte de todos los entorno
+                    Si hay recursividad no agrego nada porque se encicla ya que son muchos valores */
+                    if (Manager.getManager().getBanderaRecursividad() == false) {
+                        reporte_ts.addLista(nuevo.getReporte(ambito, padre));
+                    }
                     return element;
                 }
             }

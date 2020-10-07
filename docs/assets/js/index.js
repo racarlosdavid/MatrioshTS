@@ -18,19 +18,34 @@ function setear() {
 function limpiarConsola(){
     consola.setValue("\n\n\n\n\n\n\n\n\n\n");
     document.getElementById("buttonConsola").click();
+    setTimeout(function(){  }, 100);
 }
 
 function saveDynamicDataToFile(data) {
-
     var blob = new Blob([data], { type: "text/plain;charset=utf-8" });
     saveAs(blob, "Matriosh_AST_201213132.txt");
 }
+
+function hayRecursividad() {
+    // Get the checkbox
+    var checkBox = document.getElementById("myCheck");
+    // Get the output text
+    var text = document.getElementById("text");
+  
+    // If the checkbox is checked, display the output text
+    
+    if (checkBox.checked == true){
+        Manager.getManager().setBanderaRecursividad(false);
+    } else {
+        Manager.getManager().setBanderaRecursividad(true);
+    }
+  }
 
 function nativas(ent){
     
     let fGraficar_ts = new Graficar_ts("graficar_ts","",[],null,[],-1,-1);
     ent.AddFunction("graficar_ts",fGraficar_ts);
-
+/*
     let fpop_parametros = [];
     let fpop_instrucciones = [];
     fpop_parametros.push(new Declaracion(TipoDeclaracion.PARAM,"Nativa_Pop_Arg1",Type.STRING,0,null,-1,-1));
@@ -43,24 +58,79 @@ function nativas(ent){
     fpush_parametros.push(new Declaracion(TipoDeclaracion.PARAM,"Nativa_Push_Arg2",Type.STRING,0,null,-1,-1));
     let fpush = new Push("push","",fpush_parametros,null,fpush_instrucciones,-1,-1);
     ent.AddFunction("push",fpush);
-
+*/
 }
 
-
-$(document).ready(function(){
-
-    $("#interpretar").click(()=>{ 
-        console.log("-> Se va a interpretar la cadena ingresada ");
-        limpiarConsola();
+function cuantosEntornosHay(){
         Manager.getManager().reiniciar(); 
         Manager.getManager().sizeActual.push(0);
+       
         let ast = null;
         try{
             let tempo = textMap.get("text" + tabActual);    //Obtengo la pestaña actual
             var text = tempo.getValue();                    //Obtengo el texto de la pestaña actual
             ast = InterpreteGrammar.parse(text);        //Analizo la entrada y obtengo el AST
         }catch(error){
-            console.log("Error fatal en compilación de entrada, el archivo de entrada puede contener caracteres no validos.");
+            consola.setValue(" > Error fatal!, el archivo de entrada puede contener caracteres no validos. "+error); 
+        }
+    
+        if (ast == null) { 
+            try { 
+                const er = new ErrorManager(); 
+                //Agrego los errores lexicos al colector de errores 
+                er.addLista(Manager.getManager().getColectorErrores());
+            } catch (error) {
+                console.log("Lista de errores vacia");
+            }
+            
+        } else {
+            
+            const ent = new Entorno(null);
+            const er = new ErrorManager(); 
+            const consola_data = new StringBuilder();
+            const tsCollector = new TSCollector();
+            const reporte_ts = new R_TS();
+            const ambito = "global";
+            const padre = "";
+
+            //Agrego los errores lexicos al colector de errores 
+            er.addLista(Manager.getManager().getColectorErrores());
+
+            //Seteo las nativas en la ts
+            nativas(ent);
+
+            //Ejecuto el AST
+            ast.ejecutar(ent,er,consola_data,tsCollector,reporte_ts,ambito,padre); 
+
+
+            let ento = reporte_ts.getEntornos();
+            console.log(" Se crearon "+ento.length+" entornos. ");
+            return ento.length;
+        }
+    return 0;
+
+}
+
+$(document).ready(function(){
+
+    $("#interpretar").click(()=>{ 
+        console.log("-> Se va a interpretar la cadena ingresada ");
+        alert("Se va a interpretar la cadena ingresada, espera el mensaje de finalizacion para seguir navegando ");
+        limpiarConsola();
+        Manager.getManager().reiniciar(); 
+        Manager.getManager().sizeActual.push(0);
+        if (cuantosEntornosHay()<100000){
+            Manager.getManager().setBanderaRecursividad(false);
+        } else {
+            Manager.getManager().setBanderaRecursividad(true);
+        }
+        let ast = null;
+        try{
+            let tempo = textMap.get("text" + tabActual);    //Obtengo la pestaña actual
+            var text = tempo.getValue();                    //Obtengo el texto de la pestaña actual
+            ast = InterpreteGrammar.parse(text);        //Analizo la entrada y obtengo el AST
+        }catch(error){
+            consola.setValue(" > Error fatal!, el archivo de entrada puede contener caracteres no validos. "+error); 
         }
     
         if (ast == null) { 
@@ -112,6 +182,8 @@ $(document).ready(function(){
 
             //Ejecuto el AST
             ast.ejecutar(ent,er,consola_data,tsCollector,reporte_ts,ambito,padre); 
+
+            
            
             //Inserto los errores en la seccion de errores en la pagina
             let result = er.getErrores();
@@ -140,7 +212,10 @@ $(document).ready(function(){
             const reporte_ts_final = new R_TS();
             reporte_ts_final.addLista(ent.getReporte("Global", ""));
             //le agrego la coleccion de las otras tablas
+            let ento = reporte_ts.getEntornos();
+            console.log(" Se crearon "+ento.length+" entornos. ");
             reporte_ts_final.addLista(reporte_ts.getListaR_TS());
+            
             
             //Ahora ya grafico la tabla en la pagina
             let result_ts = reporte_ts_final.getListaR_TS();
@@ -157,17 +232,24 @@ $(document).ready(function(){
             }
             $("#contenido_tablaSimbolos").html(colector_ts);
             
+            
+            try {
+                //Graficar el ast
+                const reporte_AST = new Dot(ast.getInstrucciones());
+                let ast_dot = reporte_AST.graficarAST();
+                d3.select("#graph").graphviz().renderDot(ast_dot);
+                punto_dot = ast_dot;
+            } catch (error) {
+                consola_data.append(" > Error al generar el grafo del AST "+error);
+            }
+
             //Imprimo los logs
             consola.setValue(consola_data.toString()); 
             document.getElementById("buttonConsola").click();
 
-            
-           
-            //Graficar el ast
-            const reporte_AST = new Dot(ast.getInstrucciones());
-            let ast_dot = reporte_AST.graficarAST();
-            d3.select("#graph").graphviz().renderDot(ast_dot);
-            punto_dot = ast_dot;
+            //window.alert("Se termino de interpretar la cadena de entrada");
+            setTimeout(function(){ alert("Se termino de interpretar la cadena de entrada"); }, 1000);
+            console.log("-> Se termino de interpretar la cadena de entrada");
             
         }
     });
@@ -175,6 +257,8 @@ $(document).ready(function(){
 
     $("#traducir").click(()=>{ 
         console.log("-> Se va a traducir la cadena ingresada ");
+        alert("Se va a traducir la cadena ingresada, espera el mensaje de finalizacion para seguir navegando ");
+        limpiarConsola();
         try { 
             Manager.getManager().reiniciar(); 
             Manager.getManager().sizeActual.push(0);
@@ -191,6 +275,8 @@ $(document).ready(function(){
 
             //Ejecuta la traduccion
             ast.traducir(builder,parent); 
+
+            
 
             //Inserto los errores en la seccion de errores en la pagina
             let result = er.getErrores();
@@ -218,16 +304,23 @@ $(document).ready(function(){
             //Imprimo el resultado de la traduccion en el textarea de traduccion
             nuevaPestañaTraducido(builder.toString());
 
-            //Graficar el ast
-            const reporte_AST = new Dot(ast.getInstrucciones());
-            let ast_dot = reporte_AST.graficarAST();
-            d3.select("#graph").graphviz().renderDot(ast_dot);
+            try {
+                //Graficar el ast
+                const reporte_AST = new Dot(ast.getInstrucciones());
+                let ast_dot = reporte_AST.graficarAST();
+                d3.select("#graph").graphviz().renderDot(ast_dot);
+                punto_dot = ast_dot;
+            } catch (error) {
+                consola.setValue(" > Error al generar el grafo del AST "+error);
+            }
 
-            
+            //window.alert("Se termino la traduccion de la cadena de entrada");
+            setTimeout(function(){ alert("Se termino la traduccion de la cadena de entrada"); }, 1000);
+            console.log("-> Se termino la traduccion de la cadena de entrada");
             
         }
         catch (err) {
-            console.log("Error en el boton traducir "+err);
+            consola.setValue("Error al traducir "+err);
         }
     });
 
@@ -242,60 +335,3 @@ $(document).ready(function(){
 
 });
 
-
-
-/*
-    $(document).ready(function(){
-        $("#run").click(()=>{ 
-            console.log("apachaste run");
-            let tempo = textMap.get("text" + tabActual); 
-            //var text = editor.getValue(); 
-            var text = tempo.getValue(); //Obtengo el texto de la pestaña actual
-            var model = {text:text};
-            console.log(model);
-            $.post(`${ip}c3d/run`,model,function(result){
-                //console.log(result);
-                console.error(result.reporte_tabla_simbolos);
-                try {
-                    editor.setValue(result.codigogenerado);
-                } catch (error) {
-                    console.log("Error al obtener la salida");
-                }
-                var colector = '';
-                for (let index = 0; index < result.reporte_errores.length; index++) {
-                    const element = result.reporte_errores[index];
-                    let t = "";
-                    if (element.tipo == 0) {
-                        t = "Lexico";
-                    } else if (element.tipo == 1){
-                        t = "Sintactico";
-                    } else if (element.tipo == 2){
-                        t = "Semantico";
-                    }
-                    colector += `<tr>
-                                <th scope="col">${t}</th>
-                                <th scope="col">${element.descripcion}</th>
-                                <th scope="col">${element.fila}</th>
-                                <th scope="col">${element.columna}</th>
-                                </tr>`;
-                }
-                $("#contenido_tablaErrores").html(colector);
-
-                var colector = '';
-                for (let index = 0; index < result.reporte_tabla_simbolos.length; index++) {
-                    const element = result.reporte_tabla_simbolos[index];
-                    
-                    colector += `<tr>
-                                <th scope="col">${element.id}</th>
-                                <th scope="col">${element.t}</th>
-                                <th scope="col">${element.tamaño}</th>
-                                <th scope="col">${element.ambito}</th>
-                                <th scope="col">${element.rol}</th>
-                                <th scope="col">${element.posicion}</th>
-                                </tr>`;
-                }
-                $("#contenido_tablaSimbolos").html(colector);
-            });
-        });
-        });
-    */

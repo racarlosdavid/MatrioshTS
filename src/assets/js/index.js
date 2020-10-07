@@ -79,28 +79,6 @@ function cuantosEntornosHay(){
                 const er = new ErrorManager(); 
                 //Agrego los errores lexicos al colector de errores 
                 er.addLista(Manager.getManager().getColectorErrores());
-                //Inserto los errores en la seccion de errores en la pagina
-                let result = er.getErrores();
-                var colector = '';
-                for (let index = 0; index < result.length; index++) { 
-                    const element = result[index];
-                    let t = "";
-                    if (element.tipo == 0) {
-                        t = "Lexico";
-                    } else if (element.tipo == 1){
-                        t = "Sintactico";
-                    } else if (element.tipo == 2){
-                        t = "Semantico";
-                    }
-                    colector += `<tr>
-                                <th scope="col">${t}</th>
-                                <th scope="col">${element.descripcion}</th>
-                                <th scope="col">${element.fila}</th>
-                                <th scope="col">${element.columna}</th>
-                                <th scope="col">${element.ambito}</th>
-                                </tr>`;
-                }
-                $("#contenido_tablaErrores").html(colector);
             } catch (error) {
                 console.log("Lista de errores vacia");
             }
@@ -137,6 +115,7 @@ $(document).ready(function(){
 
     $("#interpretar").click(()=>{ 
         console.log("-> Se va a interpretar la cadena ingresada ");
+        alert("Se va a interpretar la cadena ingresada, espera el mensaje de finalizacion para seguir navegando ");
         limpiarConsola();
         Manager.getManager().reiniciar(); 
         Manager.getManager().sizeActual.push(0);
@@ -278,6 +257,8 @@ $(document).ready(function(){
 
     $("#traducir").click(()=>{ 
         console.log("-> Se va a traducir la cadena ingresada ");
+        alert("Se va a traducir la cadena ingresada, espera el mensaje de finalizacion para seguir navegando ");
+        limpiarConsola();
         try { 
             Manager.getManager().reiniciar(); 
             Manager.getManager().sizeActual.push(0);

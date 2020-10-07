@@ -8,6 +8,7 @@ export class Manager {
     private traductor: Map<string,any> = new Map();
     private lista_reporte_ts:NTS[] =[];
     sizeActual: Array<number> = [];
+    bandera_reporte_ts_recursividad = true;
 
     constructor() {
         if (Manager._instance) {
@@ -24,6 +25,7 @@ export class Manager {
         this.error_colector = [];
         this.traductor = new Map();
         this.lista_reporte_ts = [];
+        this.bandera_reporte_ts_recursividad = true;
     }
 
     getColectorErrores(){
@@ -59,6 +61,14 @@ export class Manager {
     
     addNTS(simbolo:NTS){
         this.lista_reporte_ts.push(simbolo);
+    }
+
+    setBanderaRecursividad(estado:boolean){
+        this.bandera_reporte_ts_recursividad = estado;
+    }
+
+    getBanderaRecursividad(){
+        return this.bandera_reporte_ts_recursividad;
     }
 
 

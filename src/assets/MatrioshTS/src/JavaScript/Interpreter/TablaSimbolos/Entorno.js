@@ -125,13 +125,17 @@ class Entorno {
                 if (sim instanceof Funcion) {
                     tipo = "Funcion";
                 }
-                else if (sim instanceof MiType) {
+                else if (sim instanceof TypeTS) {
                     tipo = "Type";
                 }
                 else if (sim instanceof Simbolo) {
                     if (sim.valor instanceof Arreglo) {
                         tipo = "Arreglo: " + sim.getTipoToString();
                         val = sim.valor.imprimirArreglo();
+                    }
+                    else if (sim.valor instanceof MiType) {
+                        tipo = "Type: " + sim.getTipoToString();
+                        val = sim.valor.imprimirType();
                     }
                     else {
                         tipo = sim.getTipoToString();

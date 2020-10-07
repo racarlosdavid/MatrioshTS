@@ -75,6 +75,15 @@ function interpretar() {
                 const reporte_AST = new Dot(ast.getInstrucciones());
                 let ast_dot = reporte_AST.graficarAST();
                 //console.log(ast_dot);
+
+                let ento = reporte_ts.getEntornos();
+                /*
+                for (let index = 0; index < ento.length; index++) {
+                    const element = ento[index];
+                    console.log(element);
+                }
+                */
+               console.log(" La cantidad de entornos que recolecte "+ento.length);
                 
             }
 }

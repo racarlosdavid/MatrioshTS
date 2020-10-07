@@ -6,6 +6,7 @@ class Case extends Instruccion {
     }
     ejecutar(ent, er, consola, tsCollector, reporte_ts, ambito, padre) {
         let nuevo = new Entorno(ent);
+        reporte_ts.addEntorno(nuevo);
         for (let inst of this.instrucciones) {
             let r = inst.ejecutar(nuevo, er, consola, tsCollector, reporte_ts, "Local: case", padre);
             if (r != null) {

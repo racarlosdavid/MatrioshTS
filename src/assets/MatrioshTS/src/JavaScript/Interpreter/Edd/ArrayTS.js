@@ -32,7 +32,12 @@ class ArrayTS extends Expresion {
         return new Retorno(new Arreglo(lista, Type.ARRAY), Type.ARRAY);
     }
     getDot(builder, parent, cont) {
-        console.log("Method not implemented. .dot de ARRAY TS");
+        let nodoValores = "nodo" + ++cont;
+        builder.append(nodoValores + " [label=\"Valores\"];\n");
+        builder.append(parent + " -> " + nodoValores + ";\n");
+        for (let instr of this.valores) {
+            cont = instr.getDot(builder, nodoValores, cont);
+        }
         return cont;
     }
     traducir(builder) {
